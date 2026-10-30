@@ -30,10 +30,10 @@ SRC = ROOT / "dict" / "src"
 
 # 与引擎 composeUnits 保持一致（单位是结构，不是词汇）
 UNITS = {
-    "ft": "英尺", "kft": "千英尺", "m": "米", "km": "千米", "nm": "海里",
-    "kt": "节", "kts": "节", "kg": "千克", "lb": "磅", "lbs": "磅",
-    "liter": "升", "liters": "升", "gallon": "加仑", "gallons": "加仑",
-    "unit": "个单位", "units": "个单位",
+    "ft": "英尺", "kft": "千英尺", "m": "公尺", "km": "公里", "nm": "海浬",
+    "kt": "節", "kts": "節", "kg": "公斤", "lb": "磅", "lbs": "磅",
+    "liter": "公升", "liters": "公升", "gallon": "加侖", "gallons": "加侖",
+    "unit": "個單位", "units": "個單位",
 }
 
 CJK = re.compile(r"[\u4e00-\u9fff]")
@@ -112,11 +112,11 @@ def _composed_spec(spec: str, terms: dict[str, str], exact: dict[str, str] | Non
     m = QTY.match(s)
     if m:
         rest = _composed_spec(m.group("rest"), terms, exact)
-        return f"{m.group('n')} 个{rest}" if rest else None
+        return f"{m.group('n')} 個{rest}" if rest else None
 
     m = UNITS_SPEC.match(s)
     if m:
-        return f"{m.group('n')} 个单位"
+        return f"{m.group('n')} 個單位"
 
     m = CAPACITY.match(s)
     if m:
@@ -165,15 +165,21 @@ RESIDUE_OK = re.compile(
 )
 
 
+_TERMS_LOWER: set[str] | None = None
+
+
 def residue_words(en: str, zh: str, terms: dict[str, str]) -> list[str]:
     """返回中文值里仍然残留的「术语表已知词」——这些是真正的半译缺口。"""
+    global _TERMS_LOWER
+    if _TERMS_LOWER is None or len(_TERMS_LOWER) != len(terms):
+        _TERMS_LOWER = {k.lower() for k in terms}
     if not zh or not has_cjk(zh):
         return []
     leftovers = []
     for word in set(re.findall(r"[A-Za-z][A-Za-z\-']+", zh)):
         if RESIDUE_OK.fullmatch(word):
             continue
-        if word.lower() in {k.lower() for k in terms}:
+        if word.lower() in _TERMS_LOWER:
             leftovers.append(word)
     return leftovers
 
