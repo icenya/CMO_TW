@@ -1,5 +1,5 @@
 {
-  "_comment": "装备与术语中文名称规范库（单一写法）。build_dict.py 在合并完所有来源后，按键值对 value 做确定性正则替换，保证同一装备在全库只有一种中文写法。verify_terminology.py 依据 banned 列表做回归门禁。",
+  "_comment": "裝備與術語中文名稱規範庫（單一寫法）。build_dict.py 在合併完所有來源後，按鍵值對 value 做確定性正則替換，保證同一裝備在全庫只有一種中文寫法。verify_terminology.py 依據 banned 列表做回歸門禁。",
   "version": "4.1.3",
   "protect_token": "\u0001",
   "replacements": [
@@ -42,28 +42,173 @@
       "name": "collapse-duplicate-python",
       "pattern": "「怪蛇」(\\d+)「怪蛇」\\1",
       "to": "「怪蛇」\\1"
+    },
+    {
+      "name": "pla-air-force",
+      "pattern": "(?:中国人民解放军空军|中國人民解放軍空軍|解放军空军|解放軍空軍|中国空军|中國空軍)",
+      "to": "中共空軍"
+    },
+    {
+      "name": "pla-naval-aviation",
+      "pattern": "(?:中国人民解放军海军航空兵|中國人民解放軍海軍航空兵|解放军海军航空兵|解放軍海軍航空兵|解放军海航|解放軍海航)",
+      "to": "中共海軍航空兵"
+    },
+    {
+      "name": "pla-navy",
+      "pattern": "(?:中国人民解放军海军|中國人民解放軍海軍|解放军海军|解放軍海軍|中国海军|中國海軍)",
+      "to": "中共海軍"
+    },
+    {
+      "name": "pla-ground-force",
+      "pattern": "(?:中国人民解放军陆军|中國人民解放軍陸軍|解放军陆军|解放軍陸軍|中国陆军|中國陸軍)",
+      "to": "中共陸軍"
+    },
+    {
+      "name": "pla-rocket-force",
+      "pattern": "(?:中国人民解放军火箭军|中國人民解放軍火箭軍|解放军火箭军|解放軍火箭軍)",
+      "to": "中共火箭軍"
+    },
+    {
+      "name": "pla-marine-corps",
+      "pattern": "(?:中国人民解放军海军陆战队|中國人民解放軍海軍陸戰隊|解放军海军陆战队|解放軍海軍陸戰隊)",
+      "to": "中共海軍陸戰隊"
+    },
+    {
+      "name": "pla-strategic-support",
+      "pattern": "(?:中国人民解放军战略支援部队|中國人民解放軍戰略支援部隊|解放军战略支援部队|解放軍戰略支援部隊)",
+      "to": "中共戰略支援部隊"
+    },
+    {
+      "name": "pla-aerospace",
+      "pattern": "(?:中国人民解放军航天部队|中國人民解放軍航天部隊|解放军航天部队|解放軍航天部隊)",
+      "to": "中共航太部隊"
+    },
+    {
+      "name": "pla-general",
+      "pattern": "(?:中国人民解放军|中國人民解放軍|解放军|解放軍)",
+      "to": "共軍"
+    },
+    {
+      "name": "roc-forces",
+      "pattern": "(?:台军|台軍)",
+      "to": "國軍"
+    },
+    {
+      "name": "roc-taiwan-forces",
+      "pattern": "(?:台湾军队|臺灣軍隊|台灣軍隊)",
+      "to": "中華民國國軍"
+    },
+    {
+      "name": "roc-nationalist-forces",
+      "pattern": "(?:国民党军队|國民黨軍隊|国民党军|國民黨軍)",
+      "to": "國軍"
+    },
+    {
+      "name": "taiwan-demeaning",
+      "pattern": "(?:中国台湾|中國台灣|中国臺灣|中國臺灣)",
+      "to": "中華民國（臺灣）"
+    },
+    {
+      "name": "taiwan-province",
+      "pattern": "(?:台湾省|台灣省|臺灣省)",
+      "to": "台灣"
+    },
+    {
+      "name": "mnd-missile",
+      "pattern": "(?:导弹|導彈)",
+      "to": "飛彈"
+    },
+    {
+      "name": "mnd-guidance",
+      "pattern": "(?:制导|制導)",
+      "to": "導引"
+    },
+    {
+      "name": "mnd-homing",
+      "pattern": "(?:寻的|尋的|导的|導的)",
+      "to": "歸向"
+    },
+    {
+      "name": "mnd-frigate",
+      "pattern": "(?:护卫舰|護衛艦)",
+      "to": "巡防艦"
+    },
+    {
+      "name": "mnd-submarine",
+      "pattern": "(?:潜艇|潛艇)",
+      "to": "潛艦"
+    },
+    {
+      "name": "mnd-carrier",
+      "pattern": "(?:航母|航空母舰|航空母艦)",
+      "to": "航空母艦"
+    },
+    {
+      "name": "zulu-time",
+      "pattern": "祖鲁语",
+      "to": "Z時 (UTC)"
     }
   ],
   "banned": [
     {
-      "pattern": "(?<![制诱指领导辅引推教倡编报向同因劝开传误疏督就主自反波巡])导的",
-      "reason": "homing 的标准中文译名为「寻的」，机翻「导的」为典型误译"
+      "pattern": "(?<![制誘指領導輔引推教倡編報向同因勸開傳誤疏督就主自反波巡])(?:导的|導的)",
+      "reason": "homing 的國軍標準中文譯名為「歸向」，機翻「導的」為典型誤譯"
+    },
+    {
+      "pattern": "(?:寻的|尋的)",
+      "reason": "homing 的國軍標準中文譯名為「歸向」，不得寫作「尋的」"
+    },
+    {
+      "pattern": "(?:解放军|解放軍)",
+      "reason": "不得使用中共解放軍稱謂，應譯為中共空軍／中共海軍／共軍等"
+    },
+    {
+      "pattern": "(?:中国台湾|中國台灣|中国臺灣|中國臺灣)",
+      "reason": "維護我國格，嚴禁使用「中國台灣」"
+    },
+    {
+      "pattern": "(?:台湾省|台灣省|臺灣省)",
+      "reason": "不得矮化我國格為「臺灣省」"
+    },
+    {
+      "pattern": "(?:台军|台軍)",
+      "reason": "不得使用矮化稱謂「台軍」，應譯為「國軍」或「中華民國國軍」"
+    },
+    {
+      "pattern": "(?:国民党军|國民黨軍|国民党空军|國民黨空軍|国民党海军|國民黨海軍|国民党陆军|國民黨陸軍)",
+      "reason": "不得使用「國民黨軍」，應譯為「國軍」"
+    },
+    {
+      "pattern": "(?:导弹|導彈)",
+      "reason": "missile 的國軍標準軍語為「飛彈」"
+    },
+    {
+      "pattern": "(?:制导|制導)",
+      "reason": "guidance 的國軍標準軍語為「導引」"
+    },
+    {
+      "pattern": "(?:护卫舰|護衛艦)",
+      "reason": "frigate 的國軍標準軍語為「巡防艦」"
+    },
+    {
+      "pattern": "(?:潜艇|潛艇)",
+      "reason": "submarine 的國軍標準軍語為「潛艦」"
     },
     {
       "pattern": "维子",
-      "reason": "parent 误译为「维子」，应为「上级」"
+      "reason": "parent 誤譯為「維子」，應為「上級」"
     },
     {
       "pattern": "武器未段",
-      "reason": "Weapons 页签误译，应为「武器发射」"
+      "reason": "Weapons 頁籤誤譯，應為「武器發射」"
     },
     {
       "pattern": "(?<![A-Za-z（(])Python\\s*-?\\s*\\d",
-      "reason": "Rafael Python 系列统一写作「怪蛇」N，不得残留英文原名（仅允许「怪蛇」N（Python N）双语对照）"
+      "reason": "Rafael Python 系列統一寫作「怪蛇」N，不得殘留英文原名（僅允許「怪蛇」N（Python N）雙語對照）"
     },
     {
       "pattern": "(?:蟒蛇|巨蟒)",
-      "reason": "Python 的另一种译法，与「怪蛇」并存会造成名称不统一"
+      "reason": "Python 的另一種譯法，與「怪蛇」並存會造成名稱不統一"
     }
   ]
 }
