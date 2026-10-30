@@ -199,7 +199,7 @@ def gate_version() -> None:
     # 安装器/助手的 CurrentVersion / UpdaterVersion 只是对该常量的引用，不再是字面量副本。
     shared_src = (ROOT / "src/shared/CMOShared.cs").read_text(encoding="utf-8")
     shared_ver = find(r'class\s+ReleaseConstants[\s\S]*?Version\s*=\s*"([0-9.]+)"', shared_src)
-    inst_title = find(r"一键安装工具 v([0-9.]+)", inst)
+    inst_title = find(r"(?:一键安装工具|一鍵安裝工具) v([0-9.]+)", inst)
     inst_ref = bool(re.search(r'CurrentVersion\s*=\s*ReleaseConstants\.Version', inst))
     upd_ref = bool(re.search(r'UpdaterVersion\s*=\s*ReleaseConstants\.Version', upd))
     try:
@@ -223,7 +223,7 @@ def gate_version() -> None:
     gb_file = ROOT / "GAME_BUILD"
     game_build = gb_file.read_text(encoding="utf-8").strip() if gb_file.is_file() else None
     shared_build = find(r'class\s+ReleaseConstants[\s\S]*?GameBuild\s*=\s*"([0-9.]+)"', shared_src)
-    inst_build_ref = ("适配游戏内部版本" in inst) and ("ReleaseConstants.GameBuild" in inst)
+    inst_build_ref = ("适配游戏内部版本" in inst or "適配遊戲內部版本" in inst) and ("ReleaseConstants.GameBuild" in inst)
     try:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
     except Exception:  # noqa: BLE001

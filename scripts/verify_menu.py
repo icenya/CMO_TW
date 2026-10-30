@@ -93,15 +93,15 @@ def main() -> int:
             print(f"  - {en!r} -> {zh!r}")
 
     # --- terminology table ------------------------------------------------
-    lines = ["# CMO 菜单军语对照表", "",
-             "由 `scripts/verify_menu.py` 从游戏字符串池与菜单栏实测转储生成。", "",
-             f"- 菜单项总数：**{len(rows)}**",
-             f"- 已汉化：**{len(rows) - len(missing) - len(kept)}**",
-             f"- 按键名保留英文：**{len(kept)}**",
-             f"- 生硬/残留英文：**{len(bad)}**", "",
-             "| 英文原文 | 中文译名 |", "|---|---|"]
+    lines = ["# CMO 選單軍語對照表", "",
+             "由 `scripts/verify_menu.py` 從遊戲字串池與選單欄實測轉儲生成。", "",
+             f"- 選單項總數：**{len(rows)}**",
+             f"- 已中文化：**{len(rows) - len(missing) - len(kept)}**",
+             f"- 按鍵名保留英文：**{len(kept)}**",
+             f"- 生硬/殘留英文：**{len(bad)}**", "",
+             "| 英文原文 | 中文譯名 |", "|---|---|"]
     for en, zh in rows:
-        label = zh or ("（按键名·保留英文）" if en in KEY_NAMES else "（未译）")
+        label = zh or ("（按鍵名·保留英文）" if en in KEY_NAMES else "（未譯）")
         lines.append(f"| {en.replace('|', chr(92) + '|')} "
                      f"| {label.replace('|', chr(92) + '|')} |")
     (DOCS / "MENU_TERMINOLOGY.md").write_text("\n".join(lines) + "\n",
