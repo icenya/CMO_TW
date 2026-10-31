@@ -51,6 +51,7 @@
 | `STABLE_VERSION` | 稳定版版本号（README 稳定版通道的事实源） | `sync_readme_downloads.py` |
 | `README.md` | 用户主文档 + 下载区（下载区由脚本生成，勿手改） | `package.sh`（改名成 `汉化说明.md` 入包）、`sync_readme_downloads.py` |
 | `AGENTS.md` | **agent 强制约定**：先读路由表、新文件必须登记、数据源铁律、编码约定、发版需授权 | agent 进入仓库时读；与 `docs/ROUTING.md` 互为入口 |
+| `美華軍語辭典.pdf` | 中華民國國防部《美華軍語辭典》電子檔，軍語校訂事實源 | `extract_mnd_dict.py`、涉軍詞彙校訂 |
 
 ---
 
@@ -177,6 +178,8 @@
 | 路径 | 职责 |
 |---|---|
 | `dict/CMOLocalizer.json` | **构建产物**（纯 LF）。引擎运行时读它。**禁止手改** |
+| `dict/mnd_military_terms.json` | 從《美華軍語辭典.pdf》提取之結構化英中軍語與縮寫對照庫 | `convert_to_tw.py`、術語門禁 |
+| `dict/opencc_tw_table.json` | 臺灣正體中文與習慣詞彙映射表，供離線繁化轉換使用 | `convert_to_tw.py` |
 | `dict/strings_pool.json` | 游戏字符串池的抽取结果（`triage.py` 产出，翻译工作队列的来源） |
 | `dict/scenario_meta.json` | 想定元数据（标题/设置/战役名）。由 `scenario_meta.py` 生成，键已排序保证稳定 |
 | `dict/ui_terms.json` | 界面术语表 |
@@ -270,6 +273,8 @@
 | 路径 | 职责 |
 |---|---|
 | `scripts/build_dict.py` | **核心构建**：`dict/src/*.json` → `dict/CMOLocalizer.json`（确定性、字节可复现） |
+| `scripts/extract_mnd_dict.py` | 從《美華軍語辭典.pdf》提取軍語並產出 mnd_military_terms.json |
+| `scripts/convert_to_tw.py` | 全庫臺灣正體中文化、軍語對齊與國格稱謂轉換工具 |
 | `scripts/build_db_enums.py` | 生成 `db_enums.json`（扫所有 `Enum*` 表） |
 | `scripts/build_db_enums_complete.py` | 国家/阵营官方规范译名对照 |
 | `scripts/generate_db_platforms_facilities.py` | 生成四类平台/设施名 |
