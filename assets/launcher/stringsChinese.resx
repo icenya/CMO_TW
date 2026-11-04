@@ -118,94 +118,94 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="String_Forum" xml:space="preserve">
-    <value>论坛</value>
+    <value>討論區</value>
   </data>
   <data name="string_Hello" xml:space="preserve">
     <value>你好</value>
     <comment>Test</comment>
   </data>
   <data name="String_Manual" xml:space="preserve">
-    <value>游戏手册</value>
+    <value>遊戲手冊</value>
   </data>
   <data name="String_Play" xml:space="preserve">
-    <value>进入游戏</value>
+    <value>進入遊戲</value>
   </data>
   <data name="String_ProductPage" xml:space="preserve">
-    <value>产品页面</value>
+    <value>產品頁面</value>
   </data>
   <data name="String_Store" xml:space="preserve">
     <value>商店</value>
   </data>
   <data name="String_Support" xml:space="preserve">
-    <value>技术支持</value>
+    <value>技術支持</value>
   </data>
   <data name="String_Updates" xml:space="preserve">
     <value>更新</value>
   </data>
   <data name="String_Welcome" xml:space="preserve">
-    <value>欢迎</value>
+    <value>歡迎</value>
   </data>
   <data name="String_Version" xml:space="preserve">
     <value>版本</value>
   </data>
   <data name="String_Tutorial" xml:space="preserve">
-    <value>教程</value>
+    <value>教學</value>
   </data>
   <data name="String_Editor" xml:space="preserve">
-    <value>地图编辑器</value>
+    <value>地圖編輯器</value>
   </data>
   <data name="String_Language" xml:space="preserve">
     <value>Chinese</value>
     <comment>Chinese</comment>
   </data>
   <data name="String_LanguageNative" xml:space="preserve">
-    <value>简体中文</value>
-    <comment>Simplified Chinese</comment>
+    <value>繁體中文</value>
+    <comment>Traditional Chinese</comment>
   </data>
   <data name="String_LanguageSelection" xml:space="preserve">
-    <value>语言</value>
+    <value>語言</value>
   </data>
   <data name="String_Theme" xml:space="preserve">
-    <value>主题</value>
+    <value>主題</value>
   </data>
   <data name="String_Sound" xml:space="preserve">
-    <value>声音</value>
+    <value>聲音</value>
   </data>
   <data name="String_On" xml:space="preserve">
-    <value>打开</value>
+    <value>開啟</value>
   </data>
   <data name="String_Off" xml:space="preserve">
-    <value>关掉</value>
+    <value>關閉</value>
   </data>
   <data name="String_GameFolder" xml:space="preserve">
-    <value>游戏文件夹</value>
+    <value>遊戲資料夾</value>
   </data>
   <data name="String_Open" xml:space="preserve">
-    <value>打开</value>
+    <value>開啟</value>
   </data>
   <data name="String_Saves" xml:space="preserve">
-    <value>游戏存档地址</value>
+    <value>遊戲存檔路徑</value>
   </data>
   <data name="String_Logs" xml:space="preserve">
-    <value>设定文件</value>
+    <value>設定檔案</value>
   </data>
   <data name="String_EULA" xml:space="preserve">
     <value>EULA</value>
   </data>
   <data name="String_Read" xml:space="preserve">
-    <value>阅读</value>
+    <value>閱讀</value>
   </data>
   <data name="String_Settings" xml:space="preserve">
-    <value>设置</value>
+    <value>設定</value>
   </data>
   <data name="String_Guides" xml:space="preserve">
-    <value>游戏指南</value>
+    <value>遊戲指南</value>
   </data>
   <data name="String_Manuals" xml:space="preserve">
-    <value>游戏手册</value>
+    <value>遊戲手冊</value>
   </data>
   <data name="String_MutiButton" xml:space="preserve">
-    <value>改变游戏</value>
+    <value>改變遊戲</value>
   </data>
   <data name="String_Extras" xml:space="preserve">
     <value>附加功能</value>
@@ -214,6 +214,6 @@
     <value>提升</value>
   </data>
   <data name="String_ResetSetting" xml:space="preserve">
-    <value>重置游戏设置</value>
+    <value>重設遊戲設定</value>
   </data>
 </root>
