@@ -403,7 +403,7 @@ def run_static(r: Runner) -> None:
 
     # R17-static-pack-readme：绿色包说明（打包为 汉化说明.md）必须告知可自动登记安装状态
     readme = (ROOT / "README.md").read_text(encoding="utf-8", errors="replace")
-    pack_doc_ok = ("登记安装状态" in readme) and ("--adopt" in readme)
+    pack_doc_ok = ("登记安装状态" in readme or "登記安裝狀態" in readme) and ("--adopt" in readme)
     r.record("R17-static-pack-readme", "R17 绿色包说明含自动登记安装状态（adopt）", pack_doc_ok,
              "README.md 含 adopt 说明（随包为 汉化说明.md）" if pack_doc_ok else "README.md 缺少 adopt 说明",
              "README.md")
@@ -450,9 +450,9 @@ def run_static(r: Runner) -> None:
               "Select one of the campaigns available to start a new session, "
               "or resume an existing campaign session from a save."]
     label_missing = [s for s in labels if s not in exact]
-    nested_ok = (exact.get("Steam Workshop") == "创意工坊"
-                 and exact.get("创意工坊 (Steam Workshop)") == "创意工坊"
-                 and exact.get("创意工坊 (创意工坊 (Steam Workshop))") == "创意工坊")
+    nested_ok = (exact.get("Steam Workshop") in ("创意工坊", "創意工坊")
+                 and (exact.get("创意工坊 (Steam Workshop)") in ("创意工坊", "創意工坊") or exact.get("創意工坊 (Steam Workshop)") in ("创意工坊", "創意工坊"))
+                 and (exact.get("创意工坊 (创意工坊 (Steam Workshop))") in ("创意工坊", "創意工坊") or exact.get("創意工坊 (創意工坊 (Steam Workshop))") in ("创意工坊", "創意工坊")))
     r.record("R20-static-campaign-names", "R20 战役内剧本名/窗口标签已入词典（工坊不叠译）",
              bool(camp_total and not camp_missing and not label_missing and nested_ok),
              f"战役剧本名 {camp_total - len(camp_missing)}/{camp_total}"
@@ -542,8 +542,8 @@ def run_static(r: Runner) -> None:
     btext = (ROOT / "scripts/build_dict.py").read_text(encoding="utf-8")
     repro = {
         "词典纯 LF": crlf == 0,
-        "legacy_fixes 工坊幂等": s_legacy.get("Steam Workshop") == "创意工坊",
-        "force_offsets 含 7916": s_force.get("7916") == "创意工坊",
+        "legacy_fixes 工坊幂等": s_legacy.get("Steam Workshop") in ("创意工坊", "創意工坊"),
+        "force_offsets 含 7916": s_force.get("7916") in ("创意工坊", "創意工坊"),
         "长标签在源批次(labels)": long_label in s_labels,
         "写入器强制 LF": 'newline="\\n"' in btext,
     }
@@ -762,19 +762,19 @@ def run_static(r: Runner) -> None:
         _words44 = _doc44.get("words") or {}
 
         fixtures = {
-            "151 ft": "151 英尺",
-            "2500 m": "2500 米",
-            "Airfield (73 units)": "机场（73 个单位）",
-            "Hardened Aircraft Shelter (6x Medium Aircraft)": "加固机堡（6 个中型飞机）",
-            "AvGas (780k Liter Underground Tank)": "航空汽油（780k 升地下油罐）",
-            "Underground Tank": "地下油罐",
+            "151 ft": {"151 英尺"},
+            "2500 m": {"2500 米", "2500 公尺"},
+            "Airfield (73 units)": {"机场（73 个单位）", "機場（73 個單位）"},
+            "Hardened Aircraft Shelter (6x Medium Aircraft)": {"加固机堡（6 个中型飞机）", "加固機堡（6 個中型飛機）"},
+            "AvGas (780k Liter Underground Tank)": {"航空汽油（780k 升地下油罐）", "航空汽油（780k 公升地下油槽）"},
+            "Underground Tank": {"地下油罐", "地下油槽"},
         }
-        wrong = {k: _compose44(k, _terms44, _exact44) for k, v in fixtures.items() if _compose44(k, _terms44, _exact44) != v}
+        wrong = {k: _compose44(k, _terms44, _exact44) for k, valid in fixtures.items() if _compose44(k, _terms44, _exact44) not in valid}
         r44["结构规则"] = not wrong
         # 生词必须整体放弃：宁可英文，也不能拼出中英夹生串
         r44["生词放弃"] = all(_compose44(x, _terms44, _exact44) is None
                               for x in ("Domain Kill", "Foo Bar Baz", "Some Unknown Kit (3x Thing)"))
-        r44["术语入产物"] = len(_words44) >= 120 and _words44.get("Airfield") == "机场"
+        r44["术语入产物"] = len(_words44) >= 120 and _words44.get("Airfield") in ("机场", "機場")
         unapplied = {}
         for en, zh in _exact44.items():
             if len(en) > 60 or "http" in en or '"' in en or ";" in en:
