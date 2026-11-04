@@ -1,4 +1,4 @@
-// CMO 汉化补丁共享状态层（安装器 CMO_Chinese_Setup.exe 与更新助手 CMO_Updater.exe 共同编译）
+// CMO 中文化补丁共享状态层（安装器 CMO_Chinese_Setup.exe 与更新助手 CMO_Updater.exe 共同编译）
 //
 // 职责：①部署实证（游戏目录内的安装清单）②设置持久化（%APPDATA%\CMOChinese\settings.json）
 //      ③安装包缓存与回退 ④版本门控（是否提示可回退）
@@ -29,7 +29,7 @@ namespace CMOShared
     {
         public const string Version = "4.2.5";
         /// <summary>
-        /// 本汉化适配的游戏内部版本（构建号，例如 1900.23）。它与 Version 一起必须出现在
+        /// 本中文化适配的游戏内部版本（构建号，例如 1900.23）。它与 Version 一起必须出现在
         /// 安装器标题、更新助手提示、发版说明与 README 里；游戏更新（构建号变化）时我们的
         /// Version 加 0.1。单一来源：仓库根目录 GAME_BUILD（verify_all 校验两者一致）。
         /// </summary>
@@ -161,7 +161,7 @@ namespace CMOShared
             if (File.Exists(path))
             {
                 try { File.Replace(tmp, path, null); return; }
-                catch (Exception ex) { CmoLog.Warn("File.Replace 失败，改用覆盖: " + ex.Message); }
+                catch (Exception ex) { CmoLog.Warn("File.Replace 失敗，改用覆蓋: " + ex.Message); }
                 File.Copy(tmp, path, true);
                 File.Delete(tmp);
             }
@@ -270,13 +270,13 @@ namespace CMOShared
             {
                 string json = null;
                 try { json = File.ReadAllText(path, Encoding.UTF8); }
-                catch (Exception ex) { CmoLog.Warn("读取设置文件失败: " + ex.Message); }
+                catch (Exception ex) { CmoLog.Warn("讀取設定檔案失敗: " + ex.Message); }
                 // 只有像本模块写出的设置文件才接受；其它一律按损坏处理（备份 + 默认值），
-                // 避免把被截断/被其它程序覆盖的文件当成"全默认设置"静默接受。
+                // 避免把被截断/被其它程序覆盖的文件当成"全預設設定"静默接受。
                 if (json == null || !json.TrimStart().StartsWith("{")
                     || json.IndexOf("\"schema\"", StringComparison.Ordinal) < 0)
                 {
-                    CmoLog.Warn("设置文件无法识别，已备份为 settings.json.bad 并使用默认值");
+                    CmoLog.Warn("設定檔案無法識別，已備份爲 settings.json.bad 並使用預設值");
                     try { File.Copy(path, path + ".bad", true); } catch { }
                 }
                 else
@@ -284,7 +284,7 @@ namespace CMOShared
                     try { s.Read(json); }
                     catch (Exception ex)
                     {
-                        CmoLog.Warn("设置文件解析失败，改用默认值: " + ex.Message);
+                        CmoLog.Warn("設定檔案解析失敗，改用預設值: " + ex.Message);
                         try { File.Copy(path, path + ".bad", true); } catch { }
                         s = new CmoSettings();
                     }
@@ -344,7 +344,7 @@ namespace CMOShared
         public void Save()
         {
             try { AtomicFile.WriteText(CmoPaths.SettingsFile, ToJson()); }
-            catch (Exception ex) { CmoLog.Warn("保存设置失败: " + ex.Message); }
+            catch (Exception ex) { CmoLog.Warn("儲存設定失敗: " + ex.Message); }
         }
 
         /// <summary>旧版把设置放在 HKCU\Software\CMOChinese；一次性迁移到 settings.json。</summary>
@@ -369,8 +369,8 @@ namespace CMOShared
                     v = k.GetValue("LastNotifiedVersion"); if (v != null) { LastNotifiedVersion = v.ToString(); any = true; }
                 }
             }
-            catch (Exception ex) { CmoLog.Warn("迁移旧注册表设置失败: " + ex.Message); }
-            if (any) CmoLog.Info("已把 HKCU\\" + CmoPaths.RegistryPath + " 的设置迁移到 settings.json");
+            catch (Exception ex) { CmoLog.Warn("遷移舊註冊表設定失敗: " + ex.Message); }
+            if (any) CmoLog.Info("已把 HKCU\\" + CmoPaths.RegistryPath + " 的設定遷移到 settings.json");
             return any;
         }
 
@@ -378,9 +378,9 @@ namespace CMOShared
         public static void Purge()
         {
             try { if (File.Exists(CmoPaths.SettingsFile)) File.Delete(CmoPaths.SettingsFile); }
-            catch (Exception ex) { CmoLog.Warn("删除设置文件失败: " + ex.Message); }
+            catch (Exception ex) { CmoLog.Warn("刪除設定檔案失敗: " + ex.Message); }
             try { Registry.CurrentUser.DeleteSubKeyTree(CmoPaths.RegistryPath, false); }
-            catch (Exception ex) { CmoLog.Warn("删除注册表设置失败: " + ex.Message); }
+            catch (Exception ex) { CmoLog.Warn("刪除註冊表設定失敗: " + ex.Message); }
         }
 
         /// <summary>迁移期回退：旧版写入的已安装版本号（新逻辑不再依赖它作状态来源）。</summary>
@@ -405,7 +405,7 @@ namespace CMOShared
     public sealed class InstallManifest
     {
         public string Version = "";
-        /// <summary>安装时本汉化适配的游戏内部版本（构建号）；引擎启动时拿它与游戏实际构建号比对。</summary>
+        /// <summary>安装时本中文化适配的游戏内部版本（构建号）；引擎启动时拿它与游戏实际构建号比对。</summary>
         public string GameBuild = "";
         public string InstalledAt = "";
         public string Source = "";
@@ -460,7 +460,7 @@ namespace CMOShared
             }
             catch (Exception ex)
             {
-                CmoLog.Error("写入安装清单失败: " + ex.Message);
+                CmoLog.Error("寫入安裝清單失敗: " + ex.Message);
                 return false;
             }
         }
@@ -493,7 +493,7 @@ namespace CMOShared
             }
             catch (Exception ex)
             {
-                CmoLog.Warn("读取安装清单失败: " + ex.Message);
+                CmoLog.Warn("讀取安裝清單失敗: " + ex.Message);
                 return null;
             }
         }
@@ -505,7 +505,7 @@ namespace CMOShared
             InstallManifest m = Read(gamePath);
             if (m == null)
             {
-                detail = "无安装清单";
+                detail = "無安裝清單";
                 return ManifestState.NotInstalled;
             }
             foreach (KeyValuePair<string, string> kv in m.Files)
@@ -514,14 +514,14 @@ namespace CMOShared
                 if (!File.Exists(p)) { detail = kv.Key + " 缺失"; return ManifestState.Modified; }
                 string actual;
                 try { actual = Sha256OfFile(p); }
-                catch (Exception ex) { detail = kv.Key + " 无法读取: " + ex.Message; return ManifestState.Modified; }
+                catch (Exception ex) { detail = kv.Key + " 無法讀取: " + ex.Message; return ManifestState.Modified; }
                 if (!string.Equals(actual, kv.Value, StringComparison.OrdinalIgnoreCase))
                 {
-                    detail = kv.Key + " 与清单不一致";
+                    detail = kv.Key + " 與清單不一致";
                     return ManifestState.Modified;
                 }
             }
-            detail = "清单校验通过 v" + m.Version;
+            detail = "清單校驗通過 v" + m.Version;
             return ManifestState.Ok;
         }
 
@@ -531,9 +531,9 @@ namespace CMOShared
             {
                 string p = CmoPaths.ManifestPath(gamePath);
                 if (File.Exists(p)) File.Delete(p);
-                CmoLog.Info("已清除安装清单: " + p);
+                CmoLog.Info("已清除安裝清單: " + p);
             }
-            catch (Exception ex) { CmoLog.Warn("清除安装清单失败: " + ex.Message); }
+            catch (Exception ex) { CmoLog.Warn("清除安裝清單失敗: " + ex.Message); }
         }
 
         /// <summary>部署在游戏目录里的资产自带版本戳（CMOLocalizer.json 的 _meta.version）。</summary>
@@ -554,7 +554,7 @@ namespace CMOShared
             }
             catch (Exception ex)
             {
-                CmoLog.Warn("读取已部署资产版本失败: " + ex.Message);
+                CmoLog.Warn("讀取已部署資產版本失敗: " + ex.Message);
                 return null;
             }
         }
@@ -573,7 +573,7 @@ namespace CMOShared
             if (string.IsNullOrEmpty(v)) v = "unknown";
             v = v.Trim();
             bool ok = Write(gamePath, v, "adopted", files);
-            if (ok) CmoLog.Info("已登记当前安装状态（adopt）: v" + v);
+            if (ok) CmoLog.Info("已登記當前安裝狀態（adopt）: v" + v);
             return ok;
         }
     }
@@ -642,8 +642,8 @@ namespace CMOShared
             if (!string.IsNullOrEmpty(byName) && !string.IsNullOrEmpty(byContent)
                 && !string.Equals(byName, byContent, StringComparison.OrdinalIgnoreCase))
             {
-                CmoLog.Warn("安装包文件名版本（v" + byName + "）与内嵌词典 _meta.version（v" + byContent
-                    + "）不一致：以文件名为准（版本戳忘同步时会出现，已由 verify_all 版本门禁拦截）");
+                CmoLog.Warn("安裝包檔名版本（v" + byName + "）與內嵌詞典 _meta.version（v" + byContent
+                    + "）不一致：以檔名爲準（版本戳忘同步時會出現，已由 verify_all 版本門禁攔截）");
             }
             if (!string.IsNullOrEmpty(byName)) return byName;
             return byContent;
@@ -667,7 +667,7 @@ namespace CMOShared
             }
             catch (Exception ex)
             {
-                CmoLog.Warn("读取安装包内嵌版本失败: " + ex.Message);
+                CmoLog.Warn("讀取安裝包內嵌版本失敗: " + ex.Message);
                 return null;
             }
         }
@@ -681,7 +681,7 @@ namespace CMOShared
                 string ver = PackageVersion(setupPath);
                 if (string.IsNullOrEmpty(ver))
                 {
-                    CmoLog.Warn("安装包版本无法识别，未缓存: " + setupPath);
+                    CmoLog.Warn("安裝包版本無法識別，未緩存: " + setupPath);
                     return null;
                 }
                 CmoPaths.EnsureDir(CmoPaths.PackagesDir);
@@ -692,14 +692,14 @@ namespace CMOShared
                     if (!File.Exists(dest) || new FileInfo(dest).Length != new FileInfo(setupPath).Length)
                     {
                         File.Copy(setupPath, dest, true);
-                        CmoLog.Info("已缓存安装包: " + dest);
+                        CmoLog.Info("已緩存安裝包: " + dest);
                     }
                 }
                 return dest;
             }
             catch (Exception ex)
             {
-                CmoLog.Warn("缓存安装包失败: " + ex.Message);
+                CmoLog.Warn("緩存安裝包失敗: " + ex.Message);
                 return null;
             }
         }
@@ -716,7 +716,7 @@ namespace CMOShared
                     if (!string.IsNullOrEmpty(v) && !vs.Contains(v)) vs.Add(v);
                 }
             }
-            catch (Exception ex) { CmoLog.Warn("枚举安装包缓存失败: " + ex.Message); }
+            catch (Exception ex) { CmoLog.Warn("枚舉安裝包緩存失敗: " + ex.Message); }
             vs.Sort(delegate(string a, string b) { return ReleaseGate.Compare(b, a); });
             return vs;
         }
@@ -734,7 +734,7 @@ namespace CMOShared
                     if (v != null && string.Equals(v, want, StringComparison.OrdinalIgnoreCase)) return f;
                 }
             }
-            catch (Exception ex) { CmoLog.Warn("查找缓存安装包失败: " + ex.Message); }
+            catch (Exception ex) { CmoLog.Warn("查詢緩存安裝包失敗: " + ex.Message); }
             return null;
         }
 
@@ -767,11 +767,11 @@ namespace CMOShared
                     if (p != null && File.Exists(p))
                     {
                         File.Delete(p);
-                        CmoLog.Info("清理旧安装包缓存: " + p);
+                        CmoLog.Info("清理舊安裝包緩存: " + p);
                     }
                 }
             }
-            catch (Exception ex) { CmoLog.Warn("清理安装包缓存失败: " + ex.Message); }
+            catch (Exception ex) { CmoLog.Warn("清理安裝包緩存失敗: " + ex.Message); }
         }
     }
 
@@ -815,7 +815,7 @@ namespace CMOShared
             try { return Load(packagePath).GetManifestResourceNames(); }
             catch (Exception ex)
             {
-                CmoLog.Warn("读取安装包资源失败: " + ex.Message);
+                CmoLog.Warn("讀取安裝包資源失敗: " + ex.Message);
                 return new string[0];
             }
         }
@@ -838,7 +838,7 @@ namespace CMOShared
             }
             catch (Exception ex)
             {
-                CmoLog.Warn("读取安装包内嵌 " + resourceName + " 失败: " + ex.Message);
+                CmoLog.Warn("讀取安裝包內嵌 " + resourceName + " 失敗: " + ex.Message);
                 return null;
             }
         }
@@ -848,7 +848,7 @@ namespace CMOShared
             error = "";
             if (files == null || files.Count != InstallManifest.EngineFiles.Length)
             {
-                error = "部署后引擎文件不完整（期望 dll+json），已中止登记。";
+                error = "部署後引擎檔案不完整（期望 dll+json），已中止登記。";
                 return false;
             }
             foreach (string name in InstallManifest.EngineFiles)
@@ -857,13 +857,13 @@ namespace CMOShared
                 string actual;
                 if (string.IsNullOrEmpty(expect))
                 {
-                    error = "安装包内未找到 " + name + " 资源或无法读取其 SHA256，已中止登记。";
+                    error = "安裝包內未找到 " + name + " 資源或無法讀取其 SHA256，已中止登記。";
                     return false;
                 }
                 if (!files.TryGetValue(name, out actual)
                     || !string.Equals(actual, expect, StringComparison.OrdinalIgnoreCase))
                 {
-                    error = "部署后 " + name + " 与安装包内嵌载荷不一致，已中止登记（避免混合态）。";
+                    error = "部署後 " + name + " 與安裝包內嵌酬載不一致，已中止登記（避免混合態）。";
                     return false;
                 }
             }
@@ -904,8 +904,8 @@ namespace CMOShared
 
         public static string Text(int hours)
         {
-            if (hours <= 0) return "每次开机";
-            return "每 " + hours + " 小时";
+            if (hours <= 0) return "每次開機";
+            return "每 " + hours + " 小時";
         }
     }
 
@@ -948,20 +948,20 @@ namespace CMOShared
             error = "";
             if (string.IsNullOrEmpty(gamePath) || !Directory.Exists(gamePath))
             {
-                error = "游戏目录不存在: " + gamePath;
+                error = "遊戲目錄不存在: " + gamePath;
                 return false;
             }
             string pkg = VersionStore.CachedPackage(targetVersion);
             if (pkg == null)
             {
-                error = "本地没有 v" + targetVersion + " 的安装包缓存，无法离线回退（可下载该版本安装包后重试）。";
+                error = "本地沒有 v" + targetVersion + " 的安裝包緩存，無法離線回退（可下載該版本安裝包後重試）。";
                 return false;
             }
             // 缓存内容必须能被认定为目标版本
             string pkgVer = VersionStore.PackageVersion(pkg);
             if (!string.Equals(pkgVer, targetVersion.TrimStart('v', 'V'), StringComparison.OrdinalIgnoreCase))
             {
-                error = "缓存安装包版本（v" + pkgVer + "）与目标版本 v" + targetVersion + " 不一致，已中止回退。";
+                error = "緩存安裝包版本（v" + pkgVer + "）與目標版本 v" + targetVersion + " 不一致，已中止回退。";
                 CmoLog.Error(error);
                 return false;
             }
@@ -972,7 +972,7 @@ namespace CMOShared
             int code = RunProcess(pkg, args, 600000);
             if (code != 0)
             {
-                error = "运行安装包失败（退出码 " + code + "）: " + pkg;
+                error = "運行安裝包失敗（退出碼 " + code + "）: " + pkg;
                 CmoLog.Error(error);
                 return false;
             }
@@ -985,7 +985,7 @@ namespace CMOShared
             }
             if (!InstallManifest.Write(gamePath, targetVersion, pkg, files))
             {
-                error = "回退成功但写入安装清单失败，请重新安装以修复状态。";
+                error = "回退成功但寫入安裝清單失敗，請重新安裝以修復狀態。";
                 return false;
             }
             CmoLog.Info("已回退到 v" + targetVersion + "（" + pkg + "）");
@@ -1022,7 +1022,7 @@ namespace CMOShared
                         using (p) { try { p.Kill(); } catch { } }
                     }
                 }
-                catch (Exception ex) { CmoLog.Warn("结束进程 " + name + " 失败: " + ex.Message); }
+                catch (Exception ex) { CmoLog.Warn("結束處理程序 " + name + " 失敗: " + ex.Message); }
             }
             sleep(700);
         }
