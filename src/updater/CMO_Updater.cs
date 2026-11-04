@@ -1,4 +1,4 @@
-// CMO 汉化更新助手 (CMO_Updater.exe)
+// CMO 中文化更新助手 (CMO_Updater.exe)
 // 职责：开机检查 + 每 6 小时定时检查 + 手动检查；托盘常驻；下载/校验/静默安装与失败回滚。
 // 与安装器共用注册表设置 HKCU\Software\CMOChinese（安装器写入，本程序读取/更新）。
 using System;
@@ -87,7 +87,7 @@ namespace CMOUpdater
                 PendingPreviousVersion = disk.PendingPreviousVersion;
                 if (IntervalHours < 1) IntervalHours = 6;
             }
-            catch (Exception ex) { Log.Warn("读取设置失败: " + ex.Message); }
+            catch (Exception ex) { Log.Warn("讀取設定失敗: " + ex.Message); }
         }
 
         public static void Save()
@@ -96,7 +96,7 @@ namespace CMOUpdater
             {
                 CmoSettings fresh = CmoSettings.Load();   // 写前重读：可能被安装器或另一个窗口改过
                 if (disk != null && fresh.ToJson() != disk.ToJson())
-                    Log.Warn("检测到设置被其它窗口/安装器修改，本次以当前窗口的值为准");
+                    Log.Warn("檢測到設定被其它視窗/安裝器修改，本次以當前視窗的值爲準");
 
                 CmoSettings now = new CmoSettings();
                 now.GamePath = GamePath;
@@ -115,7 +115,7 @@ namespace CMOUpdater
                 now.Save();
                 disk = now;
             }
-            catch (Exception ex) { Log.Warn("保存设置失败: " + ex.Message); }
+            catch (Exception ex) { Log.Warn("儲存設定失敗: " + ex.Message); }
         }
 
         /// <summary>游戏目录：设置里的路径，否则用助手自身所在目录（绿色包解压即用）。</summary>
@@ -138,7 +138,7 @@ namespace CMOUpdater
                 if (InstallManifest.Adopt(game, reg))
                 {
                     m = InstallManifest.Read(game);
-                    Log.Info("已登记当前安装状态（adopt）: v" + (m == null ? "?" : m.Version));
+                    Log.Info("已登記當前安裝狀態（adopt）: v" + (m == null ? "?" : m.Version));
                 }
                 else if (reg.Length > 0)
                 {
@@ -148,7 +148,7 @@ namespace CMOUpdater
             if (m == null) return "";
             string detail;
             if (InstallManifest.Verify(game, out detail) == ManifestState.Modified)
-                Log.Warn("安装清单校验不通过: " + detail);
+                Log.Warn("安裝清單校驗不通過: " + detail);
             return m.Version == "unknown" ? "" : m.Version;
         }
 
@@ -184,30 +184,30 @@ namespace CMOUpdater
                 }
                 AutoStart = on;
                 Save();
-                Log.Info("开机启动已" + (on ? "开启" : "关闭"));
+                Log.Info("開機啓動已" + (on ? "開啓" : "關閉"));
             }
-            catch (Exception ex) { Log.Warn("写入开机启动失败: " + ex.Message); }
+            catch (Exception ex) { Log.Warn("寫入開機啓動失敗: " + ex.Message); }
         }
 
         public static string NextCheckText()
         {
-            if (!AutoCheck) return "已关闭自动检查";
+            if (!AutoCheck) return "已關閉自動檢查";
             DateTime last;
             if (!DateTime.TryParse(LastCheckUtc, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out last))
             {
-                return "等待首次检查";
+                return "等待首次檢查";
             }
             DateTime next = last.ToLocalTime().AddHours(IntervalHours);
-            if (next <= DateTime.Now) return "即将检查";
+            if (next <= DateTime.Now) return "即將檢查";
             return next.ToString("今天 HH:mm", CultureInfo.InvariantCulture);
         }
 
         public static string LastCheckText()
         {
-            if (string.IsNullOrEmpty(LastCheckUtc)) return "尚未检查";
+            if (string.IsNullOrEmpty(LastCheckUtc)) return "尚未檢查";
             DateTime last;
             if (!DateTime.TryParse(LastCheckUtc, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out last))
-                return "尚未检查";
+                return "尚未檢查";
             return last.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
         }
     }
@@ -338,19 +338,19 @@ namespace CMOUpdater
                             r.SetupShaUrl = url;
                     }
                 }
-                if (r.SetupUrl.Length == 0) { error = "该 Release 未包含安装包资产"; return null; }
+                if (r.SetupUrl.Length == 0) { error = "該 Release 未包含安裝包資產"; return null; }
                 return r;
             }
             catch (WebException wex)
             {
-                error = "网络请求失败: " + wex.Message;
-                Log.Warn("检查更新失败: " + wex.Message);
+                error = "網路請求失敗: " + wex.Message;
+                Log.Warn("檢查更新失敗: " + wex.Message);
                 return null;
             }
             catch (Exception ex)
             {
-                error = "检查更新失败: " + ex.Message;
-                Log.Error("检查更新异常: " + ex);
+                error = "檢查更新失敗: " + ex.Message;
+                Log.Error("檢查更新異常: " + ex);
                 return null;
             }
         }
@@ -449,13 +449,13 @@ namespace CMOUpdater
                         }
                         fs.Flush();
                     }
-                    if (i > 0) Log.Info("已通过镜像下载: " + tries[i]);
+                    if (i > 0) Log.Info("已通過鏡像下載: " + tries[i]);
                     return true;
                 }
                 catch (Exception ex)
                 {
                     error = ex.Message;
-                    Log.Warn("下载失败(" + tries[i] + "): " + ex.Message);
+                    Log.Warn("下載失敗(" + tries[i] + "): " + ex.Message);
                 }
             }
             return false;
@@ -483,7 +483,7 @@ namespace CMOUpdater
             detail = "";
             if (string.IsNullOrWhiteSpace(shaUrl))
             {
-                detail = "该 Release 未提供 SHA256 摘要，已拒绝自动安装；请从发布页面手动核验。";
+                detail = "該 Release 未提供 SHA256 摘要，已拒絕自動安裝；請從發佈頁面手動覈驗。";
                 Log.Warn(detail);
                 return false;
             }
@@ -491,21 +491,21 @@ namespace CMOUpdater
             {
                 string text = readDigest(shaUrl, 20000);
                 Match m = Regex.Match(text, "\\b([0-9a-fA-F]{64})\\b");
-                if (!m.Success) { detail = "摘要文件格式无法识别"; return false; }
+                if (!m.Success) { detail = "摘要檔案格式無法識別"; return false; }
                 string expect = m.Groups[1].Value.ToLowerInvariant();
                 string actual = Sha256OfFile(file);
                 if (expect != actual)
                 {
-                    detail = "SHA256 不匹配（期望 " + expect.Substring(0, 12) + "…，实际 " + actual.Substring(0, 12) + "…）";
+                    detail = "SHA256 不匹配（期望 " + expect.Substring(0, 12) + "…，實際 " + actual.Substring(0, 12) + "…）";
                     Log.Error(detail);
                     return false;
                 }
-                detail = "SHA256 校验通过";
+                detail = "SHA256 校驗通過";
                 return true;
             }
             catch (Exception ex)
             {
-                detail = "摘要校验失败: " + ex.Message;
+                detail = "摘要校驗失敗: " + ex.Message;
                 return false;
             }
         }
@@ -529,13 +529,13 @@ namespace CMOUpdater
                 psi.CreateNoWindow = true;
                 psi.WorkingDirectory = Path.GetDirectoryName(setupPath);
                 Process.Start(psi);
-                Log.Info("已启动静默安装: " + setupPath + " " + args);
+                Log.Info("已啓動靜默安裝: " + setupPath + " " + args);
                 return true;
             }
             catch (Exception ex)
             {
                 error = ex.Message;
-                Log.Error("启动安装器失败: " + ex.Message);
+                Log.Error("啓動安裝器失敗: " + ex.Message);
                 return false;
             }
         }
@@ -559,7 +559,7 @@ namespace CMOUpdater
 
             icon = new NotifyIcon();
             icon.Icon = IconFactory.Create();
-            icon.Text = "CMO 汉化更新助手 v" + Cfg.UpdaterVersion;
+            icon.Text = "CMO 中文化更新助手 v" + Cfg.UpdaterVersion;
             icon.Visible = true;
             icon.DoubleClick += delegate { CheckNow(true); };
             icon.ContextMenuStrip = BuildMenu();
@@ -570,8 +570,8 @@ namespace CMOUpdater
             timer.Tick += delegate { TimerTick(); };
             timer.Start();
 
-            Log.Info("更新助手启动 (开机启动=" + Cfg.AutoStart + ", 自动检查=" + Cfg.AutoCheck +
-                     ", 间隔=" + Cfg.IntervalHours + "h, 已安装=" + Cfg.InstalledVersion + ")");
+            Log.Info("更新助手啓動 (開機啓動=" + Cfg.AutoStart + ", 自動檢查=" + Cfg.AutoCheck +
+                     ", 間隔=" + Cfg.IntervalHours + "h, 已安裝=" + Cfg.InstalledVersion + ")");
 
             int delay = boot ? (SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Offline ? 300 : 60) : 5;
             System.Threading.Timer t = null;
@@ -587,20 +587,20 @@ namespace CMOUpdater
         private ContextMenuStrip BuildMenu()
         {
             ContextMenuStrip m = new ContextMenuStrip();
-            m.Items.Add("立即检查更新", null, delegate { CheckNow(true); });
+            m.Items.Add("立即檢查更新", null, delegate { CheckNow(true); });
             string prev = VersionStore.Previous(InstalledText());
             ToolStripMenuItem rb = new ToolStripMenuItem(prev != null
                 ? ("回退到上一版本 v" + prev + "…")
-                : "回退到上一版本（本地无缓存）");
+                : "回退到上一版本（本地無緩存）");
             rb.Enabled = prev != null;
             string target = prev;
             rb.Click += delegate { StartRollback(target); };
             m.Items.Add(rb);
-            m.Items.Add("打开更新设置…", null, delegate { OpenSettings(); });
-            m.Items.Add("打开游戏目录", null, delegate { OpenGameDir(); });
-            m.Items.Add("查看日志", null, delegate { OpenLog(); });
+            m.Items.Add("打開更新設定…", null, delegate { OpenSettings(); });
+            m.Items.Add("打開遊戲目錄", null, delegate { OpenGameDir(); });
+            m.Items.Add("檢視日誌", null, delegate { OpenLog(); });
             m.Items.Add(new ToolStripSeparator());
-            ToolStripMenuItem ver = new ToolStripMenuItem("当前版本 v" + InstalledText());
+            ToolStripMenuItem ver = new ToolStripMenuItem("當前版本 v" + InstalledText());
             ver.Enabled = false;
             m.Items.Add(ver);
             m.Items.Add("退出助手", null, delegate { ExitApp(); });
@@ -629,7 +629,7 @@ namespace CMOUpdater
                 if (host.IsHandleCreated) host.BeginInvoke(a);
                 else a();
             }
-            catch (Exception ex) { Log.Warn("调度失败: " + ex.Message); }
+            catch (Exception ex) { Log.Warn("調度失敗: " + ex.Message); }
         }
 
         private void TimerTick()
@@ -651,11 +651,11 @@ namespace CMOUpdater
         {
             if (checking)
             {
-                if (manual) MessageBox.Show("正在检查更新，请稍候…", "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (manual) MessageBox.Show("正在檢查更新，請稍候…", "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             checking = true;
-            if (manual) icon.Text = "CMO 汉化更新助手 — 正在检查更新…";
+            if (manual) icon.Text = "CMO 中文化更新助手 — 正在檢查更新…";
             ThreadPool.QueueUserWorkItem(delegate
             {
                 string error;
@@ -678,7 +678,7 @@ namespace CMOUpdater
                 Post(delegate
                 {
                     checking = false;
-                    icon.Text = "CMO 汉化更新助手 v" + Cfg.UpdaterVersion;
+                    icon.Text = "CMO 中文化更新助手 v" + Cfg.UpdaterVersion;
                     RebuildMenu();
                     OnChecked(r, hasNew, offerRollback, error, manual);
                 });
@@ -689,29 +689,29 @@ namespace CMOUpdater
         {
             if (r == null)
             {
-                if (manual) MessageBox.Show("检查更新失败：\n" + (error ?? "未知错误") + "\n\n可点击托盘菜单「查看日志」了解详情。",
-                    "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if (manual) MessageBox.Show("檢查更新失敗：\n" + (error ?? "未知錯誤") + "\n\n可點擊托盤選單「檢視日誌」瞭解詳情。",
+                    "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (!hasNew && !offerRollback)
             {
                 if (manual)
-                    MessageBox.Show("当前已是最新版本 v" + Cfg.InstalledVersion + "（适配游戏内部版本 " + ReleaseConstants.GameBuild + "）。\n\n上次检查：" + Cfg.LastCheckText() +
-                        "\n下次自动检查：" + Cfg.NextCheckText(), "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("當前已是最新版本 v" + Cfg.InstalledVersion + "（適配遊戲內部版本 " + ReleaseConstants.GameBuild + "）。\n\n上次檢查：" + Cfg.LastCheckText() +
+                        "\n下次自動檢查：" + Cfg.NextCheckText(), "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (!manual && r.Version == Cfg.SkippedVersion) return;
 
             string tip = offerRollback
-                ? ("发现可回退版本 v" + r.Version + "（当前 v" + Cfg.InstalledVersion + "，本地已缓存该版本安装包）")
-                : ("发现新版本 v" + r.Version + "（当前 v" + Cfg.InstalledVersion + "，" + FormatSize(r.SetupSize) + "）");
+                ? ("發現可回退版本 v" + r.Version + "（當前 v" + Cfg.InstalledVersion + "，本地已緩存該版本安裝包）")
+                : ("發現新版本 v" + r.Version + "（當前 v" + Cfg.InstalledVersion + "，" + FormatSize(r.SetupSize) + "）");
             Log.Info(tip);
             bool showDialog = manual || Cfg.NotifyMode == 0;
             if (showDialog) PresentUpdate(r, offerRollback);
             else if (Cfg.NotifyMode == 1)
             {
-                icon.BalloonTipTitle = offerRollback ? "CMO 汉化可回退版本" : "CMO 汉化更新可用";
-                icon.BalloonTipText = tip + "。点击托盘图标查看详情。";
+                icon.BalloonTipTitle = offerRollback ? "CMO 中文化可回退版本" : "CMO 中文化更新可用";
+                icon.BalloonTipText = tip + "。點擊托盤圖標檢視詳情。";
                 icon.ShowBalloonTip(15000);
                 Cfg.LastNotifiedVersion = r.Version;
                 Cfg.Save();
@@ -748,15 +748,15 @@ namespace CMOUpdater
             Cfg.AutoCheck = false;
             if (!string.IsNullOrEmpty(Cfg.SkippedVersion)) { }
             Cfg.Save();
-            Log.Info("已按用户选择关闭自动检查（不再提醒）");
+            Log.Info("已按用戶選擇關閉自動檢查（不再提醒）");
         }
 
         /// <summary>确保游戏已退出（升级/回退前调用）；false = 用户取消或仍失败。</summary>
         private bool EnsureGameStopped(string action)
         {
             if (!UpdateService.GameRunning()) return true;
-            DialogResult dr = MessageBox.Show("检测到游戏正在运行，" + action + "前需要先退出游戏。\n\n是否立即退出游戏并继续？",
-                "CMO 汉化更新助手", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult dr = MessageBox.Show("檢測到遊戲正在運行，" + action + "前需要先退出遊戲。\n\n是否立即退出遊戲並繼續？",
+                "CMO 中文化更新助手", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (dr != DialogResult.Yes) return false;
             try
             {
@@ -772,10 +772,10 @@ namespace CMOUpdater
                     Thread.Sleep(1500);
                 }
             }
-            catch (Exception ex) { Log.Warn("退出游戏失败: " + ex.Message); }
+            catch (Exception ex) { Log.Warn("退出遊戲失敗: " + ex.Message); }
             if (UpdateService.GameRunning())
             {
-                MessageBox.Show("游戏仍在运行，请手动退出后重试。", "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("遊戲仍在運行，請手動退出後重試。", "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             return true;
@@ -786,7 +786,7 @@ namespace CMOUpdater
             string game = Cfg.GameDir();
             if (!string.IsNullOrEmpty(game) && Directory.Exists(game)) return game;
             FolderBrowserDialog fb = new FolderBrowserDialog();
-            fb.Description = "请选择 Command - Modern Operations 游戏根目录（含 Command.exe）";
+            fb.Description = "請選擇 Command - Modern Operations 遊戲根目錄（含 Command.exe）";
             if (fb.ShowDialog() != DialogResult.OK) return null;
             Cfg.GamePath = fb.SelectedPath;
             Cfg.Save();
@@ -798,13 +798,13 @@ namespace CMOUpdater
         {
             if (string.IsNullOrEmpty(targetVersion))
             {
-                MessageBox.Show("本地没有更旧版本的安装包缓存，无法离线回退。\n\n可在发布页下载对应版本安装包后手动安装。",
+                MessageBox.Show("本地沒有更舊版本的安裝包緩存，無法離線回退。\n\n可在發佈頁下載對應版本安裝包後手動安裝。",
                     "回退到上一版本", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (!EnsureGameStopped("回退")) return;
-            if (MessageBox.Show("将用本地缓存的 v" + targetVersion + " 安装包重新安装，把补丁回退到 v" + targetVersion
-                + "。\n\n确定继续？", "回退到上一版本", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (MessageBox.Show("將用本地緩存的 v" + targetVersion + " 安裝包重新安裝，把修補程式回退到 v" + targetVersion
+                + "。\n\n確定繼續？", "回退到上一版本", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             string err;
             if (Rollback.Run(Cfg.GameDir(), targetVersion, false, out err))
@@ -812,20 +812,20 @@ namespace CMOUpdater
                 Cfg.InstalledVersion = targetVersion;
                 RebuildMenu();
                 Log.Info("已回退到 v" + targetVersion);
-                MessageBox.Show("已回退到 v" + targetVersion + "。\n\n如果游戏正在运行过，请重新启动游戏。",
+                MessageBox.Show("已回退到 v" + targetVersion + "。\n\n如果遊戲正在運行過，請重新啓動遊戲。",
                     "回退成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                Log.Error("回退失败: " + err);
-                MessageBox.Show("回退失败：\n" + err + "\n\n日志：" + Log.FilePath,
-                    "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Error("回退失敗: " + err);
+                MessageBox.Show("回退失敗：\n" + err + "\n\n日誌：" + Log.FilePath,
+                    "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         public void StartInstall(ReleaseInfo r)
         {
-            if (!EnsureGameStopped("升级")) return;
+            if (!EnsureGameStopped("升級")) return;
 
             string game = PickGameDir();
             if (game == null) return;
@@ -842,7 +842,7 @@ namespace CMOUpdater
                 f.ShowDialog();
             }
             timer.Interval = 30000;
-            Log.Info("设置已更新: 自动检查=" + Cfg.AutoCheck + ", 间隔=" + Cfg.IntervalHours + "h, 提醒方式=" + Cfg.NotifyMode);
+            Log.Info("設定已更新: 自動檢查=" + Cfg.AutoCheck + ", 間隔=" + Cfg.IntervalHours + "h, 提醒方式=" + Cfg.NotifyMode);
         }
 
         private void OpenGameDir()
@@ -911,7 +911,7 @@ namespace CMOUpdater
             }
             catch (Exception ex)
             {
-                Log.Warn("生成图标失败: " + ex.Message);
+                Log.Warn("生成圖標失敗: " + ex.Message);
                 return SystemIcons.Application;
             }
         }
@@ -922,7 +922,7 @@ namespace CMOUpdater
     {
         public UpdateForm(ReleaseInfo r, bool rollback)
         {
-            this.Text = (rollback ? "发现可回退版本" : "发现新版本") + " — CMO 完整中文汉化补丁";
+            this.Text = (rollback ? "發現可回退版本" : "發現新版本") + " — CMO 完整中文中文化修補程式";
             this.Size = new Size(560, 470);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -931,7 +931,7 @@ namespace CMOUpdater
             this.Font = new Font("Microsoft YaHei UI", 9.5f);
 
             Label head = new Label();
-            head.Text = (rollback ? "发现可回退版本 v" : "发现新版本 v") + r.Version;
+            head.Text = (rollback ? "發現可回退版本 v" : "發現新版本 v") + r.Version;
             head.Font = new Font("Microsoft YaHei UI", 13f, FontStyle.Bold);
             head.ForeColor = Color.FromArgb(20, 60, 120);
             head.AutoSize = true;
@@ -940,16 +940,16 @@ namespace CMOUpdater
 
             Label sub = new Label();
             sub.Text = rollback
-                ? ("发布日期 " + SafeDate(r.PublishedAt) + "　·　当前版本 v" + Cfg.InstalledVersion + "　·　用本地缓存的安装包回退")
-                : ("发布日期 " + SafeDate(r.PublishedAt) + "　·　安装包 " + SizeText(r.SetupSize) + "　·　当前版本 v" + Cfg.InstalledVersion);
-            sub.Text += "\n适配游戏内部版本 " + ReleaseConstants.GameBuild + "（游戏标题里的 Build 号）";
+                ? ("發佈日期 " + SafeDate(r.PublishedAt) + "　·　當前版本 v" + Cfg.InstalledVersion + "　·　用本地緩存的安裝包回退")
+                : ("發佈日期 " + SafeDate(r.PublishedAt) + "　·　安裝包 " + SizeText(r.SetupSize) + "　·　當前版本 v" + Cfg.InstalledVersion);
+            sub.Text += "\n適配遊戲內部版本 " + ReleaseConstants.GameBuild + "（遊戲標題裏的 Build 號）";
             sub.ForeColor = Color.DimGray;
             sub.AutoSize = true;
             sub.Location = new Point(22, 52);
             this.Controls.Add(sub);
 
             Label lbl = new Label();
-            lbl.Text = "更新内容:";
+            lbl.Text = "更新內容:";
             lbl.AutoSize = true;
             lbl.Location = new Point(22, 84);
             this.Controls.Add(lbl);
@@ -961,11 +961,11 @@ namespace CMOUpdater
             notes.BackColor = Color.White;
             notes.Location = new Point(22, 108);
             notes.Size = new Size(500, 240);
-            notes.Text = string.IsNullOrEmpty(r.Notes) ? "（该版本未提供更新说明）" : PlainNotes(r.Notes);
+            notes.Text = string.IsNullOrEmpty(r.Notes) ? "（該版本未提供更新說明）" : PlainNotes(r.Notes);
             this.Controls.Add(notes);
 
             Button ok = new Button();
-            ok.Text = rollback ? "立即回退" : "立即升级";
+            ok.Text = rollback ? "立即回退" : "立即升級";
             ok.Size = new Size(110, 34);
             ok.Location = new Point(22, 368);
             ok.BackColor = Color.FromArgb(30, 110, 200);
@@ -975,7 +975,7 @@ namespace CMOUpdater
             this.Controls.Add(ok);
 
             Button later = new Button();
-            later.Text = "稍后提醒";
+            later.Text = "稍後提醒";
             later.Size = new Size(100, 34);
             later.Location = new Point(140, 368);
             later.DialogResult = DialogResult.Ignore;
@@ -989,7 +989,7 @@ namespace CMOUpdater
             this.Controls.Add(never);
 
             Button manual = new Button();
-            manual.Text = "手动下载页面";
+            manual.Text = "手動下載頁面";
             manual.Size = new Size(130, 34);
             manual.Location = new Point(392, 368);
             manual.Click += delegate
@@ -1001,8 +1001,8 @@ namespace CMOUpdater
 
             Label tip = new Label();
             tip.Text = rollback
-                ? "「不再提醒」= 关闭自动检查并记住该版本；回退后仍可随时升级回来。"
-                : "「不再提醒」= 关闭自动检查并记住该版本；日后可在更新助手中重新开启。";
+                ? "「不再提醒」= 關閉自動檢查並記住該版本；回退後仍可隨時升級回來。"
+                : "「不再提醒」= 關閉自動檢查並記住該版本；日後可在更新助手中重新開啓。";
             tip.ForeColor = Color.DimGray;
             tip.AutoSize = true;
             tip.Location = new Point(22, 410);
@@ -1052,7 +1052,7 @@ namespace CMOUpdater
         {
             info = r;
             game = gamePath;
-            this.Text = "正在更新 CMO 完整中文汉化补丁";
+            this.Text = "正在更新 CMO 完整中文中文化修補程式";
             this.Size = new Size(560, 330);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -1070,7 +1070,7 @@ namespace CMOUpdater
             };
 
             line1 = new Label();
-            line1.Text = "正在下载 " + r.SetupName + " …";
+            line1.Text = "正在下載 " + r.SetupName + " …";
             line1.AutoSize = true;
             line1.Location = new Point(20, 18);
             this.Controls.Add(line1);
@@ -1083,20 +1083,20 @@ namespace CMOUpdater
             this.Controls.Add(bar);
 
             line2 = new Label();
-            line2.Text = "准备中…";
+            line2.Text = "準備中…";
             line2.ForeColor = Color.DimGray;
             line2.AutoSize = true;
             line2.Location = new Point(20, 70);
             this.Controls.Add(line2);
 
             stages = new Label();
-            stages.Text = "✔ 校验新版本信息（GitHub Releases）\r\n▶ 下载安装包（失败自动切换镜像）\r\n○ 校验 SHA256 摘要\r\n○ 备份 CMOLocalizer.dll → 静默安装\r\n○ 写入版本号并清理临时文件";
+            stages.Text = "✔ 校驗新版本資訊（GitHub Releases）\r\n▶ 下載安裝包（失敗自動切換鏡像）\r\n○ 校驗 SHA256 摘要\r\n○ 備份 CMOLocalizer.dll → 靜默安裝\r\n○ 寫入版本號並清理臨時檔案";
             stages.Location = new Point(20, 98);
             stages.Size = new Size(505, 130);
             this.Controls.Add(stages);
 
             Button back = new Button();
-            back.Text = "后台运行";
+            back.Text = "後臺運行";
             back.Size = new Size(100, 32);
             back.Location = new Point(310, 245);
             back.Click += delegate { this.Hide(); };
@@ -1134,7 +1134,7 @@ namespace CMOUpdater
             string error;
             if (!UpdateService.Download(info.SetupUrl, dest, prog, out error))
             {
-                Fail("下载失败：\n" + error + "\n\n可稍后在更新助手或安装器内重试，或点击「手动下载页面」。");
+                Fail("下載失敗：\n" + error + "\n\n可稍後在更新助手或安裝器內重試，或點擊「手動下載頁面」。");
                 return;
             }
             if (abort) { Cancelled(dest); return; }
@@ -1142,27 +1142,27 @@ namespace CMOUpdater
             Ui(delegate
             {
                 bar.Value = 100;
-                line2.Text = "下载完成，正在校验摘要…";
-                stages.Text = "✔ 校验新版本信息（GitHub Releases）\r\n✔ 下载安装包\r\n▶ 校验 SHA256 摘要\r\n○ 备份 CMOLocalizer.dll → 静默安装\r\n○ 写入版本号并清理临时文件";
+                line2.Text = "下載完成，正在校驗摘要…";
+                stages.Text = "✔ 校驗新版本資訊（GitHub Releases）\r\n✔ 下載安裝包\r\n▶ 校驗 SHA256 摘要\r\n○ 備份 CMOLocalizer.dll → 靜默安裝\r\n○ 寫入版本號並清理臨時檔案";
             });
 
             string detail;
             if (!UpdateService.VerifySha(dest, info.SetupShaUrl, out detail))
             {
                 try { File.Delete(dest); } catch { }
-                Fail("安装包校验失败：\n" + detail + "\n\n已删除下载文件，未执行安装。");
+                Fail("安裝包校驗失敗：\n" + detail + "\n\n已刪除下載檔案，未執行安裝。");
                 return;
             }
             if (abort) { Cancelled(dest); return; }
 
             Ui(delegate
             {
-                line1.Text = "正在安装更新（约 10 秒），完成后助手会自动重启…";
-                line2.Text = detail + "　·　游戏目录：" + game;
-                stages.Text = "✔ 校验新版本信息（GitHub Releases）\r\n✔ 下载安装包\r\n✔ 校验 SHA256 摘要\r\n▶ 备份 CMOLocalizer.dll → 静默安装\r\n○ 写入版本号并清理临时文件";
+                line1.Text = "正在安裝更新（約 10 秒），完成後助手會自動重啓…";
+                line2.Text = detail + "　·　遊戲目錄：" + game;
+                stages.Text = "✔ 校驗新版本資訊（GitHub Releases）\r\n✔ 下載安裝包\r\n✔ 校驗 SHA256 摘要\r\n▶ 備份 CMOLocalizer.dll → 靜默安裝\r\n○ 寫入版本號並清理臨時檔案";
             });
 
-            // 缓存安装包：回退与"安装失败自动回滚"都靠它（只留最近 snapshot_keep 个）
+            // 缓存安装包：回退与"安裝失敗自動回滾"都靠它（只留最近 snapshot_keep 个）
             CmoSettings st = CmoSettings.Load();
             VersionStore.Cache(dest);
             VersionStore.Prune(st.SnapshotKeep);
@@ -1173,7 +1173,7 @@ namespace CMOUpdater
 
             if (!UpdateService.LaunchInstaller(dest, game, out error))
             {
-                Fail("启动安装程序失败：\n" + error);
+                Fail("啓動安裝程式失敗：\n" + error);
                 return;
             }
 
@@ -1188,11 +1188,11 @@ namespace CMOUpdater
         private void Cancelled(string dest)
         {
             try { if (File.Exists(dest)) File.Delete(dest); } catch { }
-            Log.Info("用户取消更新");
+            Log.Info("用戶取消更新");
             Ui(delegate
             {
                 this.Hide();
-                MessageBox.Show("已取消更新。", "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("已取消更新。", "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             });
         }
@@ -1203,7 +1203,7 @@ namespace CMOUpdater
             Ui(delegate
             {
                 cancel.Enabled = true;
-                MessageBox.Show(msg + "\n\n下载页面：" + info.HtmlUrl, "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(msg + "\n\n下載頁面：" + info.HtmlUrl, "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             });
         }
@@ -1230,7 +1230,7 @@ namespace CMOUpdater
 
         public SettingsForm()
         {
-            this.Text = "更新设置 — CMO 汉化更新助手";
+            this.Text = "更新設定 — CMO 中文化更新助手";
             this.Size = new Size(560, 470);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -1238,26 +1238,26 @@ namespace CMOUpdater
             this.MinimizeBox = false;
             this.Font = new Font("Microsoft YaHei UI", 9.5f);
 
-            Label l1 = new Label(); l1.Text = "自动检查频率:"; l1.AutoSize = true; l1.Location = new Point(20, 20);
+            Label l1 = new Label(); l1.Text = "自動檢查頻率:"; l1.AutoSize = true; l1.Location = new Point(20, 20);
             this.Controls.Add(l1);
 
             cbInterval = new ComboBox();
             cbInterval.DropDownStyle = ComboBoxStyle.DropDownList;
             cbInterval.Location = new Point(140, 16);
             cbInterval.Size = new Size(180, 26);
-            cbInterval.Items.AddRange(new object[] { "每次开机检查一次", "每 1 小时", "每 3 小时", "每 6 小时（推荐）", "每 12 小时", "每 24 小时" });
+            cbInterval.Items.AddRange(new object[] { "每次開機檢查一次", "每 1 小時", "每 3 小時", "每 6 小時（推薦）", "每 12 小時", "每 24 小時" });
             cbInterval.SelectedIndex = IntervalPresets.ToIndex(Cfg.IntervalHours);
             this.Controls.Add(cbInterval);
 
             chkAuto = new CheckBox();
-            chkAuto.Text = "启用自动检查更新";
+            chkAuto.Text = "啓用自動檢查更新";
             chkAuto.Checked = Cfg.AutoCheck;
             chkAuto.AutoSize = true;
             chkAuto.Location = new Point(340, 18);
             this.Controls.Add(chkAuto);
 
             chkStart = new CheckBox();
-            chkStart.Text = "随 Windows 启动并在后台检查更新";
+            chkStart.Text = "隨 Windows 啓動並在後臺檢查更新";
             chkStart.Checked = Cfg.IsAutoStartOn();
             chkStart.AutoSize = true;
             chkStart.Location = new Point(20, 52);
@@ -1275,20 +1275,20 @@ namespace CMOUpdater
             pUpgrade.Location = new Point(18, 206);
             pUpgrade.Size = new Size(510, 52);
             this.Controls.Add(pUpgrade);
-            rDialog = new RadioButton(); rDialog.Text = "弹窗提醒（发现新版本时弹出提示窗）"; rDialog.AutoSize = true; rDialog.Location = new Point(6, 6); pNotify.Controls.Add(rDialog);
-            rBalloon = new RadioButton(); rBalloon.Text = "仅托盘气泡提醒（不打断当前操作）"; rBalloon.AutoSize = true; rBalloon.Location = new Point(6, 29); pNotify.Controls.Add(rBalloon);
-            rSilent = new RadioButton(); rSilent.Text = "不提醒（仅在更新助手窗口内显示）"; rSilent.AutoSize = true; rSilent.Location = new Point(6, 52); pNotify.Controls.Add(rSilent);
+            rDialog = new RadioButton(); rDialog.Text = "彈窗提醒（發現新版本時彈出提示窗）"; rDialog.AutoSize = true; rDialog.Location = new Point(6, 6); pNotify.Controls.Add(rDialog);
+            rBalloon = new RadioButton(); rBalloon.Text = "僅托盤氣泡提醒（不打斷當前操作）"; rBalloon.AutoSize = true; rBalloon.Location = new Point(6, 29); pNotify.Controls.Add(rBalloon);
+            rSilent = new RadioButton(); rSilent.Text = "不提醒（僅在更新助手視窗內顯示）"; rSilent.AutoSize = true; rSilent.Location = new Point(6, 52); pNotify.Controls.Add(rSilent);
             rDialog.Checked = Cfg.NotifyMode == 0;
             rBalloon.Checked = Cfg.NotifyMode == 1;
             rSilent.Checked = Cfg.NotifyMode == 2;
 
-            Label l3 = new Label(); l3.Text = "升级方式:"; l3.AutoSize = true; l3.Location = new Point(20, 188);
+            Label l3 = new Label(); l3.Text = "升級方式:"; l3.AutoSize = true; l3.Location = new Point(20, 188);
             this.Controls.Add(l3);
-            rAuto = new RadioButton(); rAuto.Text = "自动下载并静默安装（需先退出游戏）"; rAuto.AutoSize = true; rAuto.Location = new Point(6, 6); pUpgrade.Controls.Add(rAuto);
-            rManual = new RadioButton(); rManual.Text = "只提示新版本，由我手动下载安装"; rManual.AutoSize = true; rManual.Location = new Point(6, 29); pUpgrade.Controls.Add(rManual);
+            rAuto = new RadioButton(); rAuto.Text = "自動下載並靜默安裝（需先退出遊戲）"; rAuto.AutoSize = true; rAuto.Location = new Point(6, 6); pUpgrade.Controls.Add(rAuto);
+            rManual = new RadioButton(); rManual.Text = "只提示新版本，由我手動下載安裝"; rManual.AutoSize = true; rManual.Location = new Point(6, 29); pUpgrade.Controls.Add(rManual);
             if (Cfg.AutoInstall) rAuto.Checked = true; else rManual.Checked = true;
 
-            Label l4 = new Label(); l4.Text = "下载镜像（直连 GitHub 失败时使用）:"; l4.AutoSize = true; l4.Location = new Point(20, 268);
+            Label l4 = new Label(); l4.Text = "下載鏡像（直連 GitHub 失敗時使用）:"; l4.AutoSize = true; l4.Location = new Point(20, 268);
             this.Controls.Add(l4);
             txtMirror = new TextBox();
             txtMirror.Location = new Point(24, 292);
@@ -1297,7 +1297,7 @@ namespace CMOUpdater
             this.Controls.Add(txtMirror);
 
             btnNever = new Button();
-            btnNever.Text = Cfg.AutoCheck ? "不再提醒（关闭自动检查）" : "开启提醒";
+            btnNever.Text = Cfg.AutoCheck ? "不再提醒（關閉自動檢查）" : "開啓提醒";
             btnNever.Size = new Size(190, 30);
             btnNever.Location = new Point(24, 366);
             btnNever.Click += delegate
@@ -1305,20 +1305,20 @@ namespace CMOUpdater
                 Cfg.AutoCheck = !Cfg.AutoCheck;
                 chkAuto.Checked = Cfg.AutoCheck;
                 if (!Cfg.AutoCheck) Cfg.SkippedVersion = Cfg.InstalledVersion;
-                btnNever.Text = Cfg.AutoCheck ? "不再提醒（关闭自动检查）" : "开启提醒";
-                Log.Info("不再提醒按钮: AutoCheck=" + Cfg.AutoCheck);
+                btnNever.Text = Cfg.AutoCheck ? "不再提醒（關閉自動檢查）" : "開啓提醒";
+                Log.Info("不再提醒按鈕: AutoCheck=" + Cfg.AutoCheck);
             };
             this.Controls.Add(btnNever);
 
             chkTray = new CheckBox();
-            chkTray.Text = "关闭更新窗口时最小化到托盘（后台继续）";
+            chkTray.Text = "關閉更新視窗時最小化到托盤（後臺繼續）";
             chkTray.AutoSize = true;
             chkTray.Checked = Cfg.TrayOnClose;
             chkTray.Location = new Point(24, 332);
             this.Controls.Add(chkTray);
 
             Button save = new Button();
-            save.Text = "保存";
+            save.Text = "儲存";
             save.Size = new Size(100, 32);
             save.Location = new Point(330, 366);
             save.BackColor = Color.FromArgb(30, 110, 200);
@@ -1358,7 +1358,7 @@ namespace CMOUpdater
             UpdateService.InitTls();
             Cfg.Load();
             Cfg.InstalledVersion = Cfg.ResolveInstalled();
-            Log.Info("---- 启动 " + string.Join(" ", args) + " (v" + Cfg.UpdaterVersion + ") ----");
+            Log.Info("---- 啓動 " + string.Join(" ", args) + " (v" + Cfg.UpdaterVersion + ") ----");
 
             bool boot = false;
             bool doCheck = false, doSettings = false, doVersion = false;
@@ -1379,7 +1379,7 @@ namespace CMOUpdater
             {
                 if (!created)
                 {
-                    Log.Info("已有实例在运行，本次启动忽略");
+                    Log.Info("已有實例在運行，本次啓動忽略");
                     return 0;
                 }
                 if (boot)
@@ -1409,29 +1409,29 @@ namespace CMOUpdater
             Cfg.InstalledVersion = Cfg.ResolveInstalled();
             if (Cfg.InstalledVersion == target)
             {
-                Log.Info("升级自检通过: v" + target);
+                Log.Info("升級自檢通過: v" + target);
                 return;
             }
-            Log.Error("升级自检未通过: 期望 v" + target + "，实际 v" + (Cfg.InstalledVersion.Length > 0 ? Cfg.InstalledVersion : "(未安装)"));
+            Log.Error("升級自檢未通過: 期望 v" + target + "，實際 v" + (Cfg.InstalledVersion.Length > 0 ? Cfg.InstalledVersion : "(未安裝)"));
             if (string.IsNullOrEmpty(prev) || VersionStore.CachedPackage(prev) == null)
             {
-                MessageBox.Show("检测到上次更新未完成（当前未安装或版本不符），且本地没有 v" + prev
-                    + " 的安装包缓存，无法自动回滚。\n\n请重新运行 v" + target + " 安装包修复。\n\n日志：" + Log.FilePath,
-                    "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("檢測到上次更新未完成（當前未安裝或版本不符），且本地沒有 v" + prev
+                    + " 的安裝包緩存，無法自動回滾。\n\n請重新運行 v" + target + " 安裝包修復。\n\n日誌：" + Log.FilePath,
+                    "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             string err;
             if (Rollback.Run(game, prev, false, out err))
             {
                 Cfg.InstalledVersion = prev;
-                MessageBox.Show("上次更新未完成，已自动回滚到 v" + prev + "。\n\n如需重试更新，请点击托盘菜单「立即检查更新」。",
-                    "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("上次更新未完成，已自動回滾到 v" + prev + "。\n\n如需重試更新，請點擊托盤選單「立即檢查更新」。",
+                    "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                Log.Error("自动回滚失败: " + err);
-                MessageBox.Show("上次更新未完成，自动回滚也失败了：\n" + err + "\n\n请手动运行 v" + prev
-                    + " 安装包修复。\n\n日志：" + Log.FilePath, "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Error("自動回滾失敗: " + err);
+                MessageBox.Show("上次更新未完成，自動回滾也失敗了：\n" + err + "\n\n請手動運行 v" + prev
+                    + " 安裝包修復。\n\n日誌：" + Log.FilePath, "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1443,8 +1443,8 @@ namespace CMOUpdater
             Cfg.Save();
             if (r == null)
             {
-                MessageBox.Show("检查更新失败：\n" + (error ?? "未知错误") + "\n\n日志：" + Log.FilePath,
-                    "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("檢查更新失敗：\n" + (error ?? "未知錯誤") + "\n\n日誌：" + Log.FilePath,
+                    "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return 2;
             }
             string current = Cfg.ResolveInstalled();
@@ -1453,16 +1453,16 @@ namespace CMOUpdater
             int cmp = ReleaseGate.Compare(r.Version, current);
             if (cmp == 0)
             {
-                MessageBox.Show("当前已是最新版本 v" + current + "。\n\n上次检查：" + Cfg.LastCheckText() +
-                    "\n下次自动检查：" + Cfg.NextCheckText(), "CMO 汉化更新助手",
+                MessageBox.Show("當前已是最新版本 v" + current + "。\n\n上次檢查：" + Cfg.LastCheckText() +
+                    "\n下次自動檢查：" + Cfg.NextCheckText(), "CMO 中文化更新助手",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return 0;
             }
             if (cmp < 0 && VersionStore.CachedPackage(r.Version) == null)
             {
-                MessageBox.Show("当前版本 v" + current + " 高于线上最新版 v" + r.Version
-                    + "（可能是未发布的测试版本），且本地没有该版本的安装包缓存，因此不提供回退。",
-                    "CMO 汉化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("當前版本 v" + current + " 高於線上最新版 v" + r.Version
+                    + "（可能是未發佈的測試版本），且本地沒有該版本的安裝包緩存，因此不提供回退。",
+                    "CMO 中文化更新助手", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return 0;
             }
             using (UpdateForm f = new UpdateForm(r, cmp < 0))
@@ -1473,7 +1473,7 @@ namespace CMOUpdater
                     Cfg.AutoCheck = false;
                     Cfg.SkippedVersion = r.Version;
                     Cfg.Save();
-                    Log.Info("用户选择不再提醒 v" + r.Version + "（已关闭自动检查）");
+                    Log.Info("用戶選擇不再提醒 v" + r.Version + "（已關閉自動檢查）");
                     return 0;
                 }
                 if (dr == DialogResult.OK)
@@ -1482,14 +1482,14 @@ namespace CMOUpdater
                     {
                         string rberr;
                         Rollback.Run(Cfg.GameDir(), r.Version, false, out rberr);
-                        MessageBox.Show(rberr.Length == 0 ? "已回退到 v" + r.Version : "回退失败：" + rberr,
-                            "CMO 汉化更新助手", MessageBoxButtons.OK,
+                        MessageBox.Show(rberr.Length == 0 ? "已回退到 v" + r.Version : "回退失敗：" + rberr,
+                            "CMO 中文化更新助手", MessageBoxButtons.OK,
                             rberr.Length == 0 ? MessageBoxIcon.Information : MessageBoxIcon.Error);
                         return rberr.Length == 0 ? 0 : 4;
                     }
                     if (UpdateService.GameRunning())
                     {
-                        MessageBox.Show("请先退出游戏，再回到安装器/更新助手执行升级。", "CMO 汉化更新助手",
+                        MessageBox.Show("請先退出遊戲，再回到安裝器/更新助手執行升級。", "CMO 中文化更新助手",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return 3;
                     }
@@ -1497,7 +1497,7 @@ namespace CMOUpdater
                     if (string.IsNullOrEmpty(game) || !Directory.Exists(game))
                     {
                         FolderBrowserDialog fb = new FolderBrowserDialog();
-                        fb.Description = "请选择 Command - Modern Operations 游戏根目录（含 Command.exe）";
+                        fb.Description = "請選擇 Command - Modern Operations 遊戲根目錄（含 Command.exe）";
                         if (fb.ShowDialog() != DialogResult.OK) return 0;
                         game = fb.SelectedPath;
                         Cfg.GamePath = game;
