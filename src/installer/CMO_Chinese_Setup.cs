@@ -152,7 +152,6 @@ namespace CMOLocalizerInstaller
                 cf.ShowDialog(this);
             }
         }
-        }
 
         private void Log(string msg)
         {
