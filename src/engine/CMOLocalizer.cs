@@ -260,7 +260,7 @@ namespace CMOLocalizer
 
                 // 补扫节拍必须在引擎启动时就起来，不能等 TranslateWpfWindows() 惰性安装：
                 // 那条路径依赖 WinForms 轮询先跑到，实测在部分会话里根本没触发，
-                // 于是"每帧补扫"整块不生效（门禁实测 elementHostScans=0）。
+                // 于是"每幀補掃"整块不生效（门禁实测 elementHostScans=0）。
                 StartWpfRepaintTick();
 
                 // Start hook thread
@@ -298,7 +298,7 @@ namespace CMOLocalizer
 
                 dtf.LongDatePattern = "yyyy'年'M'月'd'日' dddd";
                 dtf.DayNames = new string[] { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
-                dtf.AbbreviatedDayNames = new string[] { "周日", "周一", "周二", "周三", "周四", "周五", "周六" };
+                dtf.AbbreviatedDayNames = new string[] { "週日", "週一", "週二", "週三", "週四", "週五", "週六" };
                 dtf.MonthNames = new string[] { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", "" };
                 dtf.AbbreviatedMonthNames = new string[] { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", "" };
             }
@@ -592,7 +592,7 @@ namespace CMOLocalizer
                 }
                 else
                 {
-                    Log("CoreDecryption: anti-debug flag field renamed by this build — skipped（不参与注入）.");
+                    Log("CoreDecryption: anti-debug flag field renamed by this build — skipped（不參與注入）.");
                 }
 
                 List<string> strList = (List<string>)fStrings.GetValue(null);
@@ -699,7 +699,7 @@ namespace CMOLocalizer
             }
             if (tDecrypt == null)
             {
-                note = "pool class not found（游戏更新后需重做注入点探测，见 docs/BUG_REGISTRY.md R31）.";
+                note = "pool class not found（遊戲更新後需重做注入點探測，見 docs/BUG_REGISTRY.md R31）.";
                 return false;
             }
 
@@ -1017,7 +1017,7 @@ namespace CMOLocalizer
                                 || txt.Contains("Application_Startup")
                                 || txt.Contains("Error in Application")
                                 || txt.Contains("application startup")
-                                || txt.Contains("应用程序启动"))
+                                || txt.Contains("應用程式啓動"))
                             {
                                 Log("AutoDismissStartupDialogs: Closing dialog '" + txt + "'");
                                 // 查找 OK 按钮并点击
@@ -1025,7 +1025,7 @@ namespace CMOLocalizer
                                 {
                                     StringBuilder btnText = new StringBuilder(64);
                                     GetWindowText(hChild, btnText, btnText.Capacity);
-                                    if (btnText.ToString() == "确定" || btnText.ToString().ToUpper() == "OK")
+                                    if (btnText.ToString() == "確定" || btnText.ToString().ToUpper() == "OK")
                                     {
                                         SendMessage(hChild, BM_CLICK, IntPtr.Zero, IntPtr.Zero);
                                     }
@@ -1228,10 +1228,10 @@ namespace CMOLocalizer
             {
                 // 历史 bug（R46，2026-10-20 实测）：CompositionTarget.Rendering 只在 WPF
                 // **真正绘制**时才触发。单位状态侧边栏是静止的，于是这个钩子在整个会话里
-                // 一次都没跑过（探针实测 renderTicks=0），R43/R44 里"每帧补扫"等于没装。
+                // 一次都没跑过（探针实测 renderTicks=0），R43/R44 里"每幀補掃"等于没装。
                 // 改成独立节拍：不依赖 WPF 是否渲染，按固定间隔主动补扫 ElementHost 子树。
                 StartWpfRepaintTick();
-                // 合并 PR#5：新建元素经 Loaded 类处理器立即翻译。它覆盖不到"原地替换
+                // 合并 PR#5：新建元素经 Loaded 类处理器立即翻译。它覆盖不到"原地替換
                 // FlowDocument/Run"（那正是 R46 的原因），那部分仍由上面的 Timer 节拍兜底。
                 lock (wpfLoadedLock)
                 {
@@ -1535,7 +1535,7 @@ namespace CMOLocalizer
                     else if (!string.IsNullOrEmpty(tb.Text))
                     {
                         string cur = tb.Text;
-                        if (cur.Contains("kg") && (cur.Contains("fuel") || cur.Contains("燃油") || cur.Contains("Tank") || cur.Contains("坦克") || cur.Contains("reserve")))
+                        if (cur.Contains("kg") && (cur.Contains("fuel") || cur.Contains("燃油") || cur.Contains("Tank") || cur.Contains("戰車") || cur.Contains("reserve")))
                         {
                             string trF = TranslateFuelPanelText(cur);
                             if (trF != cur && tb.Text == cur)
@@ -1683,7 +1683,7 @@ namespace CMOLocalizer
         {
             if (tb == null || string.IsNullOrEmpty(text)) return;
             // 幂等短路（R46）：反复把同一个值写回控件会不断触发重绘与绑定更新。
-            // 40ms 高频补扫下这会让静止面板持续重画——用户看到的就是"闪"。
+            // 40ms 高频补扫下这会让静止面板持续重画——用户看到的就是"閃"。
             // 值没变就什么都不做，这是消除频闪最关键的一步。
             try { if (tb.Text == text) return; } catch { }
             if (!EnterMutation("SetTextKeepBinding")) return;
@@ -1945,11 +1945,11 @@ namespace CMOLocalizer
             string n = cb.Name ?? "";
             if (n.IndexOf("AlertLevel", StringComparison.OrdinalIgnoreCase) < 0) return null;
             raw = raw.Trim();
-            if (raw == "Blue") return "蓝色警戒";
-            if (raw == "Yellow") return "黄色警戒";
+            if (raw == "Blue") return "藍色警戒";
+            if (raw == "Yellow") return "黃色警戒";
             if (raw == "Orange") return "橙色警戒";
-            if (raw == "Red") return "红色警戒";
-            if (raw == "Green") return "绿色警戒";
+            if (raw == "Red") return "紅色警戒";
+            if (raw == "Green") return "綠色警戒";
             if (raw == "White") return "白色警戒";
             return null;
         }
@@ -2098,7 +2098,7 @@ namespace CMOLocalizer
                 {
                     // The game rebuilds this placeholder from the (now Chinese) object
                     // type label, so it can be mixed-language on every re-render.
-                    tr = "输入该型装备的数据库 ID...";
+                    tr = "輸入該型裝備的資料庫 ID...";
                 }
                 else
                 {
@@ -2113,33 +2113,33 @@ namespace CMOLocalizer
         private static string TranslateFuelPanelText(string raw)
         {
             if (string.IsNullOrEmpty(raw)) return raw;
-            if (!raw.Contains("kg") && !raw.Contains("fuel") && !raw.Contains("燃油") && !raw.Contains("Bingo") && !raw.Contains("Tank") && !raw.Contains("坦克")) return raw;
+            if (!raw.Contains("kg") && !raw.Contains("fuel") && !raw.Contains("燃油") && !raw.Contains("Bingo") && !raw.Contains("Tank") && !raw.Contains("戰車")) return raw;
 
             string s = raw;
             // 彻底修正副油箱机翻为陆军坦克的错误
-            s = s.Replace("坦克 #", "副油箱 #");
+            s = s.Replace("戰車 #", "副油箱 #").Replace("戰車 #", "副油箱 #");
             s = Regex.Replace(s, @"\bTank\s*#", "副油箱 #", RegexOptions.IgnoreCase);
             s = Regex.Replace(s, @"\bFuelTank\b", "燃油箱", RegexOptions.IgnoreCase);
 
             // 补全燃油面板中残存的英文词汇
-            s = s.Replace("remaining fuel", "剩余燃油");
+            s = s.Replace("remaining fuel", "剩餘燃油");
             s = s.Replace("fuel burn rate", "燃油消耗率");
-            s = s.Replace("/ minute", "/ 分钟");
-            s = s.Replace("reserve", "预留备用油量");
-            s = s.Replace("total fuel", "总燃油量");
-            s = s.Replace("mission fuel", "任务燃油");
-            s = s.Replace("nm to base:", "海里至基地:");
-            s = s.Replace("nm to tanker:", "海里至加油机:");
-            s = s.Replace("nm to Bingo fuel", "海里到达返航油量(Bingo)");
-            s = s.Replace("nm to Joker fuel", "海里到达警戒油量(Joker)");
+            s = s.Replace("/ minute", "/ 分鐘");
+            s = s.Replace("reserve", "預留備用油量");
+            s = s.Replace("total fuel", "總燃油量");
+            s = s.Replace("mission fuel", "任務燃油");
+            s = s.Replace("nm to base:", "海浬至基地:");
+            s = s.Replace("nm to tanker:", "海浬至加油機:");
+            s = s.Replace("nm to Bingo fuel", "海浬到達返航油量(Bingo)");
+            s = s.Replace("nm to Joker fuel", "海浬到達警戒油量(Joker)");
             s = s.Replace("to base:", "至基地:");
-            s = s.Replace("to Bingo", "到达返航油量(Bingo)");
+            s = s.Replace("to Bingo", "到達返航油量(Bingo)");
 
             // R69：游戏用「有小数才显示小数」的格式输出重量，于是 5870.0 显示成 "5870"，
             // 比 "5870.3" 窄两个字符宽度；该行随值刷新时宽度来回跳，视觉上就是向左缩进一格
             // （用户截图：预留备用油量那一行）。这里只**补全被省略的小数位**，不改数值，
             // 使同一行的字符宽度恒定。严格限定为「数字 + 空格 + kg」形式，
-            // 且必须恰好是一个整数，避免误伤 "22.6 nm"、"14 分钟" 之类。
+            // 且必须恰好是一个整数，避免误伤 "22.6 nm"、"14 分鐘" 之类。
             s = NormalizeFuelWeightDecimals(s);
 
             return s;
@@ -2369,15 +2369,15 @@ namespace CMOLocalizer
         {
             switch (marker.ToUpperInvariant())
             {
-                case "OVERVIEW": return "概况说明：";
+                case "OVERVIEW": return "概況說明：";
                 case "DETAIL":
-                case "DETAILS": return "技术细节：";
+                case "DETAILS": return "技術細節：";
                 case "SPECIFICATION":
-                case "SPECIFICATIONS": return "战术技术指标：";
+                case "SPECIFICATIONS": return "戰術技術指標：";
                 case "NOTE":
-                case "NOTES": return "注意事项：";
+                case "NOTES": return "注意事項：";
                 case "SOURCE":
-                case "SOURCES": return "参考资料来源：";
+                case "SOURCES": return "參考資料來源：";
                 default: return marker + "：";
             }
         }
@@ -2388,9 +2388,9 @@ namespace CMOLocalizer
             try
             {
                 // 1. Operators 列表国家名全量替换
-                if (text.StartsWith("Operators:") || text.StartsWith("使用方") || text.StartsWith("列装国家"))
+                if (text.StartsWith("Operators:") || text.StartsWith("使用方") || text.StartsWith("列裝國家"))
                 {
-                    string prefix = "列装国家与地区:";
+                    string prefix = "列裝國家與地區:";
                     int colonIdx = text.IndexOf(':');
                     string body = colonIdx >= 0 ? text.Substring(colonIdx + 1) : text;
                     string[] countries = body.Split(',');
@@ -2405,34 +2405,34 @@ namespace CMOLocalizer
                 }
 
                 // 2. 字段前缀替换
-                text = text.Replace("OVERVIEW:", "概况说明：")
-                           .Replace("DETAILS:", "技术细节：")
-                           .Replace("SPECIFICATIONS:", "战术技术指标：")
-                           .Replace("NOTES:", "注意事项：")
-                           .Replace("SOURCES:", "参考资料来源：")
-                           .Replace("Fact:", "技术评述：")
-                           .Replace("Diameter:", "弹径/直径:")
-                           .Replace("Platforms:", "搭载平台:")
+                text = text.Replace("OVERVIEW:", "概況說明：")
+                           .Replace("DETAILS:", "技術細節：")
+                           .Replace("SPECIFICATIONS:", "戰術技術指標：")
+                           .Replace("NOTES:", "注意事項：")
+                           .Replace("SOURCES:", "參考資料來源：")
+                           .Replace("Fact:", "技術評述：")
+                           .Replace("Diameter:", "彈徑/直徑:")
+                           .Replace("Platforms:", "搭載平臺:")
                            .Replace("Range:", "有效射程:")
-                           .Replace("Maneuverability:", "机动过载能力:")
+                           .Replace("Maneuverability:", "機動過載能力:")
                            .Replace("IOC:", "服役起始年份 (IOC):")
                            .Replace("Wingspan:", "翼展:")
-                           .Replace("Guidance:", "制导方式:")
-                           .Replace("Warhead:", "战斗部:")
-                           .Replace("Length:", "长度:")
-                           .Replace("Weight:", "发射全重/重量:")
-                           .Replace("Speed:", "最高航速/飞行速度:");
+                           .Replace("Guidance:", "導引方式:")
+                           .Replace("Warhead:", "彈頭:")
+                           .Replace("Length:", "長度:")
+                           .Replace("Weight:", "發射全重/重量:")
+                           .Replace("Speed:", "最高航速/飛行速度:");
 
                 // 3. 常见参数单位与描述中英双语优化
                 if (text.Contains("beyond-visual-range") || text.Contains("fire-and-forget") || text.Contains("active radar-guided"))
                 {
-                    text = text.Replace("beyond-visual-range", "超视距 (BVR)")
-                               .Replace("fire-and-forget", "发射后不管 (Fire-and-Forget)")
-                               .Replace("active radar-guided air-to-air missile", "主动雷达制导空空导弹")
-                               .Replace("air-to-air missile", "空空导弹")
-                               .Replace("air-to-surface missile", "空地/空舰导弹")
-                               .Replace("surface-to-air missile", "地空导弹")
-                               .Replace("anti-ship missile", "反舰导弹");
+                    text = text.Replace("beyond-visual-range", "超視距 (BVR)")
+                               .Replace("fire-and-forget", "發射後不管 (Fire-and-Forget)")
+                               .Replace("active radar-guided air-to-air missile", "主動雷達導引空空飛彈")
+                               .Replace("air-to-air missile", "空空飛彈")
+                               .Replace("air-to-surface missile", "空地/空艦飛彈")
+                               .Replace("surface-to-air missile", "地空飛彈")
+                               .Replace("anti-ship missile", "反艦飛彈");
                 }
             }
             catch { }
@@ -2508,15 +2508,15 @@ namespace CMOLocalizer
             // 数据库动力装置油门档位与高度层 (e.g. "Band 1, Loiter Speed", "145.31 kg per minute")
             if (text.Contains("Band ") || text.Contains("kg per minute"))
             {
-                text = text.Replace("Band 1", "高度层 1")
-                           .Replace("Band 2", "高度层 2")
-                           .Replace("Band 3", "高度层 3")
-                           .Replace("Band 4", "高度层 4")
-                           .Replace("Loiter Speed", "盘旋待机速度")
+                text = text.Replace("Band 1", "高度層 1")
+                           .Replace("Band 2", "高度層 2")
+                           .Replace("Band 3", "高度層 3")
+                           .Replace("Band 4", "高度層 4")
+                           .Replace("Loiter Speed", "盤旋待機速度")
                            .Replace("Cruise Speed", "巡航速度")
-                           .Replace("Military Speed", "军用推力速度")
-                           .Replace("Afterburner Speed", "加力推力速度")
-                           .Replace("kg per minute", "公斤/分钟");
+                           .Replace("Military Speed", "軍用推力速度")
+                           .Replace("Afterburner Speed", "後燃器推力速度")
+                           .Replace("kg per minute", "公斤/分鐘");
             }
 
             // 数据库战机预设挂载方案飞行剖面 (e.g. "3150 nm Strike radius, Hi-Hi-Hi profile...")
@@ -2526,7 +2526,7 @@ namespace CMOLocalizer
             }
 
             // 2. 数据库外挂武器包线详情汇总列 (e.g. "Guided Weapon. Targets: ... 最高航速: ... Warhead: ... Can be guided by: ...")
-            if (text.Contains("Targets:") || text.Contains("打击目标:") || text.Contains("Warhead:") || text.Contains("战斗部:") || text.StartsWith("Guided Weapon") || text.StartsWith("Unguided Weapon"))
+            if (text.Contains("Targets:") || text.Contains("打擊目標:") || text.Contains("Warhead:") || text.Contains("彈頭:") || text.StartsWith("Guided Weapon") || text.StartsWith("Unguided Weapon"))
             {
                 return TranslateWeaponSummary(text);
             }
@@ -2541,7 +2541,7 @@ namespace CMOLocalizer
                 if (normExactMap.ContainsKey(normFull)) return normExactMap[normFull];
             }
 
-            // 4. 复合枚举串 (如 "Late 1980s Technology, 水面搜索, Ground Search (Fixed)")，仅针对不含句号的短枚举列表
+            // 4. 复合枚举串 (如 "Late 1980s Technology, 水面搜尋, Ground Search (Fixed)")，仅针对不含句号的短枚举列表
             if (!text.Contains(".") && text.Length < 160 && text.Contains(", ") && Regex.IsMatch(text, @"[A-Za-z]{3,}"))
             {
                 string trComp = TranslateCommaComposite(text);
@@ -2555,27 +2555,27 @@ namespace CMOLocalizer
             // Database Viewer dynamic numeric patterns (e.g. "15 seconds Observe...", "30 seconds (Cadet)")
             if (norm.EndsWith("seconds Observe, Orient, Decide, and Act (reaction time)"))
             {
-                return norm.Replace("seconds Observe, Orient, Decide, and Act (reaction time)", "秒 (观察-判断-决策-行动 OODA 反应时间)");
+                return norm.Replace("seconds Observe, Orient, Decide, and Act (reaction time)", "秒 (觀察-判斷-決策-行動 OODA 反應時間)");
             }
             if (norm.EndsWith("seconds (Novice Proficiency Level)"))
             {
-                return norm.Replace("seconds (Novice Proficiency Level)", "秒 (新手熟练度)");
+                return norm.Replace("seconds (Novice Proficiency Level)", "秒 (新手熟練度)");
             }
             if (norm.EndsWith("seconds (Cadet)"))
             {
-                return norm.Replace("seconds (Cadet)", "秒 (学员熟练度)");
+                return norm.Replace("seconds (Cadet)", "秒 (學員熟練度)");
             }
             if (norm.EndsWith("seconds (Regular)"))
             {
-                return norm.Replace("seconds (Regular)", "秒 (普通熟练度)");
+                return norm.Replace("seconds (Regular)", "秒 (普通熟練度)");
             }
             if (norm.EndsWith("seconds (Veteran)"))
             {
-                return norm.Replace("seconds (Veteran)", "秒 (老手熟练度)");
+                return norm.Replace("seconds (Veteran)", "秒 (老手熟練度)");
             }
             if (norm.EndsWith("seconds (Ace)"))
             {
-                return norm.Replace("seconds (Ace)", "秒 (王牌熟练度)");
+                return norm.Replace("seconds (Ace)", "秒 (王牌熟練度)");
             }
             if (Regex.IsMatch(norm, @"^\d+(\.\d+)?\s+seconds$"))
             {
@@ -2583,31 +2583,31 @@ namespace CMOLocalizer
             }
             if (norm.StartsWith("Performance Details for "))
             {
-                return "战术性能详情：" + norm.Substring("Performance Details for ".Length);
+                return "戰術效能詳情：" + norm.Substring("Performance Details for ".Length);
             }
             if (norm.StartsWith("Operating bands (search & track): "))
             {
-                return "工作频段 (搜索与跟踪): " + norm.Substring("Operating bands (search & track): ".Length);
+                return "工作頻段 (搜尋與跟蹤): " + norm.Substring("Operating bands (search & track): ".Length);
             }
             if (norm.StartsWith("Operating bands (FC / illumination): "))
             {
-                return "工作频段 (火控与照射): " + norm.Substring("Operating bands (FC / illumination): ".Length);
+                return "工作頻段 (射控與照射): " + norm.Substring("Operating bands (FC / illumination): ".Length);
             }
             if (norm.StartsWith("Operating bands: "))
             {
-                return "工作频段: " + norm.Substring("Operating bands: ".Length);
+                return "工作頻段: " + norm.Substring("Operating bands: ".Length);
             }
             if (norm.StartsWith("Max Target Illumination: "))
             {
-                return "最大目标照射通道数: " + norm.Substring("Max Target Illumination: ".Length);
+                return "最大目標照射通道數: " + norm.Substring("Max Target Illumination: ".Length);
             }
             if (norm.StartsWith("Visual Zoom Detection/Classification: "))
             {
-                return "可见光变焦探测/识别: " + norm.Substring("Visual Zoom Detection/Classification: ".Length);
+                return "可見光變焦探測/識別: " + norm.Substring("Visual Zoom Detection/Classification: ".Length);
             }
             if (norm.StartsWith("InfraRed Zoom Detection/Classification: "))
             {
-                return "红外变焦探测/识别: " + norm.Substring("InfraRed Zoom Detection/Classification: ".Length);
+                return "紅外變焦探測/識別: " + norm.Substring("InfraRed Zoom Detection/Classification: ".Length);
             }
 
             // 逗号分隔的复合枚举项 (例如: "Late 1980s Technology, Ground Search (Fixed), Ground Search (Mobile)")
@@ -2661,18 +2661,18 @@ namespace CMOLocalizer
                         if (window.__cmo_translated) return;
                         if (!document.body) return;
                         window.__cmo_translated = true;
-                        // 替换常见的简报关键词
+                        // 替換常見的簡報關鍵詞
                         var html = document.body.innerHTML;
                         var dict = {
-                            'SITUATION': '战场态势 (SITUATION)',
-                            'ENEMY FORCES': '敌方力量 (ENEMY FORCES)',
-                            'FRIENDLY FORCES': '友军力量 (FRIENDLY FORCES)',
-                            'MISSION': '任务简报 (MISSION)',
-                            'EXECUTION': '作战执行 (EXECUTION)',
-                            'COMMAND AND SIGNAL': '指挥与通信 (COMMAND & SIGNAL)',
-                            'ORDER OF BATTLE': '战斗序列 (ORDER OF BATTLE)',
-                            'RULES OF ENGAGEMENT': '交战规则 (ROE)',
-                            'TASKS': '主要任务 (TASKS)'
+                            'SITUATION': '戰場態勢 (SITUATION)',
+                            'ENEMY FORCES': '敵方力量 (ENEMY FORCES)',
+                            'FRIENDLY FORCES': '友軍力量 (FRIENDLY FORCES)',
+                            'MISSION': '任務簡報 (MISSION)',
+                            'EXECUTION': '作戰執行 (EXECUTION)',
+                            'COMMAND AND SIGNAL': '指揮與通訊 (COMMAND & SIGNAL)',
+                            'ORDER OF BATTLE': '戰鬥序列 (ORDER OF BATTLE)',
+                            'RULES OF ENGAGEMENT': '接戰規定 (ROE)',
+                            'TASKS': '主要任務 (TASKS)'
                         };
                         for (var k in dict) {
                             var reg = new RegExp(k, 'g');
@@ -2705,21 +2705,21 @@ namespace CMOLocalizer
                             {
                                 // 替换常见数据库英文字段
                                 string translated = html
-                                    .Replace("Aircraft size:", "机体尺寸:")
+                                    .Replace("Aircraft size:", "機體尺寸:")
                                     .Replace("Average Climb Rate:", "平均爬升率:")
-                                    .Replace("Service Ceiling:", "实用升限:")
-                                    .Replace("Combat Radius:", "作战半径:")
-                                    .Replace("Fuel Capacity:", "载油量:")
-                                    .Replace("Damage Points:", "结构抗毁点数 (DP):")
-                                    .Replace("Category:", "装备大类:")
-                                    .Replace("Length:", "全长 / 舰长:")
-                                    .Replace("Width:", "宽度:")
+                                    .Replace("Service Ceiling:", "實用升限:")
+                                    .Replace("Combat Radius:", "作戰半徑:")
+                                    .Replace("Fuel Capacity:", "載油量:")
+                                    .Replace("Damage Points:", "結構抗毀點數 (DP):")
+                                    .Replace("Category:", "裝備大類:")
+                                    .Replace("Length:", "全長 / 艦長:")
+                                    .Replace("Width:", "寬度:")
                                     .Replace("Height:", "高度:")
                                     .Replace("Weight:", "空重:")
-                                    .Replace("Payload:", "有效载荷:")
-                                    .Replace("Sensors:", "传感器:")
-                                    .Replace("Weapons:", "武器挂载:")
-                                    .Replace("Missions:", "分配任务:");
+                                    .Replace("Payload:", "酬載量:")
+                                    .Replace("Sensors:", "感測器:")
+                                    .Replace("Weapons:", "武器掛載:")
+                                    .Replace("Missions:", "分配任務:");
 
                                 // 双语装备名称悬浮与替换支持
                                 //
@@ -2770,7 +2770,7 @@ namespace CMOLocalizer
             if (string.IsNullOrEmpty(raw)) return raw;
             // R64：本函数是纯英文军名的**兜底**规则（整串词典未命中时才该跑）。
             // 若输入已含中文（例如词典整串命中的「F-16I 战隼 [Sufa]」），再跑下面的
-            // .Replace("Sufa","苏法/风暴") 就会产出第二种译法「F-16I 战隼 [苏法/风暴]」；
+            // .Replace("Sufa","蘇法/風暴") 就会产出第二种译法「F-16I 战隼 [苏法/风暴]」；
             // 200ms 补扫与同步钩子各写一种，逐拍互相覆盖——单元状态面板的机型行
             // 因此中英（两种中文变体）频闪（FLICKER_PROBE 实抓 20 样本严格交替）。
             // 词典是唯一事实源：含中文的串一律原样返回，兜底只处理纯英文军名。
@@ -2793,71 +2793,71 @@ namespace CMOLocalizer
             }
 
             // 3. 通用飞机/直升机/装备类型词与中国公认军用绰号规范注入
-            s = s.Replace("Tanker", "加油机")
-                 .Replace("Fighter", "战斗机")
-                 .Replace("Bomber", "轰炸机")
-                 .Replace("Multirole (Fighter/Attack)", "多用途战机 (战斗/攻击)")
-                 .Replace("Multirole", "多用途战机")
-                 .Replace("Falcon", "「战隼」")
-                 .Replace("Sufa", "苏法/风暴")
-                 .Replace("Eagle", "「鹰」")
-                 .Replace("Strike Eagle", "「攻击鹰」")
-                 .Replace("Tomcat", "「雄猫」")
+            s = s.Replace("Tanker", "加油機")
+                 .Replace("Fighter", "戰鬥機")
+                 .Replace("Bomber", "轟炸機")
+                 .Replace("Multirole (Fighter/Attack)", "多用途戰機 (戰鬥/攻擊)")
+                 .Replace("Multirole", "多用途戰機")
+                 .Replace("Falcon", "「戰隼」")
+                 .Replace("Sufa", "蘇法/風暴")
+                 .Replace("Eagle", "「鷹」")
+                 .Replace("Strike Eagle", "「攻擊鷹」")
+                 .Replace("Tomcat", "「雄貓」")
                  .Replace("Raptor", "「猛禽」")
-                 .Replace("Lightning II", "「闪电」II")
-                 .Replace("Thunderbolt II", "「雷电」II")
-                 .Replace("Hornet", "「大黄蜂」")
-                 .Replace("Super Hornet", "「超级大黄蜂」")
+                 .Replace("Lightning II", "「閃電」II")
+                 .Replace("Thunderbolt II", "「雷電」II")
+                 .Replace("Hornet", "「大黃蜂」")
+                 .Replace("Super Hornet", "「超級大黃蜂」")
                  .Replace("Growler", "「咆哮者」")
                  .Replace("Prowler", "「徘徊者」")
-                 .Replace("Hawkeye", "「鹰眼」")
+                 .Replace("Hawkeye", "「鷹眼」")
                  .Replace("Sentry", "「哨兵」")
-                 .Replace("Black Hawk", "「黑鹰」")
-                 .Replace("Blackhawk", "「黑鹰」")
+                 .Replace("Black Hawk", "「黑鷹」")
+                 .Replace("Blackhawk", "「黑鷹」")
                  .Replace("Apache", "「阿帕奇」")
                  .Replace("Chinook", "「支努干」")
                  .Replace("Sea King", "「海王」")
-                 .Replace("Seahawk", "「海鹰」")
-                 .Replace("Guardian", "「卫士」")
-                 .Replace("Longbow", "「长弓」")
-                 .Replace("Osprey", "「鱼鹰」")
+                 .Replace("Seahawk", "「海鷹」")
+                 .Replace("Guardian", "「衛士」")
+                 .Replace("Longbow", "「長弓」")
+                 .Replace("Osprey", "「魚鷹」")
                  .Replace("Hercules", "「大力神」")
-                 .Replace("Galaxy", "「银河」")
-                 .Replace("Globemaster", "「环球霸王」")
+                 .Replace("Galaxy", "「銀河」")
+                 .Replace("Globemaster", "「環球霸王」")
                  .Replace("Poseidon", "「海神」")
-                 .Replace("Orion", "「猎户座」")
-                 .Replace("Nahshon-Eitam", "纳雄-埃塔姆")
-                 .Replace("Nahshon", "纳雄")
-                 .Replace("Saknayee", "萨克奈")
+                 .Replace("Orion", "「獵戶座」")
+                 .Replace("Nahshon-Eitam", "納雄-埃塔姆")
+                 .Replace("Nahshon", "納雄")
+                 .Replace("Saknayee", "薩克奈")
                  .Replace("Kohav", "科哈夫")
-                 .Replace("Har Ramon", "哈尔拉蒙")
-                 .Replace("Ramat David", "拉马特戴维")
-                 .Replace("Wing Loong", "「翼龙」")
+                 .Replace("Har Ramon", "哈爾拉蒙")
+                 .Replace("Ramat David", "拉馬特戴維")
+                 .Replace("Wing Loong", "「翼龍」")
                  .Replace("Rainbow", "「彩虹」")
-                 .Replace("Mighty Dragon", "「威龙」")
-                 .Replace("Flounder", "「飞豹」")
-                 .Replace("Flanker", "「侧卫」")
-                 .Replace("Fullback", "「鸭嘴兽」")
-                 .Replace("Fencer", "「击剑手」")
+                 .Replace("Mighty Dragon", "「威龍」")
+                 .Replace("Flounder", "「飛豹」")
+                 .Replace("Flanker", "「側衛」")
+                 .Replace("Fullback", "「鴨嘴獸」")
+                 .Replace("Fencer", "「擊劍手」")
                  .Replace("Frogfoot", "「蛙足」")
-                 .Replace("Fishbed", "「鱼窝」")
-                 .Replace("Flogger", "「鞭挞者」")
+                 .Replace("Fishbed", "「魚窩」")
+                 .Replace("Flogger", "「鞭撻者」")
                  .Replace("Foxbat", "「狐蝠」")
                  .Replace("Foxhound", "「捕狐犬」")
-                 .Replace("Fulcrum", "「支点」")
+                 .Replace("Fulcrum", "「支點」")
                  .Replace("Backfire", "「逆火」")
                  .Replace("Badger", "「獾」")
                  .Replace("Bear", "「熊」")
-                 .Replace("Blackjack", "「海盗旗」")
-                 .Replace("Alligator", "「短吻鳄」")
-                 .Replace("Helix", "「蜗牛」")
+                 .Replace("Blackjack", "「海盜旗」")
+                 .Replace("Alligator", "「短吻鱷」")
+                 .Replace("Helix", "「蝸牛」")
                  .Replace("Hind", "「雌鹿」")
                  .Replace("Havoc", "「浩劫」")
-                 .Replace("Tyulpan", "「郁金香」")
-                 .Replace("Akatsiya", "「金合欢」")
+                 .Replace("Tyulpan", "「鬱金香」")
+                 .Replace("Akatsiya", "「金合歡」")
                  .Replace("Gvozdika", "「康乃馨」")
-                 .Replace("Giatsint", "「风信子」")
-                 .Replace("Pion", "「芍药」")
+                 .Replace("Giatsint", "「風信子」")
+                 .Replace("Pion", "「芍藥」")
                  .Replace("Msta", "「姆斯塔河」");
 
             return prefix + s;
@@ -2885,102 +2885,102 @@ namespace CMOLocalizer
             string t = rawText.Trim();
 
             // 通用状态与过滤
-            if (t == "None") return "无 / 不限";
-            if (t == "Not selected") return "未选择 (全部子类型)";
-            if (t == "Active") return "已激活 (Active)";
-            if (t == "Inactive") return "未激活 (Inactive)";
-            if (t == "Waiting for trigger") return "等待触发 (Waiting for trigger)";
-            if (t.StartsWith("Show all platforms")) return "显示全部平台 (含现实与假想)";
-            if (t.StartsWith("Show only real-life")) return "仅显示现实服役平台";
-            if (t.StartsWith("Show only hypothetical")) return "仅显示假想/计划平台";
+            if (t == "None") return "無 / 不限";
+            if (t == "Not selected") return "未選擇 (全部子類型)";
+            if (t == "Active") return "已啟用 (Active)";
+            if (t == "Inactive") return "未啟用 (Inactive)";
+            if (t == "Waiting for trigger") return "等待觸發 (Waiting for trigger)";
+            if (t.StartsWith("Show all platforms")) return "顯示全部平臺 (含現實與假想)";
+            if (t.StartsWith("Show only real-life")) return "僅顯示現實服役平臺";
+            if (t.StartsWith("Show only hypothetical")) return "僅顯示假想/計劃平臺";
 
             // 数据库查看器对象大类
-            if (t == "Weapon") return "武器装备 (Weapon)";
-            if (t == "Aircraft") return "飞机 / 航空器 (Aircraft)";
-            if (t == "Ship") return "水面舰艇 (Ship)";
-            if (t == "Submarine") return "水下潜艇 (Submarine)";
-            if (t == "Facility") return "地面设施 (Facility)";
-            if (t == "Satellite") return "人造卫星 (Satellite)";
-            if (t == "Ground Unit") return "地面作战单位 (Ground Unit)";
-            if (t == "Sensor") return "传感器 / 探测系统 (Sensor)";
+            if (t == "Weapon") return "武器裝備 (Weapon)";
+            if (t == "Aircraft") return "飛機 / 航空器 (Aircraft)";
+            if (t == "Ship") return "水面艦艇 (Ship)";
+            if (t == "Submarine") return "水下潛艦 (Submarine)";
+            if (t == "Facility") return "地面設施 (Facility)";
+            if (t == "Satellite") return "人造衛星 (Satellite)";
+            if (t == "Ground Unit") return "地面作戰單位 (Ground Unit)";
+            if (t == "Sensor") return "感測器 / 探測系統 (Sensor)";
 
             // 数据库查看器传感器子类型 (声呐、雷达、电子战、激光探测等)
-            if (t == "BottomFixedSonar_PassiveOnly") return "海底固定声呐 [仅被动]";
-            if (t == "Bow_Sonar_ActivePassive") return "舰艏声呐 [主被动]";
-            if (t == "DippingSonar_ActiveOnly") return "吊放声呐 [仅主动]";
-            if (t == "DippingSonar_ActivePassive") return "吊放声呐 [主被动]";
-            if (t == "DippingSonar_PassiveOnly") return "吊放声呐 [仅被动]";
-            if (t == "EMP_Projector") return "电磁脉冲发射器 (EMP)";
-            if (t == "HullSonar_ActiveOnly") return "舰壳声呐 [仅主动]";
-            if (t == "HullSonar_ActivePassive") return "舰壳声呐 [主被动]";
-            if (t == "HullSonar_PassiveOnly") return "舰壳声呐 [仅被动]";
-            if (t == "LaserDesignator") return "激光指示器 (Laser Designator)";
-            if (t == "LaserRangefinder") return "激光测距仪 (Laser Rangefinder)";
-            if (t == "LaserSpotTracker") return "激光光斑跟踪器 (LST)";
-            if (t == "LIDAR") return "激光雷达 (LIDAR)";
-            if (t == "Microwave_Emitter") return "微波辐射源 / 大功率微波";
-            if (t == "MineNeutralization_DiverExpl") return "潜水员人工灭雷炸药";
-            if (t == "MineNeutralization_Explosive") return "灭雷炸药 / 灭雷具";
-            if (t == "MineNeutralization_Moored") return "定深锚雷灭雷具";
-            if (t == "MineSweep_AcousticInfluenc") return "音响扫雷具";
-            if (t == "MineSweep_MagneticInfluen") return "磁性扫雷具";
-            if (t == "MineSweep_MechanicalCable") return "机械截割扫雷具";
-            if (t == "MineSweep_MultiInfluence") return "复合物理场扫雷具";
-            if (t == "MineSweep_TwoShipMagneti") return "双舰对拖磁性扫雷具";
-            if (t == "NonDetectingEmitter") return "非探测辐射源 / 无源诱饵";
-            if (t == "PCLS") return "潜艇通信激光系统 (PCLS)";
+            if (t == "BottomFixedSonar_PassiveOnly") return "海底固定聲納 [僅被動]";
+            if (t == "Bow_Sonar_ActivePassive") return "艦艏聲納 [主被動]";
+            if (t == "DippingSonar_ActiveOnly") return "垂放聲納 [僅主動]";
+            if (t == "DippingSonar_ActivePassive") return "垂放聲納 [主被動]";
+            if (t == "DippingSonar_PassiveOnly") return "垂放聲納 [僅被動]";
+            if (t == "EMP_Projector") return "電磁脈衝發射器 (EMP)";
+            if (t == "HullSonar_ActiveOnly") return "艦殼聲納 [僅主動]";
+            if (t == "HullSonar_ActivePassive") return "艦殼聲納 [主被動]";
+            if (t == "HullSonar_PassiveOnly") return "艦殼聲納 [僅被動]";
+            if (t == "LaserDesignator") return "雷射指示器 (Laser Designator)";
+            if (t == "LaserRangefinder") return "雷射測距儀 (Laser Rangefinder)";
+            if (t == "LaserSpotTracker") return "雷射光斑跟蹤器 (LST)";
+            if (t == "LIDAR") return "雷射雷達 (LIDAR)";
+            if (t == "Microwave_Emitter") return "微波輻射源 / 大功率微波";
+            if (t == "MineNeutralization_DiverExpl") return "潛水員人工滅雷炸藥";
+            if (t == "MineNeutralization_Explosive") return "滅雷炸藥 / 滅雷具";
+            if (t == "MineNeutralization_Moored") return "定深錨雷滅雷具";
+            if (t == "MineSweep_AcousticInfluenc") return "音響掃雷具";
+            if (t == "MineSweep_MagneticInfluen") return "磁性掃雷具";
+            if (t == "MineSweep_MechanicalCable") return "機械截割掃雷具";
+            if (t == "MineSweep_MultiInfluence") return "複合物理場掃雷具";
+            if (t == "MineSweep_TwoShipMagneti") return "雙艦對拖磁性掃雷具";
+            if (t == "NonDetectingEmitter") return "非探測輻射源 / 無源誘餌";
+            if (t == "PCLS") return "潛艦通訊雷射系統 (PCLS)";
 
             // 新建任务分类 (Category)
-            if (t == "Mission") return "常规任务 (Mission)";
+            if (t == "Mission") return "常規任務 (Mission)";
             if (t == "Task Pool") return "兵力池 (Task Pool)";
-            if (t == "Package") return "任务编组 (Package)";
+            if (t == "Package") return "任務編組 (Package)";
 
             // 新建任务级别/型号 (Class)
-            if (t.StartsWith("Strike")) return "突击打击 [含空空拦截] (Strike)";
-            if (t == "Patrol") return "巡逻 (Patrol)";
+            if (t.StartsWith("Strike")) return "突擊打擊 [含空空攔截] (Strike)";
+            if (t == "Patrol") return "巡邏 (Patrol)";
             if (t == "Support") return "支援 (Support)";
-            if (t == "Ferry") return "转场 (Ferry)";
-            if (t == "Mining") return "布雷 (Mining)";
-            if (t == "Mine-clearing") return "扫雷 (Mine-clearing)";
-            if (t == "Cargo") return "运输 (Cargo)";
+            if (t == "Ferry") return "轉場 (Ferry)";
+            if (t == "Mining") return "佈雷 (Mining)";
+            if (t == "Mine-clearing") return "掃雷 (Mine-clearing)";
+            if (t == "Cargo") return "運輸 (Cargo)";
 
             // 任务类型 (Type - AAW/ASuW/ASW/SEAD 规范缩写保留)
-            if (t == "AAW Patrol") return "防空巡逻 (AAW)";
-            if (t == "ASuW Patrol (Naval)") return "对海巡逻 [水面] (ASuW)";
-            if (t == "ASuW Patrol (Ground)") return "对陆巡逻 [地面] (ASuW)";
-            if (t == "ASuW Patrol (Mixed)") return "海陆复合巡逻 (ASuW)";
-            if (t == "ASW Patrol") return "反潜巡逻 (ASW)";
-            if (t == "SEAD Patrol") return "防空压制巡逻 (SEAD)";
-            if (t == "Sea Control Patrol") return "制海巡逻 (Sea Control)";
-            if (t == "Naval ASuW Strike") return "对海突击打击 (ASuW Strike)";
-            if (t == "Land Strike") return "对陆突击打击 (Land Strike)";
-            if (t == "Air Intercept") return "空空拦截 (Air Intercept)";
+            if (t == "AAW Patrol") return "防空巡邏 (AAW)";
+            if (t == "ASuW Patrol (Naval)") return "對海巡邏 [水面] (ASuW)";
+            if (t == "ASuW Patrol (Ground)") return "對陸巡邏 [地面] (ASuW)";
+            if (t == "ASuW Patrol (Mixed)") return "海陸複合巡邏 (ASuW)";
+            if (t == "ASW Patrol") return "反潛巡邏 (ASW)";
+            if (t == "SEAD Patrol") return "防空壓制巡邏 (SEAD)";
+            if (t == "Sea Control Patrol") return "制海巡邏 (Sea Control)";
+            if (t == "Naval ASuW Strike") return "對海突擊打擊 (ASuW Strike)";
+            if (t == "Land Strike") return "對陸突擊打擊 (Land Strike)";
+            if (t == "Air Intercept") return "空空攔截 (Air Intercept)";
 
             // 任务编辑器参数
             if (t == "Cruise") return "巡航 (Cruise)";
-            if (t == "Loiter") return "待机/滞空 (Loiter)";
+            if (t == "Loiter") return "待機/滯空 (Loiter)";
             if (t == "Full") return "全速 (Full)";
-            if (t == "Flank") return "最大极速 (Flank)";
+            if (t == "Flank") return "最大極速 (Flank)";
             if (t == "Unspecified") return "未指定 (Unspecified)";
-            if (t == "By Class") return "按级别/型号 (By Class)";
-            if (t == "Random within area") return "区域内随机巡逻";
-            if (t == "Repeatable loop") return "循环巡逻";
+            if (t == "By Class") return "按級別/型號 (By Class)";
+            if (t == "Random within area") return "區域內隨機巡邏";
+            if (t == "Repeatable loop") return "循環巡邏";
             if (t.Contains("Tankers Refuelling Tankers"))
             {
-                if (t.StartsWith("Inherited")) return "继承自上级，总是使用 [加油机相互加油除外]";
-                return "总是使用 [加油机相互加油除外]";
+                if (t.StartsWith("Inherited")) return "繼承自上級，總是使用 [加油機相互加油除外]";
+                return "總是使用 [加油機相互加油除外]";
             }
-            if (t == "1x flight") return "单批编队 (1x flight)";
-            if (t == "All flights") return "全部出动 (All flights)";
+            if (t == "1x flight") return "單批編隊 (1x flight)";
+            if (t == "All flights") return "全部出動 (All flights)";
 
             // 编队编辑器队形 (Formation)
-            if (t == "Line") return "一字线形编队 (Line)";
-            if (t == "Column") return "单纵队形 (Column)";
-            if (t == "Wedge") return "楔形编队 (Wedge)";
-            if (t == "Vee") return "V字编队 (Vee)";
-            if (t == "Echelon") return "梯形编队 (Echelon)";
-            if (t == "Diamond") return "菱形编队 (Diamond)";
-            if (t == "Circle") return "环形编队 (Circle)";
+            if (t == "Line") return "一字線形編隊 (Line)";
+            if (t == "Column") return "單縱隊形 (Column)";
+            if (t == "Wedge") return "楔形編隊 (Wedge)";
+            if (t == "Vee") return "V字編隊 (Vee)";
+            if (t == "Echelon") return "梯形編隊 (Echelon)";
+            if (t == "Diamond") return "菱形編隊 (Diamond)";
+            if (t == "Circle") return "環形編隊 (Circle)";
 
             return TranslateString(rawText);
         }
@@ -3114,7 +3114,7 @@ namespace CMOLocalizer
             if (!string.IsNullOrEmpty(tr) && tr != t) return tr;
 
             // 时间 / 日期占位符与提示串
-            if (t == "Name") return "名称";
+            if (t == "Name") return "名稱";
             return rawText;
         }
 
@@ -3314,34 +3314,34 @@ namespace CMOLocalizer
                     string rest = rightPart.Substring(parenIdx);
                     string restBefore = rest;
 
-                    rest = rest.Replace("(Air Force)", "(空军)")
-                               .Replace("(Navy)", "(海军)")
-                               .Replace("(Army)", "(陆军)")
-                               .Replace("(Marines)", "(海军陆战队)")
-                               .Replace("(Marine Corps)", "(海军陆战队)")
-                               .Replace("(Coast Guard)", "(海岸警卫队)")
-                               .Replace("(Long Range Aviation [DA])", "(远程航空兵 [DA])")
-                               .Replace("(Naval Aviation [AV-MF])", "(海军航空兵 [AV-MF])")
-                               .Replace("(Air Defense Troops [PVO])", "(国土防空军 [PVO])")
-                               .Replace("(Frontal Aviation [FA])", "(前线航空兵 [FA])")
-                               .Replace("(Military Transport Aviation [VTA])", "(军事运输航空兵 [VTA])")
-                               .Replace("(Commercial)", "(商业民航)")
-                               .Replace("(Border Guard)", "(边防部队)")
-                               .Replace("(Royal Air Force)", "(皇家空军)")
-                               .Replace("(Royal Navy)", "(皇家海军)")
+                    rest = rest.Replace("(Air Force)", "(空軍)")
+                               .Replace("(Navy)", "(海軍)")
+                               .Replace("(Army)", "(陸軍)")
+                               .Replace("(Marines)", "(海軍陸戰隊)")
+                               .Replace("(Marine Corps)", "(海軍陸戰隊)")
+                               .Replace("(Coast Guard)", "(海岸警衛隊)")
+                               .Replace("(Long Range Aviation [DA])", "(遠程航空兵 [DA])")
+                               .Replace("(Naval Aviation [AV-MF])", "(海軍航空兵 [AV-MF])")
+                               .Replace("(Air Defense Troops [PVO])", "(國土防空軍 [PVO])")
+                               .Replace("(Frontal Aviation [FA])", "(前線航空兵 [FA])")
+                               .Replace("(Military Transport Aviation [VTA])", "(軍事運輸航空兵 [VTA])")
+                               .Replace("(Commercial)", "(商業民航)")
+                               .Replace("(Border Guard)", "(邊防部隊)")
+                               .Replace("(Royal Air Force)", "(皇家空軍)")
+                               .Replace("(Royal Navy)", "(皇家海軍)")
                                // 兵种在原引擎里只有这一张写死的替换表，词库 exact 里的
                                // 军种名永远进不来（R75：实机 24 行 `(IRGC Aerospace Force)`
                                // `(Air National Guard)` `(Royal Army)` 一直原样显示）。
-                               .Replace("(IRGC Aerospace Force)", "(伊斯兰革命卫队航天部队)")
-                               .Replace("(IRGC Ground Forces)", "(伊斯兰革命卫队地面部队)")
-                               .Replace("(IRGC Navy)", "(伊斯兰革命卫队海军)")
-                               .Replace("(Air National Guard)", "(空军国民警卫队)")
-                               .Replace("(Ground Self-Defense Force)", "(陆上自卫队)")
-                               .Replace("(National Guard)", "(国民警卫队)")
-                               .Replace("(Royal Army)", "(皇家陆军)")
+                               .Replace("(IRGC Aerospace Force)", "(伊斯蘭革命衛隊航天部隊)")
+                               .Replace("(IRGC Ground Forces)", "(伊斯蘭革命衛隊地面部隊)")
+                               .Replace("(IRGC Navy)", "(伊斯蘭革命衛隊海軍)")
+                               .Replace("(Air National Guard)", "(空軍國民警衛隊)")
+                               .Replace("(Ground Self-Defense Force)", "(陸上自衛隊)")
+                               .Replace("(National Guard)", "(國民警衛隊)")
+                               .Replace("(Royal Army)", "(皇家陸軍)")
                                .Replace("(Civilian)", "(民用)")
-                               .Replace("(Air Defence Troops [PVO])", "(国土防空军 [PVO])")
-                               .Replace("(PLANAF)", "(海军航空兵 [PLANAF])");
+                               .Replace("(Air Defence Troops [PVO])", "(國土防空軍 [PVO])")
+                               .Replace("(PLANAF)", "(海軍航空兵 [PLANAF])");
 
                     // 兵种命中写死表才置位：表外的行（含显式兵种的普通列表行）
                     // 仍回到「必须有年份」的旧闸门，不因此变宽（R75）。
@@ -3353,18 +3353,18 @@ namespace CMOLocalizer
             }
 
             // 3. 著名导弹与平台代号双语化
-            s = s.Replace("AMRAAM", "AMRAAM [先进中距空空导弹]")
-                 .Replace("Sidewinder", "Sidewinder [响尾蛇近距弹]")
-                 .Replace("Sparrow", "Sparrow [麻雀半主动弹]")
-                 .Replace("Phoenix", "Phoenix [不死鸟远程弹]")
-                 .Replace("Harpoon", "Harpoon [鱼叉反舰导弹]")
-                 .Replace("Tomahawk", "Tomahawk [战斧巡航导弹]")
-                 .Replace("Maverick", "Maverick [小牛空地导弹]")
-                 .Replace("Hellfire", "Hellfire [地狱火导弹]")
-                 .Replace("HARM", "HARM [哈姆反辐射导弹]")
-                 .Replace("Paveway", "Paveway [铺路激光制导炸弹]")
+            s = s.Replace("AMRAAM", "AMRAAM [先進中距空空飛彈]")
+                 .Replace("Sidewinder", "Sidewinder [響尾蛇近距彈]")
+                 .Replace("Sparrow", "Sparrow [麻雀半主動彈]")
+                 .Replace("Phoenix", "Phoenix [不死鳥遠程彈]")
+                 .Replace("Harpoon", "Harpoon [魚叉反艦飛彈]")
+                 .Replace("Tomahawk", "Tomahawk [戰斧巡弋飛彈]")
+                 .Replace("Maverick", "Maverick [小牛空地飛彈]")
+                 .Replace("Hellfire", "Hellfire [地獄火飛彈]")
+                 .Replace("HARM", "HARM [哈姆反輻射飛彈]")
+                 .Replace("Paveway", "Paveway [鋪路雷射導引炸彈]")
                  .Replace("Bison B", "Bison B [野牛B]")
-                 .Replace("Beluga", "Beluga [大白鲸]")
+                 .Replace("Beluga", "Beluga [大白鯨]")
                  .Replace("Atlas", "Atlas [阿特拉斯]");
 
             // 4. 行尾的 Comments（型号批次/年代/备注）：游戏把它拼在最后一个年份之后，
@@ -3432,7 +3432,7 @@ namespace CMOLocalizer
                 if (seg.Length == 0) continue;
                 // 数量段是**结构**（`4x Mounts`、`3x Bty`、`120 Rounds`），逐个枚举永远追不上，
                 // 交给规则；规则只认数字 + 固定单位/编制词，范围极窄，不会把型号吃进去。
-                // 必须在 IsYearOrCount 之前跑：`3x Bty` 这种"数字开头 + 短"的段会被
+                // 必须在 IsYearOrCount 之前跑：`3x Bty` 这种"數字開頭 + 短"的段会被
                 // 年份/数量守卫提前跳过（实机踩过：规则写了却不生效）。
                 string ruled = TranslateCommentQuantity(seg);
                 if (ruled != null)
@@ -3469,19 +3469,19 @@ namespace CMOLocalizer
         private static string TranslateCommentQuantity(string seg)
         {
             Match m = Regex.Match(seg, @"^(\d{1,3})x\s+Mounts?$", RegexOptions.IgnoreCase);
-            if (m.Success) return m.Groups[1].Value + "x 挂架";
+            if (m.Success) return m.Groups[1].Value + "x 掛架";
             m = Regex.Match(seg, @"^(\d{1,3})x\s+Pylons?$", RegexOptions.IgnoreCase);
-            if (m.Success) return m.Groups[1].Value + "x 挂架";
+            if (m.Success) return m.Groups[1].Value + "x 掛架";
             m = Regex.Match(seg, @"^(\d{1,3})x\s+pr\s+(Bty|Plt|Bn|Coy|Sec|Rgt)$", RegexOptions.IgnoreCase);
             if (m.Success)
             {
                 string unit = m.Groups[2].Value.ToLowerInvariant();
-                string zh = unit == "bty" ? "连" : unit == "plt" ? "排" : unit == "bn" ? "营"
-                          : unit == "coy" ? "连" : unit == "sec" ? "班" : "团";
+                string zh = unit == "bty" ? "連" : unit == "plt" ? "排" : unit == "bn" ? "營"
+                          : unit == "coy" ? "連" : unit == "sec" ? "班" : "團";
                 return "每" + zh + " " + m.Groups[1].Value + "x";
             }
             m = Regex.Match(seg, @"^(\d{1,4}(?:\.\d)?)\s+tons?$", RegexOptions.IgnoreCase);
-            if (m.Success) return m.Groups[1].Value + " 吨";
+            if (m.Success) return m.Groups[1].Value + " 噸";
             m = Regex.Match(seg, @"^(\d{1,3}(?:\.\d)?)k\s+lb$", RegexOptions.IgnoreCase);
             if (m.Success) return m.Groups[1].Value + "k 磅";
             m = Regex.Match(seg, @"^(\d{1,4}(?:\.\d)?)\s*lb$", RegexOptions.IgnoreCase);
@@ -3507,16 +3507,16 @@ namespace CMOLocalizer
             {
                 string verb = m.Groups[1].Value.ToLowerInvariant();
                 string zh = verb == "retired" ? "退役" : verb == "operational" ? "服役"
-                          : verb == "cancelled" ? "取消" : verb == "delivered" ? "交付" : "订购";
+                          : verb == "cancelled" ? "取消" : verb == "delivered" ? "交付" : "訂購";
                 return m.Groups[2].Value + " 年" + zh;
             }
             m = Regex.Match(seg, @"^Reactor boosted to high orbit\s+(.+)$", RegexOptions.IgnoreCase);
-            if (m.Success) return "反应堆推入高轨 " + m.Groups[1].Value;
+            if (m.Success) return "反應堆推入高軌 " + m.Groups[1].Value;
             m = Regex.Match(seg, @"^Reactor ejected but failed to boost to high orbit\s+(.+)$",
                             RegexOptions.IgnoreCase);
-            if (m.Success) return "反应堆已弹出但未能推入高轨 " + m.Groups[1].Value;
+            if (m.Success) return "反應堆已彈出但未能推入高軌 " + m.Groups[1].Value;
             m = Regex.Match(seg, @"^(?:Was\s+)?[Bb]oosted to high orbit\s+(.+)$");
-            if (m.Success) return "推入高轨 " + m.Groups[1].Value;
+            if (m.Success) return "推入高軌 " + m.Groups[1].Value;
             m = Regex.Match(seg, @"^(\d{1,3})\s+years?\s+in\s+service$", RegexOptions.IgnoreCase);
             if (m.Success) return "服役 " + m.Groups[1].Value + " 年";
 
@@ -3534,12 +3534,12 @@ namespace CMOLocalizer
             if (m.Success)
             {
                 string u = m.Groups[2].Value.ToLowerInvariant().TrimEnd('s');
-                string zh = u == "bty" ? "连" : u == "plt" ? "排" : u == "bn" ? "营"
-                          : u == "coy" ? "连" : u == "sec" ? "班" : "团";
+                string zh = u == "bty" ? "連" : u == "plt" ? "排" : u == "bn" ? "營"
+                          : u == "coy" ? "連" : u == "sec" ? "班" : "團";
                 return m.Groups[1].Value + "x " + zh;
             }
             m = Regex.Match(seg, @"^(\d{1,4})\s+(Rnds?|rounds?|Rounds?|rnds?)$", RegexOptions.IgnoreCase);
-            if (m.Success) return m.Groups[1].Value + " 发";
+            if (m.Success) return m.Groups[1].Value + " 發";
             // `Nx Ordered/Planned/Lost/…`（交付/损失/出售类动词）——Comments 里成批出现。
             // 数量允许区间写法（实机行里出现过 `40-75x Planned`、`255x Planned`）；
             // 动词后面允许跟年份（`1x lost 2001`）或引号年份（`8x Loaned '24`）——
@@ -3550,11 +3550,11 @@ namespace CMOLocalizer
             if (m.Success)
             {
                 string v = m.Groups[2].Value.ToLowerInvariant();
-                string zh = v == "ordered" ? "订购" : v == "planned" ? "计划" : v == "lost" ? "损失"
+                string zh = v == "ordered" ? "訂購" : v == "planned" ? "計劃" : v == "lost" ? "損失"
                           : v == "sold" ? "售出" : v == "leased" || v == "loaned" ? "租用"
-                          : v == "captured" ? "缴获" : v == "delivered" ? "交付" : v == "built" ? "建成"
-                          : v == "laid down" ? "开工" : v == "sunk" ? "沉没" : v == "crashed" ? "坠毁"
-                          : v == "transferred" ? "转隶" : v == "claimed" ? "声称" : "退役";
+                          : v == "captured" ? "繳獲" : v == "delivered" ? "交付" : v == "built" ? "建成"
+                          : v == "laid down" ? "開工" : v == "sunk" ? "沉沒" : v == "crashed" ? "墜毀"
+                          : v == "transferred" ? "轉隸" : v == "claimed" ? "聲稱" : "退役";
                 string year = m.Groups[3].Value;
                 if (year.Length == 0) return m.Groups[1].Value + "x " + zh;
                 if (year[0] == '\'') return m.Groups[1].Value + "x " + zh + " ('" + year.Substring(1) + ")";
@@ -3565,7 +3565,7 @@ namespace CMOLocalizer
             if (m.Success) return m.Groups[1].Value + "x（'" + m.Groups[2].Value + " 年）";
             // `Upgraded to AH-1F` / `Upgraded to D Standard`：固定句首模板，尾部保留
             m = Regex.Match(seg, @"^Upgraded\s+to\s+(.+)$", RegexOptions.IgnoreCase);
-            if (m.Success) return "升级至 " + m.Groups[1].Value;
+            if (m.Success) return "升級至 " + m.Groups[1].Value;
             // `Nx 发射管/炮管/深水炸弹/导弹/箔条/齐射/阵地/编组/发射装置`
             m = Regex.Match(seg,
                 @"^(\d{1,3})x\s+(Tubes?|Tube|Barrels?|DCs?|Missiles?|Chaff|Salvos?|Sites?|Groups?|Lnchrs?|Launchers?)$",
@@ -3573,14 +3573,14 @@ namespace CMOLocalizer
             if (m.Success)
             {
                 string u = m.Groups[2].Value.ToLowerInvariant();
-                string zh = u.StartsWith("tube") ? "发射管"
+                string zh = u.StartsWith("tube") ? "發射管"
                           : u.StartsWith("barrel") ? "炮管"
-                          : u.StartsWith("dc") ? "深水炸弹"
-                          : u.StartsWith("missile") ? "导弹"
-                          : u.StartsWith("chaff") ? "箔条"
-                          : u.StartsWith("salvo") ? "齐射"
-                          : u.StartsWith("site") ? "阵地"
-                          : u.StartsWith("group") ? "编组" : "发射装置";
+                          : u.StartsWith("dc") ? "深水炸彈"
+                          : u.StartsWith("missile") ? "飛彈"
+                          : u.StartsWith("chaff") ? "干擾絲"
+                          : u.StartsWith("salvo") ? "齊射"
+                          : u.StartsWith("site") ? "陣地"
+                          : u.StartsWith("group") ? "編組" : "發射裝置";
                 return m.Groups[1].Value + "x " + zh;
             }
             return null;
@@ -3840,51 +3840,51 @@ namespace CMOLocalizer
         {
             if (string.IsNullOrEmpty(text)) return text;
             string s = text;
-            s = s.Replace("Guided Weapon. ", "制导武器。 ")
-                 .Replace("Unguided Weapon. ", "非制导武器。 ")
-                 .Replace("Decoy. ", "诱饵弹。 ")
-                 .Replace("Sensor Pod. ", "传感器/电子战吊舱。 ")
-                 .Replace("Torpedo. ", "鱼雷。 ")
+            s = s.Replace("Guided Weapon. ", "導引武器。 ")
+                 .Replace("Unguided Weapon. ", "非導引武器。 ")
+                 .Replace("Decoy. ", "誘餌彈。 ")
+                 .Replace("Sensor Pod. ", "感測器/電子戰吊艙。 ")
+                 .Replace("Torpedo. ", "魚雷。 ")
                  .Replace("Naval Mine. ", "水雷。 ")
-                 .Replace("Depth Charge. ", "深水炸弹。 ")
-                 .Replace("Sonobuoy. ", "声呐浮标。 ")
-                 .Replace("Fuel Tank. ", "外挂副油箱。 ");
+                 .Replace("Depth Charge. ", "深水炸彈。 ")
+                 .Replace("Sonobuoy. ", "聲納浮標。 ")
+                 .Replace("Fuel Tank. ", "外掛副油箱。 ");
 
             int tgtIdx = s.IndexOf("Targets: ");
-            if (tgtIdx < 0) tgtIdx = s.IndexOf("打击目标: ");
+            if (tgtIdx < 0) tgtIdx = s.IndexOf("打擊目標: ");
             if (tgtIdx >= 0)
             {
-                int prefixLen = s.IndexOf("Targets: ") >= 0 ? "Targets: ".Length : "打击目标: ".Length;
+                int prefixLen = s.IndexOf("Targets: ") >= 0 ? "Targets: ".Length : "打擊目標: ".Length;
                 int dotIdx = s.IndexOf(". ", tgtIdx + prefixLen);
                 if (dotIdx > tgtIdx)
                 {
                     string targetsPart = s.Substring(tgtIdx + prefixLen, dotIdx - (tgtIdx + prefixLen));
                     string trTargets = TranslateCommaComposite(targetsPart);
-                    s = s.Substring(0, tgtIdx) + "打击目标: " + trTargets + s.Substring(dotIdx);
+                    s = s.Substring(0, tgtIdx) + "打擊目標: " + trTargets + s.Substring(dotIdx);
                 }
             }
 
             s = s.Replace("Max Speed: ", "最高航速: ")
                  .Replace("Max Range: ", "最大射程: ")
-                 .Replace(" kts. ", " 节。 ")
-                 .Replace(" nm. ", " 海里。 ")
-                 .Replace("Warheads: ", "战斗部: ")
-                 .Replace("Warhead: ", "战斗部: ")
-                 .Replace("Can be guided by: ", "制导设备: ")
-                 .Replace("Can be directed by: ", "可由以下传感器引导: ")
-                 .Replace("Gun. ", "航炮/火炮。 ")
-                 .Replace("Deployment depth: ", "布设深度: ");
+                 .Replace(" kts. ", " 節。 ")
+                 .Replace(" nm. ", " 海浬。 ")
+                 .Replace("Warheads: ", "彈頭: ")
+                 .Replace("Warhead: ", "彈頭: ")
+                 .Replace("Can be guided by: ", "導引設備: ")
+                 .Replace("Can be directed by: ", "可由以下感測器引導: ")
+                 .Replace("Gun. ", "航砲/火砲。 ")
+                 .Replace("Deployment depth: ", "佈設深度: ");
 
-            s = s.Replace("Blast-Frag", "破片杀伤")
-                 .Replace("Blast/Frag", "破片杀伤")
+            s = s.Replace("Blast-Frag", "破片殺傷")
+                 .Replace("Blast/Frag", "破片殺傷")
                  .Replace(" Frag", " 破片")
                  .Replace(" HEAT", " 破甲")
-                 .Replace(" Penetrator", " 钻地侵彻")
+                 .Replace(" Penetrator", " 鑽地侵徹")
                  .Replace(" HE.", " 高爆。")
                  .Replace(" HE ", " 高爆 ")
-                 .Replace(" Nuclear", " 核战斗部")
-                 .Replace(" Continuous Rod", " 连续杆")
-                 .Replace(" Submunitions", " 子母弹");
+                 .Replace(" Nuclear", " 核戰鬥部")
+                 .Replace(" Continuous Rod", " 連續杆")
+                 .Replace(" Submunitions", " 子母彈");
 
             return s;
         }
@@ -3892,53 +3892,53 @@ namespace CMOLocalizer
         private static string TranslateFlightProfile(string text)
         {
             if (string.IsNullOrEmpty(text)) return text;
-            return text.Replace(" minutes at ", " 分钟 @ ")
-                       .Replace(" min at ", " 分钟 @ ")
-                       .Replace(" minutes combat in AB", " 分钟加力空战")
-                       .Replace(" min combat in AB", " 分钟加力空战")
-                       .Replace(" minutes in AB", " 分钟加力飞行")
-                       .Replace(" nm CAP.", " 海里战斗空中巡逻 (CAP)。")
-                       .Replace(" nm CAP", " 海里战斗空中巡逻 (CAP)")
-                       .Replace(" nm AEW.", " 海里空中预警巡逻 (AEW)。")
-                       .Replace(" nm ASW patrol.", " 海里反潜巡逻。")
-                       .Replace(" nm Maritime Surveillance.", " 海里海上监视巡逻。")
-                       .Replace(" nm Ferry Range.", " 海里转场航程。")
-                       .Replace(" nm Strike radius, ", " 海里打击作战半径，")
-                       .Replace(" nm Strike radius. ", " 海里打击作战半径。")
-                       .Replace(" nm Strike radius.", " 海里打击作战半径。")
-                       .Replace(" nm Recon radius, ", " 海里侦察作战半径，")
-                       .Replace(" nm Recon radius. ", " 海里侦察作战半径。")
-                       .Replace(" nm Recon radius.", " 海里侦察作战半径。")
-                       .Replace("Cruise at optimum altitude and speed.", "按最佳高度与速度巡航。")
+            return text.Replace(" minutes at ", " 分鐘 @ ")
+                       .Replace(" min at ", " 分鐘 @ ")
+                       .Replace(" minutes combat in AB", " 分鐘後燃器空戰")
+                       .Replace(" min combat in AB", " 分鐘後燃器空戰")
+                       .Replace(" minutes in AB", " 分鐘後燃器飛行")
+                       .Replace(" nm CAP.", " 海浬戰鬥空中巡邏 (CAP)。")
+                       .Replace(" nm CAP", " 海浬戰鬥空中巡邏 (CAP)")
+                       .Replace(" nm AEW.", " 海浬空中預警巡邏 (AEW)。")
+                       .Replace(" nm ASW patrol.", " 海浬反潛巡邏。")
+                       .Replace(" nm Maritime Surveillance.", " 海浬海上監視巡邏。")
+                       .Replace(" nm Ferry Range.", " 海浬轉場航程。")
+                       .Replace(" nm Strike radius, ", " 海浬打擊作戰半徑，")
+                       .Replace(" nm Strike radius. ", " 海浬打擊作戰半徑。")
+                       .Replace(" nm Strike radius.", " 海浬打擊作戰半徑。")
+                       .Replace(" nm Recon radius, ", " 海浬偵察作戰半徑，")
+                       .Replace(" nm Recon radius. ", " 海浬偵察作戰半徑。")
+                       .Replace(" nm Recon radius.", " 海浬偵察作戰半徑。")
+                       .Replace("Cruise at optimum altitude and speed.", "按最佳高度與速度巡航。")
                        .Replace("Cruise at ", "巡航高度 ")
-                       .Replace("Weapon release at max range.", "在最大射程发射武器。")
-                       .Replace("No form-up time.", "无编队集结时间。")
-                       .Replace(" profile.", " 飞行剖面。")
-                       .Replace("Radius: ", "作战半径: ")
-                       .Replace("Transit at ", "巡航转场高度 ")
-                       .Replace("Ingress at ", "突防进入高度 ")
-                       .Replace("Egress at ", "脱离返航高度 ")
-                       .Replace(", on-station loiter", "，阵位巡逻待机")
-                       .Replace(", on-station ", "，阵位滞空 ")
-                       .Replace("Form-up ", "编队集结 ")
+                       .Replace("Weapon release at max range.", "在最大射程發射武器。")
+                       .Replace("No form-up time.", "無編隊集結時間。")
+                       .Replace(" profile.", " 飛行剖面。")
+                       .Replace("Radius: ", "作戰半徑: ")
+                       .Replace("Transit at ", "巡航轉場高度 ")
+                       .Replace("Ingress at ", "突防進入高度 ")
+                       .Replace("Egress at ", "脫離返航高度 ")
+                       .Replace(", on-station loiter", "，陣位巡邏待機")
+                       .Replace(", on-station ", "，陣位滯空 ")
+                       .Replace("Form-up ", "編隊集結 ")
                        .Replace(" at 2k ft.", " @ 高度 2千英尺。")
                        .Replace(" at 36k ft", " @ 36千英尺")
-                       .Replace("% reserves and ", "% 备份油量与 ")
-                       .Replace("% reserves.", "% 备份油量。")
-                       .Replace("% reserves", "% 备份油量")
-                       .Replace(" min loiter", " 分钟盘旋待机")
+                       .Replace("% reserves and ", "% 備份油量與 ")
+                       .Replace("% reserves.", "% 備份油量。")
+                       .Replace("% reserves", "% 備份油量")
+                       .Replace(" min loiter", " 分鐘盤旋待機")
                        .Replace("Hi-Lo-Hi", "高-低-高 (Hi-Lo-Hi)")
                        .Replace("Lo-Lo-Lo", "低-低-低 (Lo-Lo-Lo)")
                        .Replace("Hi-Hi-Hi", "高-高-高 (Hi-Hi-Hi)")
-                       .Replace("low-level dash", "低空突防冲刺")
+                       .Replace("low-level dash", "低空突防衝刺")
                        .Replace("k ft", "千英尺")
-                       .Replace(" nm", " 海里");
+                       .Replace(" nm", " 海浬");
         }
 
         private static string TranslateLoadoutValue(string val)
         {
             if (string.IsNullOrEmpty(val)) return val;
-            if (val == "-" || val == "无" || val == "无限制") return val;
+            if (val == "-" || val == "無" || val == "無限制") return val;
 
             if (exactMap.ContainsKey(val)) return exactMap[val];
             string norm = Regex.Replace(val.Trim(), @"\s+", " ");
@@ -3946,21 +3946,21 @@ namespace CMOLocalizer
 
             if (val.StartsWith("Shotgun:") || val.StartsWith("Winchester:"))
             {
-                return val.Replace("Shotgun: ", "主武器耗尽返航 (Shotgun): ")
-                          .Replace("Winchester: ", "弹尽返航 (Winchester): ")
-                          .Replace("Return to base after one engagement with WVR weapons.", "在进行一次视距内交战后返航。")
-                          .Replace("Return to base after one engagement with BVR weapons.", "在进行一次超视距交战后返航。")
-                          .Replace("Allow targets of opportunity with air-to-air guns.", "允许使用航炮攻击机会目标。");
+                return val.Replace("Shotgun: ", "主武器耗盡返航 (Shotgun): ")
+                          .Replace("Winchester: ", "彈盡返航 (Winchester): ")
+                          .Replace("Return to base after one engagement with WVR weapons.", "在進行一次視距內交戰後返航。")
+                          .Replace("Return to base after one engagement with BVR weapons.", "在進行一次超視距交戰後返航。")
+                          .Replace("Allow targets of opportunity with air-to-air guns.", "允許使用航砲攻擊機會目標。");
             }
 
             if (val.EndsWith(" capable") || val.EndsWith(" 能力") || val.StartsWith("Day and night") || val.StartsWith("Day-only") || val.StartsWith("Night-only"))
             {
                 string cap = val.Replace(" capable", "").Replace(" 能力", "").Trim();
-                return cap.Replace("Day and night", "昼夜")
-                          .Replace("Day-only", "仅昼间")
-                          .Replace("Night-only", "仅夜间")
+                return cap.Replace("Day and night", "晝夜")
+                          .Replace("Day-only", "僅晝間")
+                          .Replace("Night-only", "僅夜間")
                           .Replace("All-weather", "全天候")
-                          + "作战能力";
+                          + "作戰能力";
             }
 
             if (val.Contains(" minutes at ") || val.Contains(" nm CAP") || val.Contains("Transit at ") || val.Contains("Ingress at ") || val.Contains(" profile") || val.Contains("Recon radius") || val.Contains("Strike radius") || val.Contains("reserves"))
@@ -3994,7 +3994,7 @@ namespace CMOLocalizer
                 {
                     string gen = it.Substring(0, it.Length - " Technology".Length).Trim();
                     string trGen = TranslateString(gen);
-                    if (trGen != gen) tr = trGen + "技术水平";
+                    if (trGen != gen) tr = trGen + "技術水平";
                 }
                 if (tr != it) anyTrans = true;
                 trItems.Add(tr);
@@ -4011,56 +4011,56 @@ namespace CMOLocalizer
 
             if (text.Contains("Reserve"))
             {
-                text = text.Replace("(Reserve [Available])", "(后备 [可用])")
-                           .Replace("Reserve [Available]", "后备 [可用]")
-                           .Replace("(Reserve)", "(后备)");
+                text = text.Replace("(Reserve [Available])", "(後備 [可用])")
+                           .Replace("Reserve [Available]", "後備 [可用]")
+                           .Replace("(Reserve)", "(後備)");
             }
 
             if (text.Contains("Maintenance"))
             {
-                text = text.Replace("(Maintenance [Unavailable])", "(维护 [不可用])")
-                           .Replace("Maintenance [Unavailable]", "维护 [不可用]");
+                text = text.Replace("(Maintenance [Unavailable])", "(維護 [不可用])")
+                           .Replace("Maintenance [Unavailable]", "維護 [不可用]");
             }
 
             if (text.Contains("CAEW"))
             {
-                text = text.Replace("Conformal Airborne Early Warning (CAEW)", "保形空中预警 (CAEW)");
+                text = text.Replace("Conformal Airborne Early Warning (CAEW)", "保形空中預警 (CAEW)");
             }
 
             if (text.Contains("Ferry"))
             {
-                text = text.Replace("(Ferry)", "(转场)")
-                           .Replace("Ferry Flight", "转场飞行")
-                           .Replace("Ferry", "转场");
+                text = text.Replace("(Ferry)", "(轉場)")
+                           .Replace("Ferry Flight", "轉場飛行")
+                           .Replace("Ferry", "轉場");
             }
 
-            if (Regex.IsMatch(text, @"^\d+\s*(hr|小时)(\s*\d+\s*(min|分钟))?$|^\d+\s*(min|分钟)$"))
+            if (Regex.IsMatch(text, @"^\d+\s*(hr|小時)(\s*\d+\s*(min|分鐘))?$|^\d+\s*(min|分鐘)$"))
             {
-                return text.Replace("hr", "小时").Replace("min", "分钟").Replace("sec", "秒");
+                return text.Replace("hr", "小時").Replace("min", "分鐘").Replace("sec", "秒");
             }
 
             if (text.Contains(" sorties @ ") || text.Contains(" flying time") || text.Contains("Day and night") || text.Contains("架次") || text.Contains("downtime"))
             {
-                text = text.Replace("Day and night", "昼夜")
-                           .Replace("Day-only", "仅昼间")
-                           .Replace("Night-only", "仅夜间")
+                text = text.Replace("Day and night", "晝夜")
+                           .Replace("Day-only", "僅晝間")
+                           .Replace("Night-only", "僅夜間")
                            .Replace(" sorties @ ", " 架次 @ ")
-                           .Replace(" flying time", " 飞行时间")
-                           .Replace(" downtime", " 停机整备")
-                           .Replace(" hr", " 小时")
-                           .Replace(" min", " 分钟");
+                           .Replace(" flying time", " 飛行時間")
+                           .Replace(" downtime", " 停機整備")
+                           .Replace(" hr", " 小時")
+                           .Replace(" min", " 分鐘");
             }
 
-            if (text.Contains("Enabled") || text.Contains("已启用") || text.Contains("Day/Night"))
+            if (text.Contains("Enabled") || text.Contains("已啓用") || text.Contains("Day/Night"))
             {
-                text = text.Replace("Enabled, ", "已启用，")
-                           .Replace("Enabled", "已启用")
-                           .Replace("Day/Night:", "昼/夜:")
-                           .Replace("Day/Night", "昼/夜");
+                text = text.Replace("Enabled, ", "已啓用，")
+                           .Replace("Enabled", "已啓用")
+                           .Replace("Day/Night:", "晝/夜:")
+                           .Replace("Day/Night", "晝/夜");
             }
             if (text.StartsWith("Disabled"))
             {
-                return text.Replace("Disabled (Doctrine)", "已禁用 (条令限制)").Replace("Disabled", "已禁用");
+                return text.Replace("Disabled (Doctrine)", "已停用 (條令限制)").Replace("Disabled", "已停用");
             }
 
             return text;
@@ -4081,22 +4081,22 @@ namespace CMOLocalizer
                 if (line.StartsWith("Pre-briefed weapon state ")
                     || line.StartsWith("Effective pre-briefed weapon state ")
                     || line.StartsWith("Loadout's default weapon state ")
-                    || line.StartsWith("预设武器状态")
-                    || line.StartsWith("预先简报的武器状态")
-                    || line.StartsWith("生效的预设武器状态")
-                    || line.StartsWith("挂载方案默认武器状态"))
+                    || line.StartsWith("預設武器狀態")
+                    || line.StartsWith("預先簡報的武器狀態")
+                    || line.StartsWith("生效的預設武器狀態")
+                    || line.StartsWith("掛載方案預設武器狀態"))
                 {
-                    string prefix = "预设武器状态: ";
-                    if (line.StartsWith("Effective") || line.StartsWith("生效")) prefix = "生效的预设武器状态: ";
-                    else if (line.StartsWith("Loadout's") || line.StartsWith("挂载")) prefix = "挂载方案默认武器状态: ";
+                    string prefix = "預設武器狀態: ";
+                    if (line.StartsWith("Effective") || line.StartsWith("生效")) prefix = "生效的預設武器狀態: ";
+                    else if (line.StartsWith("Loadout's") || line.StartsWith("掛載")) prefix = "掛載方案預設武器狀態: ";
 
                     string rest = line.Replace("Effective pre-briefed weapon state ", "")
                                       .Replace("Loadout's default weapon state ", "")
                                       .Replace("Pre-briefed weapon state ", "")
-                                      .Replace("预先简报的武器状态 ", "")
-                                      .Replace("生效的预设武器状态: ", "")
-                                      .Replace("挂载方案默认武器状态: ", "")
-                                      .Replace("预设武器状态: ", "")
+                                      .Replace("預先簡報的武器狀態 ", "")
+                                      .Replace("生效的預設武器狀態: ", "")
+                                      .Replace("掛載方案預設武器狀態: ", "")
+                                      .Replace("預設武器狀態: ", "")
                                       .Trim();
                     string trRest = exactMap.ContainsKey(rest) ? exactMap[rest] : TranslateString(rest);
                     trLine = prefix + trRest;
@@ -4134,7 +4134,7 @@ namespace CMOLocalizer
             if (string.IsNullOrEmpty(fText)) return fText;
             if (ContainsChinese(fText))
             {
-                // 混排标题（"条令 & 交战规则(RoE) 用于推演方: Israel"）里尾部仍
+                // 混排标题（"條令 & 接戰規定(RoE) 用於推演方: Israel"）里尾部仍
                 // 可能是英文阵营/想定名，单独翻译该尾串。
                 int ci = fText.LastIndexOf(':');
                 if (ci < 0) ci = fText.LastIndexOf('：');
@@ -4160,14 +4160,14 @@ namespace CMOLocalizer
             }
             if (fText.StartsWith("Command: Modern Operations"))
             {
-                return fText.Replace("Command: Modern Operations", "现代行动：指挥")
-                            .Replace("Build ", "内部版本 ");
+                return fText.Replace("Command: Modern Operations", "現代行動：指揮")
+                            .Replace("Build ", "內部版本 ");
             }
             if (fText.StartsWith("Message Log - "))
             {
                 string view = fText.EndsWith("Raw text view", StringComparison.OrdinalIgnoreCase)
-                    ? "原始文本视图" : "交互视图";
-                return "消息日志 - " + view;
+                    ? "原始文本視圖" : "互動視圖";
+                return "訊息日誌 - " + view;
             }
             return TranslateString(fText);
         }
@@ -4206,38 +4206,38 @@ namespace CMOLocalizer
                     if (fText.StartsWith("Database Viewer"))
                     {
                         int parenIdx = fText.IndexOf('(');
-                        ctrl.Text = "数据库查看器 " + (parenIdx >= 0 ? fText.Substring(parenIdx) : "").Trim();
+                        ctrl.Text = "資料庫檢視器 " + (parenIdx >= 0 ? fText.Substring(parenIdx) : "").Trim();
                         return;
                     }
                     if (fText.StartsWith("Air Ops - "))
                     {
-                        ctrl.Text = "航空作业 - " + fText.Substring("Air Ops - ".Length);
+                        ctrl.Text = "航空作業 - " + fText.Substring("Air Ops - ".Length);
                         return;
                     }
                     if (fText.StartsWith("Docking Ops - "))
                     {
-                        ctrl.Text = "船坞作业 - " + fText.Substring("Docking Ops - ".Length);
+                        ctrl.Text = "船塢作業 - " + fText.Substring("Docking Ops - ".Length);
                         return;
                     }
                     if (fText.StartsWith("Mission Editor for side: "))
                     {
-                        ctrl.Text = "任务编辑器 - 所属阵营: " + fText.Substring("Mission Editor for side: ".Length);
+                        ctrl.Text = "任務編輯器 - 所屬陣營: " + fText.Substring("Mission Editor for side: ".Length);
                         return;
                     }
                     if (fText.StartsWith("Formation Editor"))
                     {
-                        ctrl.Text = fText.Replace("Formation Editor", "编队编辑器");
+                        ctrl.Text = fText.Replace("Formation Editor", "編隊編輯器");
                         return;
                     }
                     if (fText.Contains("Special Messages"))
                     {
-                        ctrl.Text = fText.Replace("Special Messages", "专用战情消息");
+                        ctrl.Text = fText.Replace("Special Messages", "專用戰情訊息");
                         return;
                     }
-                    if ((fText.StartsWith("就绪飞机") || fText.StartsWith("Ready Aircraft")) && fText.Contains(" at "))
+                    if ((fText.StartsWith("就緒飛機") || fText.StartsWith("Ready Aircraft")) && fText.Contains(" at "))
                     {
-                        ctrl.Text = fText.Replace("Ready Aircraft: ", "就绪飞机: ")
-                                         .Replace("Ready Aircraft：", "就绪飞机：")
+                        ctrl.Text = fText.Replace("Ready Aircraft: ", "就緒飛機: ")
+                                         .Replace("Ready Aircraft：", "就緒飛機：")
                                          .Replace(" at ", " @ ");
                         return;
                     }
@@ -4245,12 +4245,12 @@ namespace CMOLocalizer
                     // 实测 Sensors for: Taif (King Fahd Air Base) / Damage Status for Taif (…)。
                     if (fText.StartsWith("Sensors for: "))
                     {
-                        ctrl.Text = "传感器：" + fText.Substring("Sensors for: ".Length);
+                        ctrl.Text = "感測器：" + fText.Substring("Sensors for: ".Length);
                         return;
                     }
                     if (fText.StartsWith("Damage Status for "))
                     {
-                        ctrl.Text = "损伤与系统状态 - " + fText.Substring("Damage Status for ".Length);
+                        ctrl.Text = "損傷與系統狀態 - " + fText.Substring("Damage Status for ".Length);
                         return;
                     }
                     if (fText.StartsWith("Weapons for "))
@@ -4277,7 +4277,7 @@ namespace CMOLocalizer
                 TextBoxBase tb = (TextBoxBase)ctrl;
                 if (!string.IsNullOrEmpty(tb.Text) && tb.Text.StartsWith("Enter Database ID for this "))
                 {
-                    tb.Text = "输入该型装备的数据库 ID...";
+                    tb.Text = "輸入該型裝備的資料庫 ID...";
                     return;
                 }
                 if (tb.ReadOnly && !string.IsNullOrEmpty(tb.Text))
@@ -4326,7 +4326,7 @@ namespace CMOLocalizer
                     Match mSel = Regex.Match(ctext, @"^(\d+)\s+selectable sides?$");
                     if (mSel.Success)
                     {
-                        ctrl.Text = "可选择 " + mSel.Groups[1].Value + " 个阵营";
+                        ctrl.Text = "可選擇 " + mSel.Groups[1].Value + " 個陣營";
                         return;
                     }
                     // 推演选项窗口的刷新频率是动态值：「Every 5 seconds」/「Every 30 seconds」。
@@ -4339,18 +4339,18 @@ namespace CMOLocalizer
                             bool isMinute = mEvery.Groups[2].Value.StartsWith("minute", StringComparison.Ordinal);
                             bool isMs = mEvery.Groups[2].Value == "ms";
                             ctrl.Text = "每 " + nEvery.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                                + (isMs ? " 毫秒" : isMinute ? " 分钟" : " 秒");
+                                + (isMs ? " 毫秒" : isMinute ? " 分鐘" : " 秒");
                             return;
                         }
                     }
                     if (ctext == "Inherited From Doctrine:")
                     {
-                        ctrl.Text = "继承自条令：";
+                        ctrl.Text = "繼承自條令：";
                         return;
                     }
                     if (ctext == "(Parent Side)" || ctext == "(Parent Side) ")
                     {
-                        ctrl.Text = "（上级阵营）";
+                        ctrl.Text = "（上級陣營）";
                         return;
                     }
                 }
@@ -4359,17 +4359,17 @@ namespace CMOLocalizer
             string t = ctrl.Text;
             if (!string.IsNullOrEmpty(t))
             {
-                if (t == "Spacing") { ctrl.Text = "间距"; return; }
-                if (t == "Misc") { ctrl.Text = "其他设置"; return; }
-                if (t == "Pick area") { ctrl.Text = "选取区域"; return; }
-                if (t == "Create area") { ctrl.Text = "创建区域"; return; }
+                if (t == "Spacing") { ctrl.Text = "間距"; return; }
+                if (t == "Misc") { ctrl.Text = "其他設定"; return; }
+                if (t == "Pick area") { ctrl.Text = "選取區域"; return; }
+                if (t == "Create area") { ctrl.Text = "創建區域"; return; }
                 if ((t == "Clear" || t == "晴") && ctrl.Name.IndexOf("Clear", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     ctrl.Text = "清除";
                     return;
                 }
                 // 处理单行或多行挂载详情面板 (如 AirOps / ReadyAircraft 右下角的各项 Label)
-                if (t.Contains("挂载") || t.Contains("作战能力") || t.Contains("飞行剖面") || t.Contains("武器状态") || t.Contains("攻击高度") ||
+                if (t.Contains("掛載") || t.Contains("作戰能力") || t.Contains("飛行剖面") || t.Contains("武器狀態") || t.Contains("攻擊高度") ||
                     t.Contains("Loadout") || t.Contains("Pre-briefed") || t.Contains("Effective pre-briefed") || t.Contains("Unlimited") ||
                     t.StartsWith("TimeOfDay") || t.StartsWith("NumberOfLoadouts") || t.Contains("Capable") || t.Contains("capable"))
                 {
@@ -4382,30 +4382,30 @@ namespace CMOLocalizer
                 }
                 if (t.Contains("Special Messages"))
                 {
-                    ctrl.Text = t.Replace("Special Messages", "专用战情消息");
+                    ctrl.Text = t.Replace("Special Messages", "專用戰情訊息");
                     return;
                 }
-                // 处理 "展开 飞机构列表" 遗留误译修正与 Occupied 动态统计
-                if (t.Contains("飞机构列表"))
+                // 处理 "展開 飛機構列表" 遗留误译修正与 Occupied 动态统计
+                if (t.Contains("飛機構列表"))
                 {
-                    ctrl.Text = t.Replace("飞机构列表", "飞机列表").Replace("展开 ", "展开");
+                    ctrl.Text = t.Replace("飛機構列表", "飛機列表").Replace("展開 ", "展開");
                     return;
                 }
                 if (t.StartsWith("Occupied "))
                 {
-                    ctrl.Text = "已占用 " + t.Substring("Occupied ".Length);
+                    ctrl.Text = "已佔用 " + t.Substring("Occupied ".Length);
                     return;
                 }
                 if ((t.Contains(" sorties @ ") || t.Contains("maximum airborne time") || t.Contains(" turnaround")) && !t.Contains("停航"))
                 {
                     string sTr = t.Replace(" sorties @ ", " 架次 @ ")
-                                  .Replace(" maximum airborne time and ", " 最长滞空时间，")
-                                  .Replace(" 最长滞空时间与 ", " 最长滞空时间，")
-                                  .Replace(" turnaround, with ", " 再次出动周转，")
-                                  .Replace(" 再次出动准备，包含 ", " 再次出动周转，")
-                                  .Replace(" standdown ready time", " 停航战备恢复时间")
-                                  .Replace(" hr", " 小时")
-                                  .Replace(" min", " 分钟");
+                                  .Replace(" maximum airborne time and ", " 最長滯空時間，")
+                                  .Replace(" 最長滯空時間與 ", " 最長滯空時間，")
+                                  .Replace(" turnaround, with ", " 再次出動週轉，")
+                                  .Replace(" 再次出動準備，包含 ", " 再次出動週轉，")
+                                  .Replace(" standdown ready time", " 停航戰備恢復時間")
+                                  .Replace(" hr", " 小時")
+                                  .Replace(" min", " 分鐘");
                     if (sTr != t)
                     {
                         ctrl.Text = sTr;
@@ -4457,7 +4457,7 @@ namespace CMOLocalizer
             while (i < t.Length && (t[i] == ' ' || t[i] == '\t' || t[i] == ',')) i++;
             string tail = t.Substring(i).Trim();
             if (tail.Length == 0 || !ContainsChinese(tail)) return null;
-            return "继承自上级，" + tail;
+            return "繼承自上級，" + tail;
         }
 
         /// <summary>
@@ -4522,17 +4522,17 @@ namespace CMOLocalizer
             }
 
             // 特殊复合前缀拆解：即使前缀已经被 offsets 汉化，后续英文想定标题/地域名/年份仍需递归汉化
-            if (raw.StartsWith("[未授权] ") || raw.StartsWith("[UNLICENSED] "))
+            if (raw.StartsWith("[未授權] ") || raw.StartsWith("[UNLICENSED] "))
             {
                 string rest = raw.Substring(raw.IndexOf(']') + 1).Trim();
                 string tRest = TranslateString(rest);
-                return "[未授权] " + tRest;
+                return "[未授權] " + tRest;
             }
             // 想定浏览器标题行的变体：“[NOT LICENSED] Carrier Killer, 1985”。
             // 标题与年份被拼成一个整串，整串查表永远落空（用户实测：战役里剧本名还是英文）。
             // 拆成“前缀 + 标题 + 年份”分开处理，标题按普通词条翻译，年份原样保留。
             if (raw.StartsWith("[NOT LICENSED]") || raw.StartsWith("[NOTLICENSED]")
-                || raw.StartsWith("[未授权]"))
+                || raw.StartsWith("[未授權]"))
             {
                 int close = raw.IndexOf(']');
                 string rest = close >= 0 ? raw.Substring(close + 1).Trim() : raw;
@@ -4549,13 +4549,13 @@ namespace CMOLocalizer
                     }
                 }
                 string tTitle = TranslateString(rest);
-                return "[未授权] " + tTitle + tail;
+                return "[未授權] " + tTitle + tail;
             }
-            if (raw.StartsWith("作战地域:") || raw.StartsWith("作战地域：") || raw.StartsWith("位置 / 设置:"))
+            if (raw.StartsWith("作戰地域:") || raw.StartsWith("作戰地域：") || raw.StartsWith("位置 / 設定:"))
             {
                 int colonIdx = raw.IndexOf(':');
                 if (colonIdx < 0) colonIdx = raw.IndexOf('：');
-                string prefix = (colonIdx >= 0) ? raw.Substring(0, colonIdx + 1).Trim() : "作战地域：";
+                string prefix = (colonIdx >= 0) ? raw.Substring(0, colonIdx + 1).Trim() : "作戰地域：";
                 string body = (colonIdx >= 0) ? raw.Substring(colonIdx + 1).Trim() : raw;
                 int idxY = body.IndexOf("--");
                 if (idxY > 0)
@@ -4569,7 +4569,7 @@ namespace CMOLocalizer
             }
             if (raw.StartsWith("Uses: "))
             {
-                return "使用数据库: " + raw.Substring(6).Trim();
+                return "使用資料庫: " + raw.Substring(6).Trim();
             }
             // 主标题/大厅标题带构建号，构建号每次游戏更新都会变（1900.20 → 1900.23 …）。
             // 用规则处理而不是再写死一个版本串（见 docs/BUG_REGISTRY.md R31）。
@@ -4579,12 +4579,12 @@ namespace CMOLocalizer
                 if (mTitle.Success)
                 {
                     NoteGameBuild(raw);
-                    return "现代行动：指挥 v" + mTitle.Groups[1].Value + " - 内部版本 " + mTitle.Groups[2].Value;
+                    return "現代行動：指揮 v" + mTitle.Groups[1].Value + " - 內部版本 " + mTitle.Groups[2].Value;
                 }
             }
 
             // 英文前缀 + 已汉化尾（R39）：必须在下面「已含中文」的早退之前处理，
-            // 否则 "Inherited, 始终开火" 这类混合串永远原地不动。
+            // 否则 "Inherited, 始終開火" 这类混合串永远原地不动。
             string mixedPrefix = FixMixedEnglishPrefix(raw);
             if (mixedPrefix != null) return mixedPrefix;
 
@@ -4658,7 +4658,7 @@ namespace CMOLocalizer
 
                     string baseDir = AppDomain.CurrentDomain.BaseDirectory;
                     string scenDir = Path.Combine(baseDir, "Scenarios");
-                    string summary = "特别消息: " + htmlName;
+                    string summary = "特別訊息: " + htmlName;
                     if (Directory.Exists(scenDir))
                     {
                         string[] matches = Directory.GetFiles(scenDir, htmlName, SearchOption.AllDirectories);
@@ -4690,11 +4690,11 @@ namespace CMOLocalizer
         private static readonly Dictionary<string, string> composeUnits =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                { "ft", "英尺" }, { "kft", "千英尺" }, { "m", "米" }, { "km", "千米" },
-                { "nm", "海里" }, { "kt", "节" }, { "kts", "节" }, { "kg", "千克" },
+                { "ft", "英尺" }, { "kft", "千英尺" }, { "m", "公尺" }, { "km", "公里" },
+                { "nm", "海浬" }, { "kt", "節" }, { "kts", "節" }, { "kg", "公斤" },
                 { "lb", "磅" }, { "lbs", "磅" }, { "liter", "升" }, { "liters", "升" },
-                { "gallon", "加仑" }, { "gallons", "加仑" }, { "unit", "个单位" },
-                { "units", "个单位" },
+                { "gallon", "加侖" }, { "gallons", "加侖" }, { "unit", "個單位" },
+                { "units", "個單位" },
             };
 
         /// <summary>
@@ -4915,7 +4915,7 @@ namespace CMOLocalizer
             {
                 string rest = TranslateComposedSpec(qty.Groups["rest"].Value);
                 if (rest == null) return null;
-                return qty.Groups["n"].Value + " 个" + rest;
+                return qty.Groups["n"].Value + " 個" + rest;
             }
 
             // `105mm/37 L118 Towed Light Gun x 6`、`100mm KS-19 x 4, Fire Can FCR`
@@ -4953,7 +4953,7 @@ namespace CMOLocalizer
             }
 
             Match units = Regex.Match(s, @"^(?<n>\d[\d,]*)\s*units?$", RegexOptions.IgnoreCase);
-            if (units.Success) return units.Groups["n"].Value + " 个单位";
+            if (units.Success) return units.Groups["n"].Value + " 個單位";
 
             // `200k Liter Underground Tank`：先取数量+单位，再翻译剩余词汇
             Match cap = Regex.Match(s,
@@ -5049,7 +5049,7 @@ namespace CMOLocalizer
             return c == ',' || c == ';' || c == ':' || c == '(' || c == ')' || c == '[' || c == ']' || c == '"' || c == '\'';
         }
 
-        /// <summary>剥掉 token 前导/尾随标点（`[P-12]` → `[` + `P-12` + `]`、`Mk.` → `Mk` + `.`、`ASW,` → `ASW` + `,`）；术语表里不会带标点。</summary>
+        /// <summary>剝掉 token 前導/尾隨標點（`[P-12]` → `[` + `P-12` + `]`、`Mk.` → `Mk` + `.`、`ASW,` → `ASW` + `,`）；術語表裏不會帶標點。</summary>
         private static void SplitPunct(string token, out string prefix, out string core, out string suffix)
         {
             prefix = "";
@@ -5068,7 +5068,7 @@ namespace CMOLocalizer
                 }
                 else if (ch == '.' && end >= start + 2 && (token[end - 2] < '0' || token[end - 2] > '9'))
                 {
-                    // 缩写末尾的点（如 `Mk.`、`F.`、`A.`、`Mod.`），剥除以还原核心代号；数字中间的点不碰（如 `12.7mm`）
+                    // 縮寫末尾的點（如 `Mk.`、`F.`、`A.`、`Mod.`），剝除以還原核心代號；數字中間的點不碰（如 `12.7mm`）
                     end--;
                 }
                 else
@@ -5091,10 +5091,10 @@ namespace CMOLocalizer
         }
 
         /// <summary>
-        /// 「中文标签: 英文值」的右值翻译（R45）。
-        /// 池注入与上游汉化只覆盖标签，值来自数据库/运行时仍是英文，而 TranslateString
-        /// 一看到串里含中文就整体早退——这类混合串因此长期漏翻（用户实测 `状态: Unassigned`）。
-        /// 只处理「左半含中文、右半纯英文、且右半能整串查到译法」的窄形状，其余原样返回。
+        /// 「中文標籤: 英文值」的右值翻譯（R45）。
+        /// 池注入與上游漢化只覆蓋標籤，值來自資料庫/運行時仍是英文，而 TranslateString
+        /// 一看到串裏含中文就整體早退——這類混合串因此長期漏翻（用戶實測 `狀態: Unassigned`）。
+        /// 只處理「左半含中文、右半純英文、且右半能整串查到譯法」的窄形狀，其餘原樣返回。
         /// </summary>
         private static string TranslateMixedValueTail(string raw)
         {
@@ -5110,9 +5110,9 @@ namespace CMOLocalizer
                 if (!ContainsChinese(left)) return raw;
                 if (right.Length == 0 || right.Length > 64) return raw;
                 if (ContainsChinese(right)) return raw;
-                // R63：右值可能是「子键: 值」的复合串（`挂载方案: A/A: AIM-7M Sparrow III, Heavy`）。
-                // 旧正则不允许冒号，这类半译串被原样返回并钉在屏幕上，游戏刷新时与整译
-                // 版本交替出现——用户看到的就是频闪。
+                // R63：右值可能是「子鍵: 值」的複合串（`掛載方案: A/A: AIM-7M Sparrow III, Heavy`）。
+                // 舊正則不允許冒號，這類半譯串被原樣返回並釘在螢幕上，遊戲重新整理時與整譯
+                // 版本交替出現——用戶看到的就是頻閃。
                 if (!Regex.IsMatch(right, "^[A-Za-z][A-Za-z0-9 ,./()&+%:\\-]*$")) return raw;
                 string trRight = TranslateString(right);
                 if (string.IsNullOrEmpty(trRight) || trRight == right) return raw;
@@ -5122,10 +5122,10 @@ namespace CMOLocalizer
         }
 
         /// <summary>
-        /// 中文串里的英文括号片段（任务编辑器「可用」列表、单位名称拼装等）：
-        /// 「苏法/风暴 #1 (Air Superiority BVR) (拉马特戴维)」这类整串查表必然落空，
-        /// 按标点切分又因含中文被跳过，于是英文载荷名会一直显示。
-        /// 这里按 () / [] 拆出纯英文片段单独翻译后原样拼回。
+        /// 中文串裏的英文括號片段（任務編輯器「可用」列表、單位名稱拼裝等）：
+        /// 「蘇法/風暴 #1 (Air Superiority BVR) (拉馬特戴維)」這類整串查表必然落空，
+        /// 按標點切分又因含中文被跳過，於是英文酬載名會一直顯示。
+        /// 這裏按 () / [] 拆出純英文片段單獨翻譯後原樣拼回。
         /// </summary>
         private static string TranslateBracketSegments(string raw)
         {
@@ -5141,9 +5141,9 @@ namespace CMOLocalizer
                         if (ContainsChinese(inner)) return m.Value;
                         string trInner = TranslateInnerSegment(inner);
                         if (trInner == inner) return m.Value;
-                        // 幂等：`Active` 的译法本身就是「主动 (Active)」这种带原文括号提示的形式，
-                        // 再嵌进括号就成了「主动 (主动 (Active))」，且每刷新一次多裹一层。
-                        // 译文里若已经包含原文，说明这个括号已经是「中文 + 英文提示」，原样保留。
+                        // 冪等：`Active` 的譯法本身就是「主動 (Active)」這種帶原文括號提示的形式，
+                        // 再嵌進括號就成了「主動 (主動 (Active))」，且每重新整理一次多裹一層。
+                        // 譯文裏若已經包含原文，說明這個括號已經是「中文 + 英文提示」，原樣保留。
                         if (trInner.IndexOf(inner, StringComparison.Ordinal) >= 0) return m.Value;
                         return m.Groups[1].Value + trInner + m.Groups[3].Value;
                     });
@@ -5151,7 +5151,7 @@ namespace CMOLocalizer
             catch { return raw; }
         }
 
-        /// <summary>翻译括号内的英文片段：整段 → 前缀(冒号)→ 逗号分片；无命中则原样返回。</summary>
+        /// <summary>翻譯括號內的英文片段：整段 → 前綴(冒號)→ 逗號分片；無命中則原樣返回。</summary>
         private static string TranslateInnerSegment(string inner)
         {
             string hit = LookupPiece(inner);
@@ -5199,9 +5199,9 @@ namespace CMOLocalizer
         }
 
         /// <summary>
-        /// 游戏内部版本哨兵：从标题串（"Command: Modern Operations v1.10 - Build 1900.23"）读实际
-        /// 构建号，与安装清单里「本汉化适配的构建号」比对；不一致即说明游戏已更新，汉化可能大面积
-        /// 失效（R31 事故：构建号 1900.20→1900.23 跳变，界面与注入同时失灵而无人知晓）。
+        /// 遊戲內部版本哨兵：從標題串（"Command: Modern Operations v1.10 - Build 1900.23"）讀實際
+        /// 構建號，與安裝清單裏「本漢化適配的構建號」比對；不一致即說明遊戲已更新，漢化可能大面積
+        /// 失效（R31 事故：構建號 1900.20→1900.23 跳變，介面與注入同時失靈而無人知曉）。
         /// </summary>
         private static void NoteGameBuild(string raw)
         {
@@ -5220,12 +5220,12 @@ namespace CMOLocalizer
                 string target = tm.Success ? tm.Groups[1].Value : "";
                 if (target.Length == 0)
                 {
-                    Log("GameBuild: 安装清单未记录适配构建号（旧版安装包）——无法比对。");
+                    Log("GameBuild: 安裝清單未記錄適配構建號（舊版安裝包）——無法比對。");
                 }
                 else if (target != detectedGameBuild)
                 {
-                    Log("GameBuild: 警告！游戏已更新到 " + detectedGameBuild + "，本汉化适配的是 " + target
-                        + " —— 部分界面可能退回英文或行为异常，请等待对应版本的汉化补丁。");
+                    Log("GameBuild: 警告！遊戲已更新到 " + detectedGameBuild + "，本漢化適配的是 " + target
+                        + " —— 部分介面可能退回英文或行爲異常，請等待對應版本的漢化修補程式。");
                 }
             }
             catch (Exception ex)
@@ -5263,22 +5263,22 @@ namespace CMOLocalizer
             if (m.Success)
             {
                 bool hit = m.Groups[3].Value.Equals("HIT", StringComparison.OrdinalIgnoreCase);
-                return m.Groups[1].Value + " #" + m.Groups[2].Value + " 的终局报告：" + (hit ? "命中" : "脱靶");
+                return m.Groups[1].Value + " #" + m.Groups[2].Value + " 的終局報告：" + (hit ? "命中" : "脫靶");
             }
 
             m = Regex.Match(s, @"^(.{1,60}?) #(\d+) now platform-classified:\s*(.+)$", RegexOptions.IgnoreCase);
             if (m.Success)
             {
-                return m.Groups[1].Value + " #" + m.Groups[2].Value + " 平台现已分类：" + m.Groups[3].Value.Trim();
+                return m.Groups[1].Value + " #" + m.Groups[2].Value + " 平臺現已分類：" + m.Groups[3].Value.Trim();
             }
 
             m = Regex.Match(s, @"^[Nn]ew (air|surface|submarine|weapon|ground|underwater) contact \((.{1,40}?) #(\d+)\)$", RegexOptions.IgnoreCase);
             if (m.Success)
             {
                 string kind = m.Groups[1].Value.ToLowerInvariant();
-                string head = kind == "air" ? "新空中目标接触" : kind == "surface" ? "新水面目标接触"
-                            : kind == "submarine" ? "新潜艇目标接触" : kind == "ground" ? "新地面目标接触"
-                            : kind == "underwater" ? "新水下目标接触" : "新建武器接触";
+                string head = kind == "air" ? "新空中目標接觸" : kind == "surface" ? "新水面目標接觸"
+                            : kind == "submarine" ? "新潛艦目標接觸" : kind == "ground" ? "新地面目標接觸"
+                            : kind == "underwater" ? "新水下目標接觸" : "新建武器接觸";
                 return head + "（" + m.Groups[2].Value + " #" + m.Groups[3].Value + "）";
             }
 
@@ -5293,28 +5293,28 @@ namespace CMOLocalizer
             if (m.Success)
             {
                 bool failed = m.Groups[2].Value.StartsWith("failed", StringComparison.OrdinalIgnoreCase);
-                return m.Groups[1].Value + (failed ? " 未能欺骗 " : " 欺骗了 ") + m.Groups[3].Value;
+                return m.Groups[1].Value + (failed ? " 未能欺騙 " : " 欺騙了 ") + m.Groups[3].Value;
             }
 
             m = Regex.Match(s, @"^(.{1,120}?) has been destroyed!$", RegexOptions.IgnoreCase);
             if (m.Success)
             {
-                return m.Groups[1].Value + " 已被摧毁！";
+                return m.Groups[1].Value + " 已被摧毀！";
             }
 
             m = Regex.Match(s, @"^[Nn]ew contact!? Designated (.{1,60}?) #(\d+) - Detected by (.{1,60}?)\s*\[Sensors:\s*(.{1,60}?)\]\s*at\s*(.{1,40})$", RegexOptions.IgnoreCase);
             if (m.Success)
             {
                 string tail = Regex.Replace(m.Groups[5].Value.Trim(), @"(\d+(?:\.\d+)?)\s*deg", "$1°");
-                return "新接触目标！标识编号：" + m.Groups[1].Value + " #" + m.Groups[2].Value
-                     + " - 探测方式：" + m.Groups[3].Value.Trim()
-                     + " [传感器：" + m.Groups[4].Value.Trim() + "] 方位 " + tail;
+                return "新接觸目標！標識編號：" + m.Groups[1].Value + " #" + m.Groups[2].Value
+                     + " - 探測方式：" + m.Groups[3].Value.Trim()
+                     + " [感測器：" + m.Groups[4].Value.Trim() + "] 方位 " + tail;
             }
 
             m = Regex.Match(s, @"^(.{1,60}?) jammed (.{2,40}?) successfully$", RegexOptions.IgnoreCase);
             if (m.Success)
             {
-                return m.Groups[1].Value + " 成功干扰 " + m.Groups[2].Value;
+                return m.Groups[1].Value + " 成功干擾 " + m.Groups[2].Value;
             }
 
             return null;
@@ -5372,7 +5372,7 @@ namespace CMOLocalizer
                             if (trHead != null && Regex.IsMatch(numPart, @"^[\d.,%]+$")) trTail = trHead + " " + numPart;
                         }
                     }
-                    if (!string.IsNullOrEmpty(trTail)) return "继承自上级，" + trTail;
+                    if (!string.IsNullOrEmpty(trTail)) return "繼承自上級，" + trTail;
                 }
 
                 // 出动架次：“2 Sorties (Maximum)” / “3 Sorties”
@@ -5427,20 +5427,20 @@ namespace CMOLocalizer
                 {
                     string lvl = mAuto.Groups[2].Value.Trim();
                     string trLvl = lvl;
-                    if (lvl == "Undefined") trLvl = "未定义";
-                    else if (lvl == "RemotelyPiloted") trLvl = "遥控驾驶";
-                    else if (lvl == "SelfRecovering") trLvl = "自主恢复";
-                    else if (lvl == "ChangeableMission") trLvl = "可变更任务";
-                    else if (lvl == "FaultEventAdaptive") trLvl = "故障/事件自适应";
-                    else if (lvl == "MultiVehicleCoordination") trLvl = "多机协同";
-                    else if (lvl == "BattlespaceCognizant") trLvl = "战场态势感知";
+                    if (lvl == "Undefined") trLvl = "未定義";
+                    else if (lvl == "RemotelyPiloted") trLvl = "遙控駕駛";
+                    else if (lvl == "SelfRecovering") trLvl = "自主恢復";
+                    else if (lvl == "ChangeableMission") trLvl = "可變更任務";
+                    else if (lvl == "FaultEventAdaptive") trLvl = "故障/事件自適應";
+                    else if (lvl == "MultiVehicleCoordination") trLvl = "多機協同";
+                    else if (lvl == "BattlespaceCognizant") trLvl = "戰場態勢感知";
                     else if (lvl == "FullyAutonomous") trLvl = "全自主";
                     else
                     {
                         string lk = LookupPiece(lvl);
                         if (lk != null) trLvl = lk;
                     }
-                    return mAuto.Groups[1].Value + " (自主控制等级: " + trLvl + ")";
+                    return mAuto.Groups[1].Value + " (自主控制等級: " + trLvl + ")";
                 }
 
                 if (normRaw.Contains(" (ex:") && normRaw.EndsWith(")"))
@@ -5579,7 +5579,7 @@ namespace CMOLocalizer
                 }
             }
 
-            // 3. Match with shortcut & prefix e.g. "&File" -> "文件(&F)" or "File (&F)"
+            // 3. Match with shortcut & prefix e.g. "&File" -> "檔案(&F)" or "File (&F)"
             if (trimmed.StartsWith("&") && trimmed.Length > 1)
             {
                 string noAmp = trimmed.Substring(1);
@@ -5597,7 +5597,7 @@ namespace CMOLocalizer
                 }
             }
 
-            // 4. Match with trailing ellipsis e.g. "Open..." -> "打开..."
+            // 4. Match with trailing ellipsis e.g. "Open..." -> "打開..."
             if (trimmed.EndsWith("...") && trimmed.Length > 3)
             {
                 string baseText = trimmed.Substring(0, trimmed.Length - 3).Trim();
@@ -5607,7 +5607,7 @@ namespace CMOLocalizer
                 }
             }
 
-            // 4.1 Match numbered prefix e.g. "1. Blue Dawn" -> "1. 蓝色拂晓"
+            // 4.1 Match numbered prefix e.g. "1. Blue Dawn" -> "1. 藍色拂曉"
             int dotIdx = trimmed.IndexOf('.');
             if (dotIdx > 0 && dotIdx < 5)
             {
@@ -5623,7 +5623,7 @@ namespace CMOLocalizer
                 }
             }
 
-            // 5. Enclosed brackets e.g. "[Selected Unit]" -> "[当前选中单位]"
+            // 5. Enclosed brackets e.g. "[Selected Unit]" -> "[當前選中單位]"
             if (trimmed.Length >= 3)
             {
                 if ((trimmed.StartsWith("[") && trimmed.EndsWith("]")) ||
@@ -5952,7 +5952,7 @@ namespace CMOLocalizer
         private static readonly HashSet<string> liveAuditSeen = new HashSet<string>(StringComparer.Ordinal);
         private static readonly object auditLock = new object();
         private static string auditLogPath = "";
-        // 游戏内部版本哨兵（见 NoteGameBuild）：只在首次拿到标题串时比对一次。
+        // 遊戲內部版本哨兵（見 NoteGameBuild）：只在首次拿到標題串時比對一次。
         private static string detectedGameBuild = "";
         private static bool gameBuildChecked = false;
 
@@ -6355,7 +6355,7 @@ namespace CMOLocalizer
             }
 
             // FLICKER_PROBE <毫秒>：必须在**后台节拍**上采样，不能在本线程 Sleep——
-            // 命令本身跑在 UI 线程，Sleep 会卡住消息循环，游戏定时器不跑，面板自然"零变化"，
+            // 命令本身跑在 UI 线程，Sleep 会卡住消息循环，游戏定时器不跑，面板自然"零變化"，
             // 于是永远测不出频闪（第一次实现就踩了这个坑：ticks=231 但变化 0）。
             // 现在后台线程只负责按节拍把一次极短的读值动作 BeginInvoke 到 UI 线程，立即返回。
             if (cmd == "FLICKER_PROBE")
@@ -7724,7 +7724,7 @@ namespace CMOLocalizer
             sb.Append("{\"form\":\"").Append(JsonEsc(formName))
               .Append("\",\"name\":\"").Append(JsonEsc(root.Name))
               .Append("\",\"type\":\"").Append(JsonEsc(tn))
-              .Append("\",\"kind\":\"非 WinForms 列表（基类 ").Append(JsonEsc(baseName)).Append("）\",\"items\":[]}");
+              .Append("\",\"kind\":\"非 WinForms 列表（基類 ").Append(JsonEsc(baseName)).Append("）\",\"items\":[]}");
         }
 
         private static string GetWpfElementName(System.Windows.DependencyObject dep)
@@ -7782,7 +7782,7 @@ namespace CMOLocalizer
 
         // 事件级追踪：轮询（哪怕 12ms）会漏掉只在单帧存在的英文——游戏把英文写进去、
         // 我们在同一帧改成中文，中间那个英文值可能从未被任何一次轮询看到。
-        // 要判定"到底是不是反复写入英文"，只能记录每一次写入事件本身。
+        // 要判定"到底是不是反覆寫入英文"，只能记录每一次写入事件本身。
         private static readonly object traceLock = new object();
         private static readonly List<string> traceLog = new List<string>();
         private static bool traceEnabled;
@@ -7872,7 +7872,7 @@ namespace CMOLocalizer
                 if (!string.IsNullOrEmpty(text) && text.Trim().Length > 0)
                 {
                     // 身份用「树内位置路径」而不是对象哈希：游戏刷新面板时会**重建**元素，
-                    // 对象哈希随之变化，探针就会把它当成"新元素"而不是"同一处文本变了"，
+                    // 对象哈希随之变化，探针就会把它当成"新元素"而不是"同一處文本變了"，
                     // 于是永远测不出频闪（真踩过这个坑）。位置路径在重建后保持稳定。
                     // 有 Name 的优先用 Name（语义最稳），否则用路径。
                     string name = GetWpfElementName(dep);
