@@ -43,7 +43,7 @@ namespace CMOLocalizerInstaller
 
         public InstallerForm(string initialPath)
         {
-            this.Text = "Command: Modern Operations (CMO) 完整中文汉化一键安装工具 v4.2.5（适配游戏内部版本 " + ReleaseConstants.GameBuild + "）";
+            this.Text = "Command: Modern Operations (CMO) 完整中文中文化一鍵安裝工具 v4.2.5（適配遊戲內部版本 " + ReleaseConstants.GameBuild + "）";
             this.Size = new Size(700, 770);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -51,7 +51,7 @@ namespace CMOLocalizerInstaller
             this.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Regular);
 
             Label lblTitle = new Label();
-            lblTitle.Text = "Command: Modern Operations 完整中文汉化补丁";
+            lblTitle.Text = "Command: Modern Operations 完整中文中文化修補程式";
             lblTitle.Font = new Font("Microsoft YaHei UI", 14f, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(20, 60, 120);
             lblTitle.AutoSize = true;
@@ -59,15 +59,15 @@ namespace CMOLocalizerInstaller
             this.Controls.Add(lblTitle);
 
             Label lblSub = new Label();
-            lblSub.Text = "采用 CLR AppDomainManager 零侵入内存级双重本地化引擎 | 不修改原版 EXE | 支持一键还原";
-            lblSub.Text += "\n适配游戏内部版本 " + ReleaseConstants.GameBuild + "（游戏标题里的 Build 号；游戏更新后需等待对应版本的补丁）";
+            lblSub.Text = "採用 CLR AppDomainManager 零侵入記憶體級雙重本地化引擎 | 不修改原版 EXE | 支持一鍵還原";
+            lblSub.Text += "\n適配遊戲內部版本 " + ReleaseConstants.GameBuild + "（遊戲標題裏的 Build 號；遊戲更新後需等待對應版本的修補程式）";
             lblSub.ForeColor = Color.DimGray;
             lblSub.AutoSize = true;
             lblSub.Location = new Point(22, 50);
             this.Controls.Add(lblSub);
 
             Label lblPath = new Label();
-            lblPath.Text = "CMO 游戏根目录:";
+            lblPath.Text = "CMO 遊戲根目錄:";
             lblPath.AutoSize = true;
             lblPath.Location = new Point(22, 90);
             this.Controls.Add(lblPath);
@@ -79,21 +79,21 @@ namespace CMOLocalizerInstaller
             this.Controls.Add(txtPath);
 
             btnBrowse = new Button();
-            btnBrowse.Text = "浏览目录...";
+            btnBrowse.Text = "瀏覽目錄...";
             btnBrowse.Location = new Point(552, 113);
             btnBrowse.Size = new Size(95, 28);
             btnBrowse.Click += new EventHandler(OnBrowseClick);
             this.Controls.Add(btnBrowse);
 
             lblStatus = new Label();
-            lblStatus.Text = "当前状态: 正在检测...";
+            lblStatus.Text = "當前狀態: 正在檢測...";
             lblStatus.Font = new Font("Microsoft YaHei UI", 10f, FontStyle.Bold);
             lblStatus.AutoSize = true;
             lblStatus.Location = new Point(22, 155);
             this.Controls.Add(lblStatus);
 
             btnInstall = new Button();
-            btnInstall.Text = "一键安装中文汉化补丁";
+            btnInstall.Text = "一鍵安裝中文中文化修補程式";
             btnInstall.Font = new Font("Microsoft YaHei UI", 11f, FontStyle.Bold);
             btnInstall.BackColor = Color.FromArgb(30, 110, 200);
             btnInstall.ForeColor = Color.White;
@@ -104,7 +104,7 @@ namespace CMOLocalizerInstaller
             this.Controls.Add(btnInstall);
 
             btnUninstall = new Button();
-            btnUninstall.Text = "一键还原原版英文";
+            btnUninstall.Text = "一鍵還原原版英文";
             btnUninstall.Font = new Font("Microsoft YaHei UI", 11f, FontStyle.Regular);
             btnUninstall.Location = new Point(347, 190);
             btnUninstall.Size = new Size(300, 46);
@@ -112,7 +112,7 @@ namespace CMOLocalizerInstaller
             this.Controls.Add(btnUninstall);
 
             chkPurgeSettings = new CheckBox();
-            chkPurgeSettings.Text = "还原时同时清除我的全部设置（更新频率/提醒方式等）";
+            chkPurgeSettings.Text = "還原時同時清除我的全部設定（更新頻率/提醒方式等）";
             chkPurgeSettings.AutoSize = true;
             chkPurgeSettings.Checked = false;
             chkPurgeSettings.ForeColor = Color.DimGray;
@@ -120,7 +120,7 @@ namespace CMOLocalizerInstaller
             this.Controls.Add(chkPurgeSettings);
 
             btnDonate = new Button();
-            btnDonate.Text = "☕ 觉得好用？请作者喝杯咖啡 / 可乐";
+            btnDonate.Text = "☕ 覺得好用？請作者喝杯咖啡 / 可樂";
             btnDonate.Font = new Font("Microsoft YaHei UI", 10f, FontStyle.Bold);
             btnDonate.BackColor = Color.FromArgb(254, 248, 237);
             btnDonate.ForeColor = Color.FromArgb(180, 95, 20);
@@ -152,7 +152,7 @@ namespace CMOLocalizerInstaller
 
             // 设置改为直接在此修改（旧版只有一行只读文字，用户反馈「更新频率也没有了」）
             Label lblInterval = new Label();
-            lblInterval.Text = "自动检查频率:";
+            lblInterval.Text = "自動檢查頻率:";
             lblInterval.AutoSize = true;
             lblInterval.Location = new Point(14, 79);
             grpUpdate.Controls.Add(lblInterval);
@@ -161,7 +161,7 @@ namespace CMOLocalizerInstaller
             cbInterval.DropDownStyle = ComboBoxStyle.DropDownList;
             cbInterval.Location = new Point(120, 75);
             cbInterval.Size = new Size(190, 26);
-            cbInterval.Items.AddRange(new object[] { "每次开机检查一次", "每 1 小时", "每 3 小时", "每 6 小时（推荐）", "每 12 小时", "每 24 小时" });
+            cbInterval.Items.AddRange(new object[] { "每次開機檢查一次", "每 1 小時", "每 3 小時", "每 6 小時（推薦）", "每 12 小時", "每 24 小時" });
             cbInterval.SelectedIndexChanged += new EventHandler(OnIntervalChanged);
             grpUpdate.Controls.Add(cbInterval);
 
@@ -175,19 +175,19 @@ namespace CMOLocalizerInstaller
             cbNotify.DropDownStyle = ComboBoxStyle.DropDownList;
             cbNotify.Location = new Point(408, 75);
             cbNotify.Size = new Size(160, 26);
-            cbNotify.Items.AddRange(new object[] { "弹窗提醒", "仅托盘气泡", "不提醒" });
+            cbNotify.Items.AddRange(new object[] { "彈窗提醒", "僅托盤氣泡", "不提醒" });
             cbNotify.SelectedIndexChanged += new EventHandler(OnNotifyChanged);
             grpUpdate.Controls.Add(cbNotify);
 
             chkAutoStart = new CheckBox();
-            chkAutoStart.Text = "随 Windows 启动并在后台自动检查更新";
+            chkAutoStart.Text = "隨 Windows 啓動並在後臺自動檢查更新";
             chkAutoStart.AutoSize = true;
             chkAutoStart.Location = new Point(14, 112);
             chkAutoStart.CheckedChanged += new EventHandler(OnAutoStartChanged);
             grpUpdate.Controls.Add(chkAutoStart);
 
             btnUpgrade = new Button();
-            btnUpgrade.Text = "立即升级";
+            btnUpgrade.Text = "立即升級";
             btnUpgrade.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
             btnUpgrade.BackColor = Color.FromArgb(30, 110, 200);
             btnUpgrade.ForeColor = Color.White;
@@ -198,7 +198,7 @@ namespace CMOLocalizerInstaller
             grpUpdate.Controls.Add(btnUpgrade);
 
             btnCheckUpdate = new Button();
-            btnCheckUpdate.Text = "检查升级";
+            btnCheckUpdate.Text = "檢查升級";
             btnCheckUpdate.Location = new Point(174, 146);
             btnCheckUpdate.Size = new Size(100, 30);
             btnCheckUpdate.Click += new EventHandler(OnCheckUpdateClick);
@@ -221,7 +221,7 @@ namespace CMOLocalizerInstaller
             lblPolicy.AutoSize = true;
             lblPolicy.ForeColor = Color.DimGray;
             lblPolicy.Location = new Point(14, 186);
-            lblPolicy.Text = "注：「一键还原原版英文」不会删除你的更新设置；回退需要本地缓存过上一版本的安装包。";
+            lblPolicy.Text = "注：「一鍵還原原版英文」不會刪除你的更新設定；回退需要本地緩存過上一版本的安裝包。";
             grpUpdate.Controls.Add(lblPolicy);
 
             txtLog = new TextBox();
@@ -233,8 +233,8 @@ namespace CMOLocalizerInstaller
             txtLog.Size = new Size(645, 150);
             this.Controls.Add(txtLog);
 
-            Log("欢迎使用 Command: Modern Operations (CMO) 完整中文汉化安装程序。");
-            Log("本汉化涵盖：主界面、菜单、作战条令(RoE)、任务编辑、航空作业、全部45个教程及全球4608处地名。");
+            Log("歡迎使用 Command: Modern Operations (CMO) 完整中文中文化安裝程式。");
+            Log("本中文化涵蓋：主介面、選單、作戰條令(RoE)、任務編輯、航空作業、全部45個教程及全球4608處地名。");
             RefreshStatus();
             RefreshUpdateState();
         }
@@ -257,7 +257,7 @@ namespace CMOLocalizerInstaller
         {
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
-                fbd.Description = "请选择 Command: Modern Operations 游戏安装根目录 (包含 Command.exe)";
+                fbd.Description = "請選擇 Command: Modern Operations 遊戲安裝根目錄 (包含 Command.exe)";
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
                     txtPath.Text = fbd.SelectedPath;
@@ -271,7 +271,7 @@ namespace CMOLocalizerInstaller
             string gp = txtPath.Text.Trim();
             if (string.IsNullOrEmpty(gp) || !File.Exists(Path.Combine(gp, "Command.exe")))
             {
-                lblStatus.Text = "当前状态: 未找到 Command.exe，请点击[浏览目录]选择正确的游戏根目录";
+                lblStatus.Text = "當前狀態: 未找到 Command.exe，請點擊[瀏覽目錄]選擇正確的遊戲根目錄";
                 lblStatus.ForeColor = Color.Red;
                 return;
             }
@@ -283,13 +283,13 @@ namespace CMOLocalizerInstaller
             if (state == ManifestState.Ok)
             {
                 InstallManifest m = InstallManifest.Read(gp);
-                lblStatus.Text = "当前状态: 已安装完整中文汉化补丁 v" + m.Version
-                    + "（" + InstallerCore.LocalTimeText(m.InstalledAt) + " 安装）";
+                lblStatus.Text = "當前狀態: 已安裝完整中文中文化修補程式 v" + m.Version
+                    + "（" + InstallerCore.LocalTimeText(m.InstalledAt) + " 安裝）";
                 lblStatus.ForeColor = Color.Green;
             }
             else if (state == ManifestState.Modified)
             {
-                lblStatus.Text = "当前状态: 检测到" + detail + "，建议重新点击[一键安装中文汉化补丁]修复";
+                lblStatus.Text = "當前狀態: 檢測到" + detail + "，建議重新點擊[一鍵安裝中文中文化修補程式]修復";
                 lblStatus.ForeColor = Color.DarkOrange;
             }
             else if (InstallerCore.CheckInstalled(gp))
@@ -298,12 +298,12 @@ namespace CMOLocalizerInstaller
                 InstallManifest.Adopt(gp, CmoSettings.RegistryInstalledVersion());
                 InstallManifest adopted = InstallManifest.Read(gp);
                 string shown = (adopted != null && adopted.Version.Length > 0) ? adopted.Version : "未知";
-                lblStatus.Text = "当前状态: 已安装完整中文汉化补丁（已登记当前状态，v" + shown + "）";
+                lblStatus.Text = "當前狀態: 已安裝完整中文中文化修補程式（已登記當前狀態，v" + shown + "）";
                 lblStatus.ForeColor = Color.Green;
             }
             else
             {
-                lblStatus.Text = "当前状态: 原版英文环境 (未安装汉化补丁)";
+                lblStatus.Text = "當前狀態: 原版英文環境 (未安裝中文化修補程式)";
                 lblStatus.ForeColor = Color.DarkOrange;
             }
         }
@@ -318,22 +318,22 @@ namespace CMOLocalizerInstaller
             suppressAutoStartEvent = true;
             chkAutoStart.Checked = InstallerCore.GetAutoStart();
             suppressAutoStartEvent = false;
-            btnNeverRemind.Text = st.AutoCheck ? "不再提醒" : "开启提醒";
+            btnNeverRemind.Text = st.AutoCheck ? "不再提醒" : "開啓提醒";
             lblUpdateState.Text = st.AutoCheck
-                ? ("自动检查已开启：开机后自动检查一次，之后" + IntervalPresets.Text(st.CheckIntervalHours) + "检查一次")
-                : "已关闭自动检查（点击「开启提醒」可随时恢复）";
+                ? ("自動檢查已開啓：開機後自動檢查一次，之後" + IntervalPresets.Text(st.CheckIntervalHours) + "檢查一次")
+                : "已關閉自動檢查（點擊「開啓提醒」可隨時恢復）";
 
             string installed = InstallerCore.StateVersion(txtPath.Text.Trim());
             lblUpdateNext.Text = installed.Length > 0
-                ? ("当前已安装版本 v" + installed + "　·　上次检查：" + InstallerCore.LastCheckText() + "　·　下次：" + InstallerCore.NextCheckText())
-                : "尚未安装汉化补丁 —— 安装后即可使用开机自检与自动升级";
+                ? ("當前已安裝版本 v" + installed + "　·　上次檢查：" + InstallerCore.LastCheckText() + "　·　下次：" + InstallerCore.NextCheckText())
+                : "尚未安裝中文化修補程式 —— 安裝後即可使用開機自檢與自動升級";
 
             string prev = VersionStore.Previous(installed);
             btnRollback.Text = prev != null ? ("回退到上一版本 v" + prev) : "回退到上一版本";
             btnRollback.Enabled = prev != null;
             toolTip.SetToolTip(btnRollback, prev != null
-                ? ("用本地缓存的 v" + prev + " 安装包重新安装，回到上一版本")
-                : "本地没有更旧版本的安装包缓存（安装/升级时会自动缓存安装包）");
+                ? ("用本地緩存的 v" + prev + " 安裝包重新安裝，回到上一版本")
+                : "本地沒有更舊版本的安裝包緩存（安裝/升級時會自動緩存安裝包）");
         }
 
         private void OnIntervalChanged(object sender, EventArgs e)
@@ -342,7 +342,7 @@ namespace CMOLocalizerInstaller
             CmoSettings st = CmoSettings.Load();
             st.CheckIntervalHours = IntervalPresets.ToHours(cbInterval.SelectedIndex);
             st.Save();
-            Log("已把自动检查频率改为" + IntervalPresets.Text(st.CheckIntervalHours) + "一次。");
+            Log("已把自動檢查頻率改爲" + IntervalPresets.Text(st.CheckIntervalHours) + "一次。");
             RefreshUpdateState();
         }
 
@@ -352,7 +352,7 @@ namespace CMOLocalizerInstaller
             CmoSettings st = CmoSettings.Load();
             st.NotifyMode = cbNotify.SelectedIndex < 0 ? 1 : cbNotify.SelectedIndex;
             st.Save();
-            Log("已把提醒方式改为「" + cbNotify.Text + "」。");
+            Log("已把提醒方式改爲「" + cbNotify.Text + "」。");
             RefreshUpdateState();
         }
 
@@ -363,25 +363,25 @@ namespace CMOLocalizerInstaller
             string prev = VersionStore.Previous(installed);
             if (prev == null)
             {
-                MessageBox.Show("本地没有更旧版本的安装包缓存，无法离线回退。\n\n可在发布页下载对应版本安装包后手动安装。",
+                MessageBox.Show("本地沒有更舊版本的安裝包緩存，無法離線回退。\n\n可在發佈頁下載對應版本安裝包後手動安裝。",
                     "回退到上一版本", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (MessageBox.Show("将用本地缓存的 v" + prev + " 安装包重新安装，把补丁回退到 v" + prev + "。\n\n"
-                + "（如果游戏正在运行会先关闭游戏；回退后请重新启动游戏）\n\n确定继续？",
+            if (MessageBox.Show("將用本地緩存的 v" + prev + " 安裝包重新安裝，把修補程式回退到 v" + prev + "。\n\n"
+                + "（如果遊戲正在運行會先關閉遊戲；回退後請重新啓動遊戲）\n\n確定繼續？",
                 "回退到上一版本", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
-            Log("开始回退到 v" + prev + " ...");
+            Log("開始回退到 v" + prev + " ...");
             string err;
             if (Rollback.Run(gp, prev, false, out err))
             {
-                Log("已回退到 v" + prev + "，安装状态已更新为 v" + prev + "。");
+                Log("已回退到 v" + prev + "，安裝狀態已更新爲 v" + prev + "。");
                 MessageBox.Show("已回退到 v" + prev + "。", "回退成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                Log("[错误] 回退失败: " + err);
-                MessageBox.Show("回退失败:\n" + err, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log("[錯誤] 回退失敗: " + err);
+                MessageBox.Show("回退失敗:\n" + err, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             RefreshStatus();
             RefreshUpdateState();
@@ -392,19 +392,19 @@ namespace CMOLocalizerInstaller
             if (suppressAutoStartEvent) return;
             InstallerCore.SetAutoStart(chkAutoStart.Checked);
             Log(chkAutoStart.Checked
-                ? "已开启开机自动检查：随 Windows 启动并在后台每 6 小时检查一次更新。"
-                : "已关闭开机自动检查（仍可从更新助手/安装器手动检查）。");
+                ? "已開啓開機自動檢查：隨 Windows 啓動並在後臺每 6 小時檢查一次更新。"
+                : "已關閉開機自動檢查（仍可從更新助手/安裝器手動檢查）。");
             RefreshUpdateState();
         }
 
         private void OnCheckUpdateClick(object sender, EventArgs e)
         {
-            RunUpdater("检查升级");
+            RunUpdater("檢查升級");
         }
 
         private void OnUpgradeClick(object sender, EventArgs e)
         {
-            RunUpdater("立即升级");
+            RunUpdater("立即升級");
         }
 
         private void RunUpdater(string what)
@@ -417,32 +417,32 @@ namespace CMOLocalizerInstaller
                 string exe = InstallerCore.LaunchUpdater(gp, out err);
                 if (exe == null)
                 {
-                    Log("[" + what + "] 启动更新助手失败: " + err);
-                    MessageBox.Show("无法启动更新助手:\n" + err, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Log("[" + what + "] 啓動更新助手失敗: " + err);
+                    MessageBox.Show("無法啓動更新助手:\n" + err, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                Log("[" + what + "] 已启动更新助手，请在弹出的窗口中确认升级。");
+                Log("[" + what + "] 已啓動更新助手，請在彈出的視窗中確認升級。");
                 RefreshUpdateState();
             }
             catch (Exception ex)
             {
-                Log("[" + what + "] 异常: " + ex.Message);
+                Log("[" + what + "] 異常: " + ex.Message);
             }
         }
 
         private void OnNeverRemindClick(object sender, EventArgs e)
         {
             bool nowAuto = InstallerCore.ToggleNeverRemind();
-            btnNeverRemind.Text = nowAuto ? "不再提醒" : "开启提醒";
+            btnNeverRemind.Text = nowAuto ? "不再提醒" : "開啓提醒";
             if (nowAuto)
             {
-                Log("已重新开启自动更新检查（每 6 小时）。");
-                MessageBox.Show("已重新开启自动更新检查。", "自动升级", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Log("已重新開啓自動更新檢查（每 6 小時）。");
+                MessageBox.Show("已重新開啓自動更新檢查。", "自動升級", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                Log("已选择不再提醒：自动检查已关闭，并记住了当前版本；手动「检查升级」仍可使用。");
-                MessageBox.Show("已关闭自动更新提醒。\n\n以后需要升级时，随时点击「检查升级」即可。", "自动升级",
+                Log("已選擇不再提醒：自動檢查已關閉，並記住了當前版本；手動「檢查升級」仍可使用。");
+                MessageBox.Show("已關閉自動更新提醒。\n\n以後需要升級時，隨時點擊「檢查升級」即可。", "自動升級",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             RefreshUpdateState();
@@ -462,63 +462,63 @@ namespace CMOLocalizerInstaller
                 if (!InstallerCore.CanWriteToDir(gp, out why))
                 {
                     DialogResult dr = MessageBox.Show(
-                        "安装失败：游戏目录当前不可写（普通权限）。\n\n目录：" + gp +
+                        "安裝失敗：遊戲目錄當前不可寫（普通權限）。\n\n目錄：" + gp +
                         "\n原因：" + why +
-                        "\n\n游戏装在 C:\\Program Files 下时（Steam 默认位置）需要管理员权限。\n" +
-                        "是否现在以管理员身份重新启动安装器？",
-                        "需要管理员权限", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        "\n\n遊戲裝在 C:\\Program Files 下時（Steam 預設位置）需要管理員權限。\n" +
+                        "是否現在以管理員身份重新啓動安裝器？",
+                        "需要管理員權限", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (dr == DialogResult.Yes)
                     {
-                        Log("目录不可写，尝试以管理员身份重启安装器。");
+                        Log("目錄不可寫，嘗試以管理員身份重啓安裝器。");
                         if (InstallerCore.RelaunchElevated())
                         {
                             Close();
                             return;
                         }
-                        MessageBox.Show("提权启动失败，请手动右键安装器选「以管理员身份运行」。",
-                            "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("提權啓動失敗，請手動右鍵安裝器選「以管理員身份運行」。",
+                            "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
                     {
-                        Log("[取消] 目录不可写，用户拒绝提权重试。");
+                        Log("[取消] 目錄不可寫，用戶拒絕提權重試。");
                     }
                 }
                 else if (InstallerCore.IsGameRunning())
                 {
                     DialogResult dr = MessageBox.Show(
-                        "安装失败：目标文件正被运行中的游戏占用。\n\n" + err +
-                        "\n\n是否现在关闭游戏并重试安装？\n（游戏通常有自动存档；未保存的推演进度会丢失）",
-                        "游戏正在运行", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        "安裝失敗：目標檔案正被運行中的遊戲佔用。\n\n" + err +
+                        "\n\n是否現在關閉遊戲並重試安裝？\n（遊戲通常有自動存檔；未儲存的推演進度會丟失）",
+                        "遊戲正在運行", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (dr == DialogResult.Yes)
                     {
-                        Log("目标文件被游戏占用，用户同意关闭游戏后重试安装。");
+                        Log("目標檔案被遊戲佔用，用戶同意關閉遊戲後重試安裝。");
                         if (InstallerCore.CloseGame(30))
                         {
                             ok = InstallerCore.Install(gp, out err);
                         }
                         else
                         {
-                            err = "无法关闭游戏进程，请手动退出游戏后重试。";
+                            err = "無法關閉遊戲處理程序，請手動退出遊戲後重試。";
                         }
                     }
                     else
                     {
-                        Log("[取消] 游戏正在运行，用户选择不关闭游戏，安装中止。");
+                        Log("[取消] 遊戲正在運行，用戶選擇不關閉遊戲，安裝中止。");
                     }
                 }
             }
 
             if (ok)
             {
-                Log("Successfully Installed! 已成功复制 CMOLocalizer.dll 与 CMOLocalizer.json。");
-                Log("已自动备份原版配置为 Command.exe.config.cmo_bak 并启用本地化引擎。");
+                Log("Successfully Installed! 已成功複製 CMOLocalizer.dll 與 CMOLocalizer.json。");
+                Log("已自動備份原版設定爲 Command.exe.config.cmo_bak 並啓用本地化引擎。");
                 RefreshStatus();
-                MessageBox.Show("CMO 完整中文汉化补丁安装成功！\n现在直接从 Steam 或运行 Command.exe 启动游戏即可显示中文。\n\n已同时启用自动升级：开机后自动检查一次，之后每 6 小时检查一次。", "安装成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("CMO 完整中文中文化修補程式安裝成功！\n現在直接從 Steam 或運行 Command.exe 啓動遊戲即可顯示中文。\n\n已同時啓用自動升級：開機後自動檢查一次，之後每 6 小時檢查一次。", "安裝成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                Log("[错误] 安装失败: " + err);
-                MessageBox.Show("安装失败:\n" + err, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log("[錯誤] 安裝失敗: " + err);
+                MessageBox.Show("安裝失敗:\n" + err, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -532,19 +532,19 @@ namespace CMOLocalizerInstaller
                 InstallManifest.Clear(gp);
                 if (purge) CmoSettings.Purge();
                 Log(purge
-                    ? "已成功卸载中文汉化补丁并恢复原版 Command.exe.config 配置（已按你的选择清除全部更新设置）。"
-                    : "已成功卸载中文汉化补丁并恢复原版 Command.exe.config 配置（你的更新设置已保留，重装后继续生效）。");
+                    ? "已成功卸載中文中文化修補程式並恢復原版 Command.exe.config 設定（已按你的選擇清除全部更新設定）。"
+                    : "已成功卸載中文中文化修補程式並恢復原版 Command.exe.config 設定（你的更新設定已保留，重裝後繼續生效）。");
                 RefreshStatus();
                 RefreshUpdateState();
                 MessageBox.Show(purge
-                    ? "已无损还原为原版英文环境！（更新设置也已按你的选择清除）"
-                    : "已无损还原为原版英文环境！\n\n你的更新设置（检查频率/提醒方式等）已保留，下次安装会继续使用。",
-                    "还原成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ? "已無損還原爲原版英文環境！（更新設定也已按你的選擇清除）"
+                    : "已無損還原爲原版英文環境！\n\n你的更新設定（檢查頻率/提醒方式等）已保留，下次安裝會繼續使用。",
+                    "還原成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                Log("[错误] 还原失败: " + err);
-                MessageBox.Show("还原失败:\n" + err, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log("[錯誤] 還原失敗: " + err);
+                MessageBox.Show("還原失敗:\n" + err, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
@@ -553,7 +553,7 @@ namespace CMOLocalizerInstaller
     {
         public DonateForm()
         {
-            this.Text = "☕ 请作者喝杯咖啡 / 可乐 - 感谢您的支持与鼓励";
+            this.Text = "☕ 請作者喝杯咖啡 / 可樂 - 感謝您的支持與鼓勵";
             this.Size = new Size(580, 525);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -563,7 +563,7 @@ namespace CMOLocalizerInstaller
             this.BackColor = Color.White;
 
             Label lblTitle = new Label();
-            lblTitle.Text = "❤️ 感谢支持 CMO 中文本地化项目";
+            lblTitle.Text = "❤️ 感謝支持 CMO 中文本地化項目";
             lblTitle.Font = new Font("Microsoft YaHei UI", 13f, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(180, 85, 20);
             lblTitle.AutoSize = true;
@@ -571,7 +571,7 @@ namespace CMOLocalizerInstaller
             this.Controls.Add(lblTitle);
 
             Label lblDesc = new Label();
-            lblDesc.Text = "本汉化补丁完全免费开源，由爱好者利用业余时间持续维护更新。\n如果您觉得汉化体验还不错，欢迎扫码请作者喝杯咖啡或可乐，感谢您的支持！";
+            lblDesc.Text = "本中文化修補程式完全免費開源，由愛好者利用業餘時間持續維護更新。\n如果您覺得中文化體驗還不錯，歡迎掃碼請作者喝杯咖啡或可樂，感謝您的支持！";
             lblDesc.ForeColor = Color.FromArgb(80, 80, 80);
             lblDesc.AutoSize = true;
             lblDesc.Location = new Point(22, 48);
@@ -610,7 +610,7 @@ namespace CMOLocalizerInstaller
             this.Controls.Add(pnlAlipay);
 
             Label lblAlipay = new Label();
-            lblAlipay.Text = "支付宝";
+            lblAlipay.Text = "支付寶";
             lblAlipay.Font = new Font("Microsoft YaHei UI", 11f, FontStyle.Bold);
             lblAlipay.ForeColor = Color.FromArgb(22, 119, 255);
             lblAlipay.Dock = DockStyle.Top;
@@ -626,7 +626,7 @@ namespace CMOLocalizerInstaller
             pbAlipay.BringToFront();
 
             Button btnClose = new Button();
-            btnClose.Text = "关 闭";
+            btnClose.Text = "關 閉";
             btnClose.Font = new Font("Microsoft YaHei UI", 10f, FontStyle.Regular);
             btnClose.Location = new Point(230, 448);
             btnClose.Size = new Size(110, 32);
@@ -764,8 +764,8 @@ namespace CMOLocalizerInstaller
         }
 
         /// <summary>
-        /// 落盘日志（尽力而为）。旧实现只往界面日志框写文本、异常又全被吞，
-        /// 用户报障时拿不到任何可分析的信息（2026-10-18 排查就卡在这里）。
+        /// 落盤日誌（盡力而爲）。舊實現只往介面日誌框寫文本、異常又全被吞，
+        /// 用戶報障時拿不到任何可分析的資訊（2026-10-18 排查就卡在這裏）。
         /// </summary>
         public static void WriteLog(string msg)
         {
@@ -786,11 +786,11 @@ namespace CMOLocalizerInstaller
 
         public static string DetectGamePath()
         {
-            // 1. 如果安装程序直接放在游戏根目录下运行
+            // 1. 如果安裝程式直接放在遊戲根目錄下運行
             string cur = AppDomain.CurrentDomain.BaseDirectory;
             if (File.Exists(Path.Combine(cur, "Command.exe"))) return cur;
 
-            // 2. 通过注册表检测 Steam 游戏安装路径 (支持 32/64 位及 CurrentUser)
+            // 2. 通過註冊表檢測 Steam 遊戲安裝路徑 (支持 32/64 位及 CurrentUser)
             string[] uninstallKeys = new string[]
             {
                 @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1076160",
@@ -828,7 +828,7 @@ namespace CMOLocalizerInstaller
                 catch { }
             }
 
-            // 3. 读取 Steam 主目录并解析所有 Steam 库文件夹 (libraryfolders.vdf)
+            // 3. 讀取 Steam 主目錄並解析所有 Steam 庫資料夾 (libraryfolders.vdf)
             string steamMainDir = null;
             try
             {
@@ -861,11 +861,11 @@ namespace CMOLocalizerInstaller
 
             if (!string.IsNullOrEmpty(steamMainDir) && Directory.Exists(steamMainDir))
             {
-                // 检查 Steam 默认主库
+                // 檢查 Steam 預設主庫
                 string mainCmo = Path.Combine(steamMainDir, @"steamapps\common\Command - Modern Operations");
                 if (File.Exists(Path.Combine(mainCmo, "Command.exe"))) return mainCmo;
 
-                // 解析 libraryfolders.vdf 获取用户的所有自定义多盘符库
+                // 解析 libraryfolders.vdf 獲取用戶的所有自定義多盤符庫
                 string vdfPath = Path.Combine(steamMainDir, @"steamapps\libraryfolders.vdf");
                 if (File.Exists(vdfPath))
                 {
@@ -946,7 +946,7 @@ namespace CMOLocalizerInstaller
             errorMsg = "";
             if (string.IsNullOrEmpty(gamePath) || !File.Exists(Path.Combine(gamePath, "Command.exe")))
             {
-                errorMsg = "未在目标路径找到 Command.exe，请确认游戏目录是否正确。";
+                errorMsg = "未在目標路徑找到 Command.exe，請確認遊戲目錄是否正確。";
                 return false;
             }
 
@@ -957,14 +957,14 @@ namespace CMOLocalizerInstaller
             string writeReason;
             if (!CanWriteToDir(gamePath, out writeReason))
             {
-                errorMsg = "游戏目录不可写: " + gamePath + "\n原因: " + writeReason
-                    + "\n\n游戏装在 C:\\Program Files 下时（Steam 默认位置）需要管理员权限："
-                    + "请右键安装器选「以管理员身份运行」后重试，或把游戏移到用户可写目录。";
-                WriteLog("安装中止：目录不可写 " + gamePath + " -> " + writeReason);
+                errorMsg = "遊戲目錄不可寫: " + gamePath + "\n原因: " + writeReason
+                    + "\n\n遊戲裝在 C:\\Program Files 下時（Steam 預設位置）需要管理員權限："
+                    + "請右鍵安裝器選「以管理員身份運行」後重試，或把遊戲移到用戶可寫目錄。";
+                WriteLog("安裝中止：目錄不可寫 " + gamePath + " -> " + writeReason);
                 return false;
             }
-            WriteLog("安装开始：游戏目录=" + gamePath + "；安装包目录=" + curDir
-                + "；载荷来源=安装包内嵌资源");
+            WriteLog("安裝開始：遊戲目錄=" + gamePath + "；安裝包目錄=" + curDir
+                + "；酬載來源=安裝包內嵌資源");
 
             try
             {
@@ -1015,7 +1015,7 @@ namespace CMOLocalizerInstaller
 
                 doc.Save(cfgPath);
 
-                // 释放汉化版武器数据库 HTML 模板 (DB/Templates)
+                // 释放中文化版武器数据库 HTML 模板 (DB/Templates)
                 string tplDir = Path.Combine(gamePath, "DB", "Templates");
                 string tplBakDir = Path.Combine(gamePath, "DB", "Templates_Original_Backup");
                 if (Directory.Exists(tplDir))
@@ -1038,10 +1038,10 @@ namespace CMOLocalizerInstaller
                     }
                 }
 
-                // 部署已全量汉化的 Scenarios HTML 简报/教程正文（内嵌 zip，带 .orig 备份）
+                // 部署已全量中文化的 Scenarios HTML 简报/教程正文（内嵌 zip，带 .orig 备份）
                 DeployScenarioHtml(gamePath);
 
-                // 部署汉化地名集（地图矢量地名层的数据源，必须先于标签瓦片重绘）
+                // 部署中文化地名集（地图矢量地名层的数据源，必须先于标签瓦片重绘）
                 DeployPlacenames(gamePath);
 
                 // 部署 Symbols\Menu 中文按钮图与启动器中文资源
@@ -1054,7 +1054,7 @@ namespace CMOLocalizerInstaller
                 // 兜底：对 zip 未覆盖的 HTML 做标题级替换 (带 .orig 备份)
                 LocalizeScenarioBriefings(Path.Combine(gamePath, "Scenarios"));
 
-                // 自动汉化 World Wind 标注图层瓦片 (WW/Cache/Stamen Terrain - Labels)
+                // 自动中文化 World Wind 标注图层瓦片 (WW/Cache/Stamen Terrain - Labels)
                 LocalizeMapLabelTiles(gamePath);
 
                 // 最后一步：写「安装清单」（部署实证）—— 它是「装了什么版本」的唯一真相，
@@ -1064,8 +1064,8 @@ namespace CMOLocalizerInstaller
                 string bundleVer = VersionStore.PackageVersion(Application.ExecutablePath);
                 if (!string.IsNullOrEmpty(bundleVer) && bundleVer != CurrentVersion)
                 {
-                    CmoLog.Warn("版本戳不一致：安装包内嵌词典 _meta.version=" + bundleVer
-                        + "，安装器 CurrentVersion=" + CurrentVersion);
+                    CmoLog.Warn("版本戳不一致：安裝包內嵌詞典 _meta.version=" + bundleVer
+                        + "，安裝器 CurrentVersion=" + CurrentVersion);
                 }
                 Dictionary<string, string> manifestFiles = InstallManifest.HashEngineFiles(gamePath);
                 if (!PackageAssets.VerifyEngineFiles(Application.ExecutablePath, manifestFiles, out errorMsg))
@@ -1075,7 +1075,7 @@ namespace CMOLocalizerInstaller
                 }
                 if (!InstallManifest.Write(gamePath, CurrentVersion, Application.ExecutablePath, manifestFiles))
                 {
-                    errorMsg = "汉化文件已部署，但写入安装清单失败（状态可能显示不准，重新安装即可修复）。";
+                    errorMsg = "中文化檔案已部署，但寫入安裝清單失敗（狀態可能顯示不準，重新安裝即可修復）。";
                     return false;
                 }
                 // 缓存自身安装包：回退以整个安装包为单位（权威、自带全部资产）
@@ -1093,7 +1093,7 @@ namespace CMOLocalizerInstaller
 
 
         /// <summary>
-        /// 部署汉化后的 World Wind 地名集（WW\PlacenameSets\*\0000_0000.wwp）。
+        /// 部署中文化后的 World Wind 地名集（WW\PlacenameSets\*\0000_0000.wwp）。
         /// 地图上的国名/城市名以及 Stamen 标签瓦片重绘都以它为数据源；
         /// 不部署它则用户装完包地图仍是英文。覆盖前写 .orig 备份，卸载可还原。
         /// </summary>
@@ -1120,7 +1120,7 @@ namespace CMOLocalizerInstaller
                                 string dest;
                                 if (!CmoPaths.TryResolveInside(menuDir, e.FullName, out dest))
                                 {
-                                    CmoLog.Warn("跳过越界 zip 条目: " + e.FullName);
+                                    CmoLog.Warn("跳過越界 zip 條目: " + e.FullName);
                                     continue;
                                 }
                                 string dir = Path.GetDirectoryName(dest);
@@ -1225,7 +1225,7 @@ namespace CMOLocalizerInstaller
         }
 
         /// <summary>
-        /// 部署随包分发的已汉化 Scenarios HTML（内嵌 SCEN_HTML_ZIP）。
+        /// 部署随包分发的已中文化 Scenarios HTML（内嵌 SCEN_HTML_ZIP）。
         /// 覆盖前先写 .orig 原始英文备份；已存在的 .orig 永不覆盖，保证卸载可 100% 还原。
         /// </summary>
         private static void DeployScenarioHtml(string gamePath)
@@ -1246,7 +1246,7 @@ namespace CMOLocalizerInstaller
                             string dest;
                             if (!CmoPaths.TryResolveInside(gamePath, e.FullName, out dest))
                             {
-                                CmoLog.Warn("跳过越界 zip 条目: " + e.FullName);
+                                CmoLog.Warn("跳過越界 zip 條目: " + e.FullName);
                                 continue;
                             }
                             string dir = Path.GetDirectoryName(dest);
@@ -1338,7 +1338,7 @@ namespace CMOLocalizerInstaller
                     Encoding encoding;
                     byte[] preamble;
                     string text = ReadScenarioHtml(h, out encoding, out preamble);
-                    // 已由 zip 全量汉化的文件不得再用标题级替换覆盖（否则会降级成中英混排）
+                    // 已由 zip 全量中文化的文件不得再用标题级替换覆盖（否则会降级成中英混排）
                     // 先按声明编码读取（BOM 优先），兼容原生汉字及数字实体载荷。
                     if (HanRegex.IsMatch(System.Net.WebUtility.HtmlDecode(text))) continue;
                     string orig = h + ".orig";
@@ -1349,20 +1349,20 @@ namespace CMOLocalizerInstaller
                     // .orig 只用于卸载还原；补译必须基于当前版本，不能回退更新后的正文。
                     Func<string, string> replacement = value => EncodeScenarioReplacement(value, encoding);
                     string trans = text
-                        .Replace("<h2>Briefing</h2>", replacement("<h2>作战任务简报 (Briefing)</h2>"))
-                        .Replace("<h1>Introduction</h1>", replacement("<h1>战役背景导言 (Introduction)</h1>"))
-                        .Replace("<h3>Situation</h3>", replacement("<h3>战场态势 (Situation)</h3>"))
-                        .Replace("<h3>Timeline:</h3>", replacement("<h3>行动时间线:</h3>"))
-                        .Replace("<h3>Threat:</h3>", replacement("<h3>敌情威胁评估:</h3>"))
-                        .Replace("<h3>Assets:</h3>", replacement("<h3>我方兵力配属:</h3>"))
-                        .Replace("<h3>Task:</h3>", replacement("<h3>作战任务指标:</h3>"))
-                        .Replace("<h3>Execution</h3>", replacement("<h3>作战实施决心 (Execution)</h3>"))
-                        .Replace("<h3>Friendly Forces</h3>", replacement("<h3>我方友邻部队 (Friendly Forces)</h3>"))
-                        .Replace("<h3>Scenario Notes:</h3>", replacement("<h3>想定设计说明:</h3>"))
+                        .Replace("<h2>Briefing</h2>", replacement("<h2>作戰任務簡報 (Briefing)</h2>"))
+                        .Replace("<h1>Introduction</h1>", replacement("<h1>戰役背景導言 (Introduction)</h1>"))
+                        .Replace("<h3>Situation</h3>", replacement("<h3>戰場態勢 (Situation)</h3>"))
+                        .Replace("<h3>Timeline:</h3>", replacement("<h3>行動時間線:</h3>"))
+                        .Replace("<h3>Threat:</h3>", replacement("<h3>敵情威脅評估:</h3>"))
+                        .Replace("<h3>Assets:</h3>", replacement("<h3>我方兵力配屬:</h3>"))
+                        .Replace("<h3>Task:</h3>", replacement("<h3>作戰任務指標:</h3>"))
+                        .Replace("<h3>Execution</h3>", replacement("<h3>作戰實施決心 (Execution)</h3>"))
+                        .Replace("<h3>Friendly Forces</h3>", replacement("<h3>我方友鄰部隊 (Friendly Forces)</h3>"))
+                        .Replace("<h3>Scenario Notes:</h3>", replacement("<h3>想定設計說明:</h3>"))
                         .Replace("<B>Original Author:</B>", replacement("<B>想定原作者:</B>"))
-                        .Replace("<B>Location:</B>", replacement("<B>战区位置:</B>"))
-                        .Replace("<B>Playable Sides:</B>", replacement("<B>可扮演参战方:</B>"))
-                        .Replace("You are NOT, REPEAT NOT authorized to use nuclear weapons.", replacement("你严禁（重复：严禁）动用任何核武器。"));
+                        .Replace("<B>Location:</B>", replacement("<B>戰區位置:</B>"))
+                        .Replace("<B>Playable Sides:</B>", replacement("<B>可扮演參戰方:</B>"))
+                        .Replace("You are NOT, REPEAT NOT authorized to use nuclear weapons.", replacement("你嚴禁（重複：嚴禁）動用任何核武器。"));
                     if (trans != text)
                     {
                         byte[] content = encoding.GetBytes(trans);
@@ -1505,7 +1505,7 @@ namespace CMOLocalizerInstaller
             if (!MoveFileEx(tempPath, destPath, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
             {
                 int code = Marshal.GetLastWin32Error();
-                throw new IOException("替换被拒绝 (Win32 " + code + "): "
+                throw new IOException("替換被拒絕 (Win32 " + code + "): "
                     + new System.ComponentModel.Win32Exception(code).Message);
             }
         }
@@ -1523,8 +1523,8 @@ namespace CMOLocalizerInstaller
             catch (Exception ex)
             {
                 try { if (File.Exists(temp)) File.Delete(temp); } catch { }
-                error = "写入 " + destPath + " 失败: " + ex.Message
-                    + "（若游戏正在运行，先关闭游戏后重试；此项失败通常是目标文件被占用）";
+                error = "寫入 " + destPath + " 失敗: " + ex.Message
+                    + "（若遊戲正在運行，先關閉遊戲後重試；此項失敗通常是目標檔案被佔用）";
                 return false;
             }
         }
@@ -1559,7 +1559,7 @@ namespace CMOLocalizerInstaller
                 }
                 if (match == null)
                 {
-                    error = "安装包内未找到 " + resName + " 资源文件！";
+                    error = "安裝包內未找到 " + resName + " 資原始檔！";
                     return false;
                 }
 
@@ -1567,7 +1567,7 @@ namespace CMOLocalizerInstaller
                 {
                     if (stream == null)
                     {
-                        error = "安装包内未找到 " + resName + " 资源文件！";
+                        error = "安裝包內未找到 " + resName + " 資原始檔！";
                         return false;
                     }
                     using (FileStream fs = new FileStream(temp, FileMode.Create, FileAccess.Write))
@@ -1581,8 +1581,8 @@ namespace CMOLocalizerInstaller
             catch (Exception ex)
             {
                 try { if (File.Exists(temp)) File.Delete(temp); } catch { }
-                error = "写入 " + destPath + " 失败: " + ex.Message
-                    + "（若游戏正在运行，先关闭游戏后重试；此项失败通常是目标文件被占用）";
+                error = "寫入 " + destPath + " 失敗: " + ex.Message
+                    + "（若遊戲正在運行，先關閉遊戲後重試；此項失敗通常是目標檔案被佔用）";
                 return false;
             }
         }
@@ -1652,7 +1652,7 @@ namespace CMOLocalizerInstaller
             if (DateTime.TryParse(iso, System.Globalization.CultureInfo.InvariantCulture,
                     System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal, out d))
                 return d.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
-            return "未知时间";
+            return "未知時間";
         }
 
         public static void RememberGamePath(string gamePath)
@@ -1728,27 +1728,27 @@ namespace CMOLocalizerInstaller
         public static string LastCheckText()
         {
             string v = CmoSettings.Load().LastCheckUtc;
-            if (string.IsNullOrEmpty(v)) return "尚未检查";
+            if (string.IsNullOrEmpty(v)) return "尚未檢查";
             DateTime d;
             if (!DateTime.TryParse(v.ToString(), System.Globalization.CultureInfo.InvariantCulture,
                     System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal, out d))
-                return "尚未检查";
+                return "尚未檢查";
             return d.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
         }
 
         public static string NextCheckText()
         {
             CmoSettings st = CmoSettings.Load();
-            if (!st.AutoCheck) return "已关闭";
+            if (!st.AutoCheck) return "已關閉";
             string v = st.LastCheckUtc;
             DateTime d;
             if (string.IsNullOrEmpty(v) || !DateTime.TryParse(v.ToString(), System.Globalization.CultureInfo.InvariantCulture,
                     System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal, out d))
-                return "开机后自动检查";
+                return "開機後自動檢查";
             int hours = st.CheckIntervalHours;
             if (hours < 1) hours = 6;
             DateTime next = d.ToLocalTime().AddHours(hours);
-            if (next <= DateTime.Now) return "即将检查";
+            if (next <= DateTime.Now) return "即將檢查";
             if (next.Date == DateTime.Today) return "今天 " + next.ToString("HH:mm");
             return next.ToString("yyyy-MM-dd HH:mm");
         }
@@ -1804,7 +1804,7 @@ namespace CMOLocalizerInstaller
                     exe = Path.Combine(Path.GetTempPath(), "CMO_Updater.exe");
                     if (!ExtractEmbeddedResource("UPDATER_EXE", exe))
                     {
-                        error = "当前安装包未内嵌更新助手（UPDATER_EXE 资源缺失），请使用 v4.1.4 及以上版本安装包。";
+                        error = "當前安裝包未內嵌更新助手（UPDATER_EXE 資源缺失），請使用 v4.1.4 及以上版本安裝包。";
                         return null;
                     }
                 }
@@ -1878,7 +1878,7 @@ namespace CMOLocalizerInstaller
             errorMsg = "";
             if (string.IsNullOrEmpty(gamePath) || !File.Exists(Path.Combine(gamePath, "Command.exe")))
             {
-                errorMsg = "未在目标路径找到 Command.exe。";
+                errorMsg = "未在目標路徑找到 Command.exe。";
                 return false;
             }
 
@@ -2028,7 +2028,7 @@ namespace CMOLocalizerInstaller
                     string prev = VersionStore.Previous(installed);
                     if (prev == null)
                     {
-                        Console.WriteLine("[ERROR] 本地没有比 v" + installed + " 更旧的安装包缓存");
+                        Console.WriteLine("[ERROR] 本地沒有比 v" + installed + " 更舊的安裝包緩存");
                         return 1;
                     }
                     bool ok = Rollback.Run(gp, prev, true, out err);
@@ -2041,7 +2041,7 @@ namespace CMOLocalizerInstaller
                     InstallManifest m = InstallManifest.Read(gp);
                     Console.WriteLine(ok
                         ? "[SUCCESS] Adopted v" + (m == null ? "?" : m.Version) + " from " + gp
-                        : "[ERROR] 未找到完整引擎文件，无法登记安装状态");
+                        : "[ERROR] 未找到完整引擎檔案，無法登記安裝狀態");
                     return ok ? 0 : 1;
                 }
                 else if (cmd == "list")
@@ -2056,7 +2056,7 @@ namespace CMOLocalizerInstaller
                 if (purgeSettings)
                 {
                     CmoSettings.Purge();
-                    Console.WriteLine("[SUCCESS] 已清除全部更新设置");
+                    Console.WriteLine("[SUCCESS] 已清除全部更新設定");
                     return 0;
                 }
             }
