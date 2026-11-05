@@ -24,34 +24,21 @@ namespace CMOLocalizerInstaller
         private Button btnBrowse;
         private Button btnInstall;
         private Button btnUninstall;
-        private Button btnDonate;
+        private Button btnCopyright;
         private TextBox txtLog;
         private Label lblStatus;
-        private Label lblUpdateState;
-        private Label lblUpdateNext;
-        private CheckBox chkAutoStart;
-        private Button btnUpgrade;
-        private Button btnCheckUpdate;
-        private Button btnNeverRemind;
-        private ComboBox cbInterval;
-        private ComboBox cbNotify;
-        private Button btnRollback;
-        private CheckBox chkPurgeSettings;
-        private bool suppressAutoStartEvent;
-        private bool suppressUpdateUiEvent;
-        private readonly ToolTip toolTip = new ToolTip();
 
         public InstallerForm(string initialPath)
         {
             this.Text = "Command: Modern Operations (CMO) 完整中文中文化一鍵安裝工具 v4.2.5（適配遊戲內部版本 " + ReleaseConstants.GameBuild + "）";
-            this.Size = new Size(700, 770);
+            this.Size = new Size(700, 630);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Regular);
 
             Label lblTitle = new Label();
-            lblTitle.Text = "Command: Modern Operations 完整中文中文化修補程式";
+            lblTitle.Text = "Command: Modern Operations 完整繁體中文化模組";
             lblTitle.Font = new Font("Microsoft YaHei UI", 14f, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(20, 60, 120);
             lblTitle.AutoSize = true;
@@ -93,7 +80,7 @@ namespace CMOLocalizerInstaller
             this.Controls.Add(lblStatus);
 
             btnInstall = new Button();
-            btnInstall.Text = "一鍵安裝中文中文化修補程式";
+            btnInstall.Text = "一鍵安裝繁體中文模組";
             btnInstall.Font = new Font("Microsoft YaHei UI", 11f, FontStyle.Bold);
             btnInstall.BackColor = Color.FromArgb(30, 110, 200);
             btnInstall.ForeColor = Color.White;
@@ -111,140 +98,60 @@ namespace CMOLocalizerInstaller
             btnUninstall.Click += new EventHandler(OnUninstallClick);
             this.Controls.Add(btnUninstall);
 
-            chkPurgeSettings = new CheckBox();
-            chkPurgeSettings.Text = "還原時同時清除我的全部設定（更新頻率/提醒方式等）";
-            chkPurgeSettings.AutoSize = true;
-            chkPurgeSettings.Checked = false;
-            chkPurgeSettings.ForeColor = Color.DimGray;
-            chkPurgeSettings.Location = new Point(347, 240);
-            this.Controls.Add(chkPurgeSettings);
+            // ── 版權與開源協定分組 ─────────────────────────────────
+            GroupBox grpCopyright = new GroupBox();
+            grpCopyright.Text = "版權與開放原始碼宣告";
+            grpCopyright.Location = new Point(22, 252);
+            grpCopyright.Size = new Size(645, 115);
+            this.Controls.Add(grpCopyright);
 
-            btnDonate = new Button();
-            btnDonate.Text = "☕ 覺得好用？請作者喝杯咖啡 / 可樂";
-            btnDonate.Font = new Font("Microsoft YaHei UI", 10f, FontStyle.Bold);
-            btnDonate.BackColor = Color.FromArgb(254, 248, 237);
-            btnDonate.ForeColor = Color.FromArgb(180, 95, 20);
-            btnDonate.FlatStyle = FlatStyle.Flat;
-            btnDonate.FlatAppearance.BorderColor = Color.FromArgb(235, 195, 135);
-            btnDonate.Location = new Point(22, 276);
-            btnDonate.Size = new Size(625, 34);
-            btnDonate.Cursor = Cursors.Hand;
-            btnDonate.Click += new EventHandler(OnDonateClick);
-            this.Controls.Add(btnDonate);
+            Label lblUpstream = new Label();
+            lblUpstream.Text = "原作者專案倉庫 (Upstream)：https://github.com/mj8724/CMO_CN";
+            lblUpstream.AutoSize = true;
+            lblUpstream.Location = new Point(16, 24);
+            grpCopyright.Controls.Add(lblUpstream);
 
-            // ── 版本更新（自动升级）分组 ─────────────────────────────
-            GroupBox grpUpdate = new GroupBox();
-            grpUpdate.Text = "版本更新";
-            grpUpdate.Location = new Point(22, 320);
-            grpUpdate.Size = new Size(645, 230);
-            this.Controls.Add(grpUpdate);
+            Label lblFork = new Label();
+            lblFork.Text = "正體在地化專案 (Taiwan Fork)：https://github.com/NekoDream/CMO_TW";
+            lblFork.AutoSize = true;
+            lblFork.Location = new Point(16, 51);
+            grpCopyright.Controls.Add(lblFork);
 
-            lblUpdateState = new Label();
-            lblUpdateState.AutoSize = true;
-            lblUpdateState.Location = new Point(14, 26);
-            grpUpdate.Controls.Add(lblUpdateState);
+            Label lblLicense = new Label();
+            lblLicense.Text = "開放原始碼協定：MIT License（完全免費自由使用、修改與散發）";
+            lblLicense.AutoSize = true;
+            lblLicense.Location = new Point(16, 78);
+            grpCopyright.Controls.Add(lblLicense);
 
-            lblUpdateNext = new Label();
-            lblUpdateNext.AutoSize = true;
-            lblUpdateNext.ForeColor = Color.DimGray;
-            lblUpdateNext.Location = new Point(14, 50);
-            grpUpdate.Controls.Add(lblUpdateNext);
-
-            // 设置改为直接在此修改（旧版只有一行只读文字，用户反馈「更新频率也没有了」）
-            Label lblInterval = new Label();
-            lblInterval.Text = "自動檢查頻率:";
-            lblInterval.AutoSize = true;
-            lblInterval.Location = new Point(14, 79);
-            grpUpdate.Controls.Add(lblInterval);
-
-            cbInterval = new ComboBox();
-            cbInterval.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbInterval.Location = new Point(120, 75);
-            cbInterval.Size = new Size(190, 26);
-            cbInterval.Items.AddRange(new object[] { "每次開機檢查一次", "每 1 小時", "每 3 小時", "每 6 小時（推薦）", "每 12 小時", "每 24 小時" });
-            cbInterval.SelectedIndexChanged += new EventHandler(OnIntervalChanged);
-            grpUpdate.Controls.Add(cbInterval);
-
-            Label lblNotify = new Label();
-            lblNotify.Text = "提醒方式:";
-            lblNotify.AutoSize = true;
-            lblNotify.Location = new Point(330, 79);
-            grpUpdate.Controls.Add(lblNotify);
-
-            cbNotify = new ComboBox();
-            cbNotify.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbNotify.Location = new Point(408, 75);
-            cbNotify.Size = new Size(160, 26);
-            cbNotify.Items.AddRange(new object[] { "彈窗提醒", "僅托盤氣泡", "不提醒" });
-            cbNotify.SelectedIndexChanged += new EventHandler(OnNotifyChanged);
-            grpUpdate.Controls.Add(cbNotify);
-
-            chkAutoStart = new CheckBox();
-            chkAutoStart.Text = "隨 Windows 啓動並在後臺自動檢查更新";
-            chkAutoStart.AutoSize = true;
-            chkAutoStart.Location = new Point(14, 112);
-            chkAutoStart.CheckedChanged += new EventHandler(OnAutoStartChanged);
-            grpUpdate.Controls.Add(chkAutoStart);
-
-            btnUpgrade = new Button();
-            btnUpgrade.Text = "立即升級";
-            btnUpgrade.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
-            btnUpgrade.BackColor = Color.FromArgb(30, 110, 200);
-            btnUpgrade.ForeColor = Color.White;
-            btnUpgrade.FlatStyle = FlatStyle.Flat;
-            btnUpgrade.Location = new Point(14, 146);
-            btnUpgrade.Size = new Size(150, 30);
-            btnUpgrade.Click += new EventHandler(OnUpgradeClick);
-            grpUpdate.Controls.Add(btnUpgrade);
-
-            btnCheckUpdate = new Button();
-            btnCheckUpdate.Text = "檢查升級";
-            btnCheckUpdate.Location = new Point(174, 146);
-            btnCheckUpdate.Size = new Size(100, 30);
-            btnCheckUpdate.Click += new EventHandler(OnCheckUpdateClick);
-            grpUpdate.Controls.Add(btnCheckUpdate);
-
-            btnNeverRemind = new Button();
-            btnNeverRemind.Text = "不再提醒";
-            btnNeverRemind.Location = new Point(284, 146);
-            btnNeverRemind.Size = new Size(100, 30);
-            btnNeverRemind.Click += new EventHandler(OnNeverRemindClick);
-            grpUpdate.Controls.Add(btnNeverRemind);
-            btnRollback = new Button();
-            btnRollback.Text = "回退到上一版本";
-            btnRollback.Location = new Point(394, 146);
-            btnRollback.Size = new Size(180, 30);
-            btnRollback.Click += new EventHandler(OnRollbackClick);
-            grpUpdate.Controls.Add(btnRollback);
-
-            Label lblPolicy = new Label();
-            lblPolicy.AutoSize = true;
-            lblPolicy.ForeColor = Color.DimGray;
-            lblPolicy.Location = new Point(14, 186);
-            lblPolicy.Text = "注：「一鍵還原原版英文」不會刪除你的更新設定；回退需要本地緩存過上一版本的安裝包。";
-            grpUpdate.Controls.Add(lblPolicy);
+            btnCopyright = new Button();
+            btnCopyright.Text = "📜 查看完整版權與開源條款";
+            btnCopyright.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Regular);
+            btnCopyright.Location = new Point(445, 72);
+            btnCopyright.Size = new Size(185, 30);
+            btnCopyright.Click += new EventHandler(OnCopyrightClick);
+            grpCopyright.Controls.Add(btnCopyright);
 
             txtLog = new TextBox();
             txtLog.Multiline = true;
             txtLog.ReadOnly = true;
             txtLog.ScrollBars = ScrollBars.Vertical;
             txtLog.BackColor = Color.FromArgb(245, 247, 250);
-            txtLog.Location = new Point(22, 564);
-            txtLog.Size = new Size(645, 150);
+            txtLog.Location = new Point(22, 380);
+            txtLog.Size = new Size(645, 185);
             this.Controls.Add(txtLog);
 
-            Log("歡迎使用 Command: Modern Operations (CMO) 完整中文中文化安裝程式。");
-            Log("本中文化涵蓋：主介面、選單、作戰條令(RoE)、任務編輯、航空作業、全部45個教程及全球4608處地名。");
+            Log("歡迎使用 Command: Modern Operations (CMO) 完整繁體中文化安裝程式。");
+            Log("本模組涵蓋：主介面、選單、作戰條令(RoE)、任務編輯、航空作業、全部45個教程及全球4608處地名。");
             RefreshStatus();
-            RefreshUpdateState();
         }
 
-        private void OnDonateClick(object sender, EventArgs e)
+        private void OnCopyrightClick(object sender, EventArgs e)
         {
-            using (DonateForm df = new DonateForm())
+            using (CopyrightForm cf = new CopyrightForm())
             {
-                df.ShowDialog(this);
+                cf.ShowDialog(this);
             }
+        }
         }
 
         private void Log(string msg)
@@ -283,13 +190,13 @@ namespace CMOLocalizerInstaller
             if (state == ManifestState.Ok)
             {
                 InstallManifest m = InstallManifest.Read(gp);
-                lblStatus.Text = "當前狀態: 已安裝完整中文中文化修補程式 v" + m.Version
+                lblStatus.Text = "當前狀態: 已安裝完整繁體中文化模組 v" + m.Version
                     + "（" + InstallerCore.LocalTimeText(m.InstalledAt) + " 安裝）";
                 lblStatus.ForeColor = Color.Green;
             }
             else if (state == ManifestState.Modified)
             {
-                lblStatus.Text = "當前狀態: 檢測到" + detail + "，建議重新點擊[一鍵安裝中文中文化修補程式]修復";
+                lblStatus.Text = "當前狀態: 檢測到" + detail + "，建議重新點擊[一鍵安裝繁體中文模組]修復";
                 lblStatus.ForeColor = Color.DarkOrange;
             }
             else if (InstallerCore.CheckInstalled(gp))
@@ -298,154 +205,14 @@ namespace CMOLocalizerInstaller
                 InstallManifest.Adopt(gp, CmoSettings.RegistryInstalledVersion());
                 InstallManifest adopted = InstallManifest.Read(gp);
                 string shown = (adopted != null && adopted.Version.Length > 0) ? adopted.Version : "未知";
-                lblStatus.Text = "當前狀態: 已安裝完整中文中文化修補程式（已登記當前狀態，v" + shown + "）";
+                lblStatus.Text = "當前狀態: 已安裝完整繁體中文化模組（已登記當前狀態，v" + shown + "）";
                 lblStatus.ForeColor = Color.Green;
             }
             else
             {
-                lblStatus.Text = "當前狀態: 原版英文環境 (未安裝中文化修補程式)";
+                lblStatus.Text = "當前狀態: 原版英文環境 (未安裝中文化模組)";
                 lblStatus.ForeColor = Color.DarkOrange;
             }
-        }
-
-        private void RefreshUpdateState()
-        {
-            CmoSettings st = CmoSettings.Load();
-            suppressUpdateUiEvent = true;
-            cbInterval.SelectedIndex = IntervalPresets.ToIndex(st.CheckIntervalHours);
-            cbNotify.SelectedIndex = st.NotifyMode < 0 || st.NotifyMode > 2 ? 1 : st.NotifyMode;
-            suppressUpdateUiEvent = false;
-            suppressAutoStartEvent = true;
-            chkAutoStart.Checked = InstallerCore.GetAutoStart();
-            suppressAutoStartEvent = false;
-            btnNeverRemind.Text = st.AutoCheck ? "不再提醒" : "開啓提醒";
-            lblUpdateState.Text = st.AutoCheck
-                ? ("自動檢查已開啓：開機後自動檢查一次，之後" + IntervalPresets.Text(st.CheckIntervalHours) + "檢查一次")
-                : "已關閉自動檢查（點擊「開啓提醒」可隨時恢復）";
-
-            string installed = InstallerCore.StateVersion(txtPath.Text.Trim());
-            lblUpdateNext.Text = installed.Length > 0
-                ? ("當前已安裝版本 v" + installed + "　·　上次檢查：" + InstallerCore.LastCheckText() + "　·　下次：" + InstallerCore.NextCheckText())
-                : "尚未安裝中文化修補程式 —— 安裝後即可使用開機自檢與自動升級";
-
-            string prev = VersionStore.Previous(installed);
-            btnRollback.Text = prev != null ? ("回退到上一版本 v" + prev) : "回退到上一版本";
-            btnRollback.Enabled = prev != null;
-            toolTip.SetToolTip(btnRollback, prev != null
-                ? ("用本地緩存的 v" + prev + " 安裝包重新安裝，回到上一版本")
-                : "本地沒有更舊版本的安裝包緩存（安裝/升級時會自動緩存安裝包）");
-        }
-
-        private void OnIntervalChanged(object sender, EventArgs e)
-        {
-            if (suppressUpdateUiEvent) return;
-            CmoSettings st = CmoSettings.Load();
-            st.CheckIntervalHours = IntervalPresets.ToHours(cbInterval.SelectedIndex);
-            st.Save();
-            Log("已把自動檢查頻率改爲" + IntervalPresets.Text(st.CheckIntervalHours) + "一次。");
-            RefreshUpdateState();
-        }
-
-        private void OnNotifyChanged(object sender, EventArgs e)
-        {
-            if (suppressUpdateUiEvent) return;
-            CmoSettings st = CmoSettings.Load();
-            st.NotifyMode = cbNotify.SelectedIndex < 0 ? 1 : cbNotify.SelectedIndex;
-            st.Save();
-            Log("已把提醒方式改爲「" + cbNotify.Text + "」。");
-            RefreshUpdateState();
-        }
-
-        private void OnRollbackClick(object sender, EventArgs e)
-        {
-            string gp = txtPath.Text.Trim();
-            string installed = InstallerCore.StateVersion(gp);
-            string prev = VersionStore.Previous(installed);
-            if (prev == null)
-            {
-                MessageBox.Show("本地沒有更舊版本的安裝包緩存，無法離線回退。\n\n可在發佈頁下載對應版本安裝包後手動安裝。",
-                    "回退到上一版本", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-            if (MessageBox.Show("將用本地緩存的 v" + prev + " 安裝包重新安裝，把修補程式回退到 v" + prev + "。\n\n"
-                + "（如果遊戲正在運行會先關閉遊戲；回退後請重新啓動遊戲）\n\n確定繼續？",
-                "回退到上一版本", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-
-            Log("開始回退到 v" + prev + " ...");
-            string err;
-            if (Rollback.Run(gp, prev, false, out err))
-            {
-                Log("已回退到 v" + prev + "，安裝狀態已更新爲 v" + prev + "。");
-                MessageBox.Show("已回退到 v" + prev + "。", "回退成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                Log("[錯誤] 回退失敗: " + err);
-                MessageBox.Show("回退失敗:\n" + err, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            RefreshStatus();
-            RefreshUpdateState();
-        }
-
-        private void OnAutoStartChanged(object sender, EventArgs e)
-        {
-            if (suppressAutoStartEvent) return;
-            InstallerCore.SetAutoStart(chkAutoStart.Checked);
-            Log(chkAutoStart.Checked
-                ? "已開啓開機自動檢查：隨 Windows 啓動並在後臺每 6 小時檢查一次更新。"
-                : "已關閉開機自動檢查（仍可從更新助手/安裝器手動檢查）。");
-            RefreshUpdateState();
-        }
-
-        private void OnCheckUpdateClick(object sender, EventArgs e)
-        {
-            RunUpdater("檢查升級");
-        }
-
-        private void OnUpgradeClick(object sender, EventArgs e)
-        {
-            RunUpdater("立即升級");
-        }
-
-        private void RunUpdater(string what)
-        {
-            try
-            {
-                string gp = txtPath.Text.Trim();
-                if (Directory.Exists(gp)) InstallerCore.RememberGamePath(gp);
-                string err;
-                string exe = InstallerCore.LaunchUpdater(gp, out err);
-                if (exe == null)
-                {
-                    Log("[" + what + "] 啓動更新助手失敗: " + err);
-                    MessageBox.Show("無法啓動更新助手:\n" + err, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                Log("[" + what + "] 已啓動更新助手，請在彈出的視窗中確認升級。");
-                RefreshUpdateState();
-            }
-            catch (Exception ex)
-            {
-                Log("[" + what + "] 異常: " + ex.Message);
-            }
-        }
-
-        private void OnNeverRemindClick(object sender, EventArgs e)
-        {
-            bool nowAuto = InstallerCore.ToggleNeverRemind();
-            btnNeverRemind.Text = nowAuto ? "不再提醒" : "開啓提醒";
-            if (nowAuto)
-            {
-                Log("已重新開啓自動更新檢查（每 6 小時）。");
-                MessageBox.Show("已重新開啓自動更新檢查。", "自動升級", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                Log("已選擇不再提醒：自動檢查已關閉，並記住了當前版本；手動「檢查升級」仍可使用。");
-                MessageBox.Show("已關閉自動更新提醒。\n\n以後需要升級時，隨時點擊「檢查升級」即可。", "自動升級",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            RefreshUpdateState();
         }
 
         private void OnInstallClick(object sender, EventArgs e)
@@ -513,7 +280,7 @@ namespace CMOLocalizerInstaller
                 Log("Successfully Installed! 已成功複製 CMOLocalizer.dll 與 CMOLocalizer.json。");
                 Log("已自動備份原版設定爲 Command.exe.config.cmo_bak 並啓用本地化引擎。");
                 RefreshStatus();
-                MessageBox.Show("CMO 完整中文中文化修補程式安裝成功！\n現在直接從 Steam 或運行 Command.exe 啓動遊戲即可顯示中文。\n\n已同時啓用自動升級：開機後自動檢查一次，之後每 6 小時檢查一次。", "安裝成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("CMO 完整繁體中文化模組安裝成功！\n現在直接從 Steam 或運行 Command.exe 啓動遊戲即可顯示中文。\n\n已同時啓用自動升級：開機後自動檢查一次，之後每 6 小時檢查一次。", "安裝成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -528,18 +295,11 @@ namespace CMOLocalizerInstaller
             string err;
             if (InstallerCore.Uninstall(gp, out err))
             {
-                bool purge = chkPurgeSettings.Checked;
                 InstallManifest.Clear(gp);
-                if (purge) CmoSettings.Purge();
-                Log(purge
-                    ? "已成功卸載中文中文化修補程式並恢復原版 Command.exe.config 設定（已按你的選擇清除全部更新設定）。"
-                    : "已成功卸載中文中文化修補程式並恢復原版 Command.exe.config 設定（你的更新設定已保留，重裝後繼續生效）。");
+                CmoSettings.Purge();
+                Log("已成功卸載繁體中文化模組並恢復原版 Command.exe.config 設定。");
                 RefreshStatus();
-                RefreshUpdateState();
-                MessageBox.Show(purge
-                    ? "已無損還原爲原版英文環境！（更新設定也已按你的選擇清除）"
-                    : "已無損還原爲原版英文環境！\n\n你的更新設定（檢查頻率/提醒方式等）已保留，下次安裝會繼續使用。",
-                    "還原成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("已無損還原為原版英文環境！", "還原成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -549,12 +309,12 @@ namespace CMOLocalizerInstaller
         }
     }
 
-    public class DonateForm : Form
+    public class CopyrightForm : Form
     {
-        public DonateForm()
+        public CopyrightForm()
         {
-            this.Text = "☕ 請作者喝杯咖啡 / 可樂 - 感謝您的支持與鼓勵";
-            this.Size = new Size(580, 525);
+            this.Text = "版權與開放原始碼協定 - Command: Modern Operations (CMO_TW)";
+            this.Size = new Size(660, 560);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -563,102 +323,125 @@ namespace CMOLocalizerInstaller
             this.BackColor = Color.White;
 
             Label lblTitle = new Label();
-            lblTitle.Text = "❤️ 感謝支持 CMO 中文本地化項目";
+            lblTitle.Text = "📜 版權、開源協定與專案宣告";
             lblTitle.Font = new Font("Microsoft YaHei UI", 13f, FontStyle.Bold);
-            lblTitle.ForeColor = Color.FromArgb(180, 85, 20);
+            lblTitle.ForeColor = Color.FromArgb(20, 60, 120);
             lblTitle.AutoSize = true;
             lblTitle.Location = new Point(20, 16);
             this.Controls.Add(lblTitle);
 
             Label lblDesc = new Label();
-            lblDesc.Text = "本中文化修補程式完全免費開源，由愛好者利用業餘時間持續維護更新。\n如果您覺得中文化體驗還不錯，歡迎掃碼請作者喝杯咖啡或可樂，感謝您的支持！";
+            lblDesc.Text = "本專案為《Command: Modern Operations》臺灣正體中文在地化修補程式。\n全面對齊中華民國國防部《美華軍語辭典》標準軍語，並維護我國格稱謂與地圖地名。\n本專案為完全自由開放原始碼社群專案，不含遊戲主程式與任何商業檔案，請支持正版。";
             lblDesc.ForeColor = Color.FromArgb(80, 80, 80);
             lblDesc.AutoSize = true;
             lblDesc.Location = new Point(22, 48);
             this.Controls.Add(lblDesc);
 
-            // 微信支付卡片
-            Panel pnlWeChat = new Panel();
-            pnlWeChat.Location = new Point(25, 100);
-            pnlWeChat.Size = new Size(245, 335);
-            pnlWeChat.BorderStyle = BorderStyle.FixedSingle;
-            pnlWeChat.BackColor = Color.FromArgb(250, 254, 250);
-            this.Controls.Add(pnlWeChat);
+            // 倉庫資訊群組
+            GroupBox grpRepos = new GroupBox();
+            grpRepos.Text = "專案與倉庫資訊";
+            grpRepos.Location = new Point(22, 115);
+            grpRepos.Size = new Size(600, 105);
+            this.Controls.Add(grpRepos);
 
-            Label lblWeChat = new Label();
-            lblWeChat.Text = "微信支付";
-            lblWeChat.Font = new Font("Microsoft YaHei UI", 11f, FontStyle.Bold);
-            lblWeChat.ForeColor = Color.FromArgb(7, 193, 96);
-            lblWeChat.Dock = DockStyle.Top;
-            lblWeChat.Height = 32;
-            lblWeChat.TextAlign = ContentAlignment.MiddleCenter;
-            pnlWeChat.Controls.Add(lblWeChat);
+            Label lblOrig = new Label();
+            lblOrig.Text = "原作者專案倉庫 (Upstream)：https://github.com/mj8724/CMO_CN";
+            lblOrig.AutoSize = true;
+            lblOrig.Location = new Point(15, 28);
+            grpRepos.Controls.Add(lblOrig);
 
-            PictureBox pbWeChat = new PictureBox();
-            pbWeChat.Dock = DockStyle.Fill;
-            pbWeChat.SizeMode = PictureBoxSizeMode.Zoom;
-            pbWeChat.Image = LoadEmbeddedImage("QR_WeChat");
-            pnlWeChat.Controls.Add(pbWeChat);
-            pbWeChat.BringToFront();
+            Button btnOpenOrig = new Button();
+            btnOpenOrig.Text = "開啟網頁";
+            btnOpenOrig.Location = new Point(480, 23);
+            btnOpenOrig.Size = new Size(100, 26);
+            btnOpenOrig.Click += new EventHandler(delegate(object s, EventArgs e) {
+                OpenUrl("https://github.com/mj8724/CMO_CN");
+            });
+            grpRepos.Controls.Add(btnOpenOrig);
 
-            // 支付宝卡片
-            Panel pnlAlipay = new Panel();
-            pnlAlipay.Location = new Point(295, 100);
-            pnlAlipay.Size = new Size(245, 335);
-            pnlAlipay.BorderStyle = BorderStyle.FixedSingle;
-            pnlAlipay.BackColor = Color.FromArgb(250, 252, 255);
-            this.Controls.Add(pnlAlipay);
+            Label lblTw = new Label();
+            lblTw.Text = "正體在地化專案 (Taiwan Fork)：https://github.com/NekoDream/CMO_TW";
+            lblTw.AutoSize = true;
+            lblTw.Location = new Point(15, 65);
+            grpRepos.Controls.Add(lblTw);
 
-            Label lblAlipay = new Label();
-            lblAlipay.Text = "支付寶";
-            lblAlipay.Font = new Font("Microsoft YaHei UI", 11f, FontStyle.Bold);
-            lblAlipay.ForeColor = Color.FromArgb(22, 119, 255);
-            lblAlipay.Dock = DockStyle.Top;
-            lblAlipay.Height = 32;
-            lblAlipay.TextAlign = ContentAlignment.MiddleCenter;
-            pnlAlipay.Controls.Add(lblAlipay);
+            Button btnOpenTw = new Button();
+            btnOpenTw.Text = "開啟網頁";
+            btnOpenTw.Location = new Point(480, 60);
+            btnOpenTw.Size = new Size(100, 26);
+            btnOpenTw.Click += new EventHandler(delegate(object s, EventArgs e) {
+                OpenUrl("https://github.com/NekoDream/CMO_TW");
+            });
+            grpRepos.Controls.Add(btnOpenTw);
 
-            PictureBox pbAlipay = new PictureBox();
-            pbAlipay.Dock = DockStyle.Fill;
-            pbAlipay.SizeMode = PictureBoxSizeMode.Zoom;
-            pbAlipay.Image = LoadEmbeddedImage("QR_Alipay");
-            pnlAlipay.Controls.Add(pbAlipay);
-            pbAlipay.BringToFront();
+            // 協定全文文字框
+            Label lblLicenseTitle = new Label();
+            lblLicenseTitle.Text = "開放原始碼協定條款 (MIT License)：";
+            lblLicenseTitle.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
+            lblLicenseTitle.AutoSize = true;
+            lblLicenseTitle.Location = new Point(22, 230);
+            this.Controls.Add(lblLicenseTitle);
+
+            TextBox txtLicense = new TextBox();
+            txtLicense.Multiline = true;
+            txtLicense.ReadOnly = true;
+            txtLicense.ScrollBars = ScrollBars.Vertical;
+            txtLicense.BackColor = Color.FromArgb(248, 249, 250);
+            txtLicense.Font = new Font("Consolas", 9f, FontStyle.Regular);
+            txtLicense.Location = new Point(22, 255);
+            txtLicense.Size = new Size(600, 215);
+            txtLicense.Text = GetMitLicenseText();
+            this.Controls.Add(txtLicense);
 
             Button btnClose = new Button();
             btnClose.Text = "關 閉";
             btnClose.Font = new Font("Microsoft YaHei UI", 10f, FontStyle.Regular);
-            btnClose.Location = new Point(230, 448);
+            btnClose.Location = new Point(265, 480);
             btnClose.Size = new Size(110, 32);
-            btnClose.Click += (s, e) => this.Close();
+            btnClose.Click += new EventHandler(delegate(object s, EventArgs e) {
+                this.Close();
+            });
             this.Controls.Add(btnClose);
         }
 
-        private Image LoadEmbeddedImage(string resName)
+        private static void OpenUrl(string url)
         {
             try
             {
-                Assembly asm = Assembly.GetExecutingAssembly();
-                string[] allRes = asm.GetManifestResourceNames();
-                foreach (string name in allRes)
-                {
-                    if (name.EndsWith(resName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        using (Stream stream = asm.GetManifestResourceNames() != null ? asm.GetManifestResourceStream(name) : null)
-                        {
-                            if (stream != null)
-                            {
-                                using (Image tmp = Image.FromStream(stream))
-                                {
-                                    return new Bitmap(tmp);
-                                }
-                            }
-                        }
-                    }
-                }
+                ProcessStartInfo psi = new ProcessStartInfo(url);
+                psi.UseShellExecute = true;
+                Process.Start(psi);
             }
-            catch { }
-            return null;
+            catch (Exception ex)
+            {
+                MessageBox.Show("無法開啟網址：" + ex.Message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private static string GetMitLicenseText()
+        {
+            return "MIT License\r\n\r\n"
+                + "Copyright (c) 2024-2026 CMO Localization Project Contributors\r\n\r\n"
+                + "Permission is hereby granted, free of charge, to any person obtaining a copy\r\n"
+                + "of this software and associated documentation files (the \"Software\"), to deal\r\n"
+                + "in the Software without restriction, including without limitation the rights\r\n"
+                + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\r\n"
+                + "copies of the Software, and to permit persons to whom the Software is\r\n"
+                + "furnished to do so, subject to the following conditions:\r\n\r\n"
+                + "The above copyright notice and this permission notice shall be included in all\r\n"
+                + "copies or substantial portions of the Software.\r\n\r\n"
+                + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\n"
+                + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\n"
+                + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\n"
+                + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\n"
+                + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\n"
+                + "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\r\n"
+                + "SOFTWARE.\r\n\r\n"
+                + "-------------------------------------------------------------------------\r\n"
+                + "開放原始碼協定條款摘要：\r\n"
+                + "本專案採用 MIT 授權條款開放原始碼。任何人皆得自由、免費使用、複製、修改、合併、\r\n"
+                + "發布、散布、再授權及販售軟體之副本，並得授權受領軟體者同樣享有上述權利。\r\n"
+                + "唯一條件為：所有副本或重要部分均應包含上述版權聲明及本授權條款。\r\n";
         }
     }
 
@@ -1047,9 +830,9 @@ namespace CMOLocalizerInstaller
                 // 部署 Symbols\Menu 中文按钮图与启动器中文资源
                 DeploySymbolsAndLauncher(gamePath);
 
-                // 部署自动升级组件并写入设置（开机自启 / 每 6 小时检查）
-                DeployUpdater(gamePath);
+                // 寫入基本設定並確保無任何後台自啟動
                 writeSettings(gamePath);
+                CleanupUpdater(gamePath);
 
                 // 兜底：对 zip 未覆盖的 HTML 做标题级替换 (带 .orig 备份)
                 LocalizeScenarioBriefings(Path.Combine(gamePath, "Scenarios"));
@@ -1662,39 +1445,21 @@ namespace CMOLocalizerInstaller
 
         public static bool GetAutoCheck()
         {
-            return CmoSettings.Load().AutoCheck;
+            return false;
         }
 
         public static void SetAutoCheck(bool on)
         {
-            CmoSettings st = CmoSettings.Load();
-            st.AutoCheck = on;
-            st.Save();
-            RegSet("AutoCheck", on ? 1 : 0, RegistryValueKind.DWord);   // 兼容旧版读取
         }
 
-        /// <summary>「不再提醒」开关：关闭自动检查 + 记住当前版本；返回新的自动检查状态。</summary>
         public static bool ToggleNeverRemind()
         {
-            CmoSettings st = CmoSettings.Load();
-            st.AutoCheck = !st.AutoCheck;
-            if (!st.AutoCheck)
-            {
-                string ver = StateVersion(CmoSettings.Load().GamePath);
-                st.SkippedVersion = ver.Length > 0 ? ver : CurrentVersion;
-            }
-            else
-            {
-                st.SkippedVersion = "";
-            }
-            st.Save();
-            RegSet("AutoCheck", st.AutoCheck ? 1 : 0, RegistryValueKind.DWord);
-            return st.AutoCheck;
+            return false;
         }
 
         public static bool GetAutoStart()
         {
-            return CmoSettings.Load().AutoStart;
+            return false;
         }
 
         public static string GetGamePath()
@@ -1706,20 +1471,11 @@ namespace CMOLocalizerInstaller
 
         public static void SetAutoStart(bool on)
         {
-            CmoSettings st = CmoSettings.Load();
-            st.AutoStart = on;
-            st.Save();
-            RegSet("AutoStart", on ? 1 : 0, RegistryValueKind.DWord);   // 兼容旧版读取
             try
             {
-                using (RegistryKey run = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run"))
+                using (RegistryKey run = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
                 {
-                    if (run == null) return;
-                    string exe = Path.Combine(GetGamePath(), "CMO_Updater.exe");
-                    if (on && File.Exists(exe))
-                        run.SetValue(RunKeyName, "\"" + exe + "\" --boot", RegistryValueKind.String);
-                    else if (!on)
-                        run.DeleteValue(RunKeyName, false);
+                    if (run != null) run.DeleteValue(RunKeyName, false);
                 }
             }
             catch { }
@@ -1727,98 +1483,38 @@ namespace CMOLocalizerInstaller
 
         public static string LastCheckText()
         {
-            string v = CmoSettings.Load().LastCheckUtc;
-            if (string.IsNullOrEmpty(v)) return "尚未檢查";
-            DateTime d;
-            if (!DateTime.TryParse(v.ToString(), System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal, out d))
-                return "尚未檢查";
-            return d.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
+            return "尚未檢查";
         }
 
         public static string NextCheckText()
         {
-            CmoSettings st = CmoSettings.Load();
-            if (!st.AutoCheck) return "已關閉";
-            string v = st.LastCheckUtc;
-            DateTime d;
-            if (string.IsNullOrEmpty(v) || !DateTime.TryParse(v.ToString(), System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal, out d))
-                return "開機後自動檢查";
-            int hours = st.CheckIntervalHours;
-            if (hours < 1) hours = 6;
-            DateTime next = d.ToLocalTime().AddHours(hours);
-            if (next <= DateTime.Now) return "即將檢查";
-            if (next.Date == DateTime.Today) return "今天 " + next.ToString("HH:mm");
-            return next.ToString("yyyy-MM-dd HH:mm");
+            return "已關閉";
         }
 
-        /// <summary>部署更新助手到游戏目录（内嵌资源 UPDATER_EXE）。</summary>
+        /// <summary>自動更新已移除，不再部署更新助手。</summary>
         public static bool DeployUpdater(string gamePath)
         {
-            if (string.IsNullOrEmpty(gamePath) || !Directory.Exists(gamePath)) return false;
-            return ExtractEmbeddedResource("UPDATER_EXE", Path.Combine(gamePath, "CMO_Updater.exe"));
+            return true;
         }
 
-        /// <summary>写入/补齐设置项；不改动用户已有的选择。</summary>
+        /// <summary>寫入基本設定（僅遊戲路徑與版本；不設定開機自啟與背景更新）。</summary>
         public static void WriteRegistrySettings(string gamePath)
         {
             RegSet("GamePath", gamePath, RegistryValueKind.String);
             RegSet("Version", CurrentVersion, RegistryValueKind.String);
-            if (RegGet("AutoCheck") == null) RegSet("AutoCheck", 1, RegistryValueKind.DWord);
-            if (RegGet("CheckIntervalHours") == null) RegSet("CheckIntervalHours", 6, RegistryValueKind.DWord);
-            if (RegGet("AutoStart") == null) RegSet("AutoStart", 1, RegistryValueKind.DWord);
-            if (RegGet("NotifyMode") == null) RegSet("NotifyMode", 1, RegistryValueKind.DWord);
-            if (RegGet("AutoInstall") == null) RegSet("AutoInstall", 1, RegistryValueKind.DWord);
-            if (RegGet("Mirror") == null) RegSet("Mirror", ReleaseConstants.Mirror, RegistryValueKind.String);
-            // 设置正文存 %APPDATA%\CMOChinese\settings.json（首次从上面的注册表值一次性迁移）
-            CmoSettings st = CmoSettings.Load();
-            if (string.IsNullOrEmpty(st.GamePath)) { st.GamePath = gamePath; st.Save(); }
-            // 按用户的开机自启偏好重建 Run 键（还原时会被删掉，重装后需恢复）
-            SetAutoStart(st.AutoStart);
+            SetAutoStart(false);
         }
 
-        /// <summary>静默安装之后把更新助手重新拉起（供 --restart-updater 使用）。</summary>
+        /// <summary>自動更新已移除，不再啟動更新助手。</summary>
         public static void StartUpdater(string gamePath)
         {
-            try
-            {
-                string exe = Path.Combine(gamePath, "CMO_Updater.exe");
-                if (!File.Exists(exe) || !GetAutoStart()) return;
-                ProcessStartInfo psi = new ProcessStartInfo(exe, "--restarted");
-                psi.UseShellExecute = false;
-                Process.Start(psi);
-            }
-            catch { }
         }
 
-        /// <summary>启动更新助手做一次检查（游戏目录没有时用临时释放的内嵌副本）。</summary>
+        /// <summary>自動更新已移除。</summary>
         public static string LaunchUpdater(string gamePath, out string error)
         {
-            error = "";
-            try
-            {
-                string exe = string.IsNullOrEmpty(gamePath) ? "" : Path.Combine(gamePath, "CMO_Updater.exe");
-                if (exe.Length == 0 || !File.Exists(exe))
-                {
-                    exe = Path.Combine(Path.GetTempPath(), "CMO_Updater.exe");
-                    if (!ExtractEmbeddedResource("UPDATER_EXE", exe))
-                    {
-                        error = "當前安裝包未內嵌更新助手（UPDATER_EXE 資源缺失），請使用 v4.1.4 及以上版本安裝包。";
-                        return null;
-                    }
-                }
-                ProcessStartInfo psi = new ProcessStartInfo(exe, "--check");
-                psi.UseShellExecute = false;
-                psi.WorkingDirectory = Path.GetDirectoryName(exe);
-                Process.Start(psi);
-                return exe;
-            }
-            catch (Exception ex)
-            {
-                error = ex.Message;
-                return null;
-            }
+            error = "自動更新功能已移除。";
+            return null;
         }
 
         /// <summary>卸载：结束更新助手、清理开机启动、注册表设置与程序本体。</summary>
@@ -2006,7 +1702,7 @@ namespace CMOLocalizerInstaller
                     bool ok = Install(gp, out err);
                     Console.WriteLine(ok ? "[SUCCESS] Installed to " + gp : "[ERROR] " + err);
                     WriteLog(ok ? "[SUCCESS] install " + gp : "[ERROR] install " + gp + " -> " + err);
-                    if (ok && restartUpdater) StartUpdater(gp);
+                    // 自動更新已移除
                     return ok ? 0 : 1;
                 }
                 else if (cmd == "uninstall")
