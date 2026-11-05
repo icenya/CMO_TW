@@ -2155,7 +2155,7 @@ def run_installer(r: Runner) -> None:
                                capture_output=True, timeout=300)
             msg = (_decode(p.stdout or b"") + _decode(p.stderr or b"")).strip()
             r.record("R37-dir-not-writable", "R37 目录不可写时文案指向权限（不得误报资源缺失）",
-                     p.returncode != 0 and "不可写" in msg and "管理员" in msg and "未找到" not in msg,
+                     p.returncode != 0 and ("不可写" in msg or "不可寫" in msg) and ("管理员" in msg or "管理員" in msg) and ("未找到" not in msg),
                      f"rc={p.returncode} 文案={msg[:110]}", "icacls deny (W)")
         finally:
             proc_util.run(["icacls", str(game3), "/remove:d", user], capture_output=True)
