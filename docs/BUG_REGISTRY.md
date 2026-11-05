@@ -2237,3 +2237,34 @@ python scripts/perf_probe.py          # 游戏已在想定里
   1. 繁簡轉換涉及大量一對多消歧與專用術語，必須依據權威事實源（《美華軍語辭典》）與明確規範，不能僅靠純機器字元替換。
   2. 既有測試與門禁若硬編碼舊有字串（如 `verify_regressions.py` 硬編碼「创意工坊」），需同步更新以相容正體中文。
   3. 修改各檔案時必須先檢查原始位元組並嚴格維持換行符號（LF vs CRLF），避免 diff 膨脹。
+
+---
+
+## R78：安裝器精簡：移除遙測/自動更新/背景執行/討論區/贊助頁，新增開源版權宣告頁
+
+- **來源**：使用者需求（修改安裝器程式碼，刪除所有遙測(如有)，刪除檢查更新、自動更新功能，刪除背景執行(如托盤)、刪除討論區、刪除原有贊助頁；新增版權頁，載明原作者倉庫及開放程式碼協定）。
+- **根因**：原安裝器內嵌背景更新檢查、托盤駐留、開機啟動 Run 註冊表項、支付寶/微信贊助 QR 視窗及外部社群討論區連結，存在不必要之背景進程與第三方服務依賴，缺乏正體化專案之原作者倉庫與開源授權（MIT License）宣告。
+- **修復**：
+  1. `src/installer/CMO_Chinese_Setup.cs`：
+     - 移除贊助按鈕（`btnDonate`）、支付寶/微信 QR 碼載入邏輯與 `DonateForm` 視窗。
+     - 移除版本更新分組（`grpUpdate`）及其附屬元件（檢查更新、立即升級、不再提醒、開機自啟 CheckBox、檢查頻率與提醒方式 ComboBox 等）。
+     - 移除更新事件處理常式（`RefreshUpdateState`、`OnIntervalChanged`、`OnNotifyChanged`、`OnAutoStartChanged`、`OnCheckUpdateClick`、`OnUpgradeClick`、`RunUpdater`、`OnNeverRemindClick`）。
+     - 在安裝流程（`InstallerCore.Install`）中移除 `DeployUpdater`，並呼叫 `CleanupUpdater` 主動清理任何舊版本遺留之 `CMO_Updater.exe` 與開機自啟 `Run` 鍵；`SetAutoStart` 永久關閉自啟。
+     - 在主視窗新增「版權與開放原始碼宣告」分組（`grpCopyright`）與按鈕（`btnCopyright`）。
+     - 新增獨立視窗 `CopyrightForm`，清楚載明原作者倉庫（`https://github.com/mj8724/CMO_CN`）、本正體中文化專案倉庫（`https://github.com/NekoDream/CMO_TW`）以及完整的 MIT License 開放原始碼協定條款全文，並提供一鍵開啟網頁按鈕。
+     - 移除卸載時之更新偏好設定保留提示，卸載時徹底清理在地化註冊表與設定快取。
+  2. `README.md`：
+     - 移除「社區交流」微信群二維碼與文字。
+     - 更新常見問題（FAQ），說明專案已移除背景自動更新與托盤常駐，升級只需覆蓋安裝最新安裝包。
+  3. `assets/community/wechat_group.png`：
+     - 執行 `git rm` 刪除討論區微信群二維碼圖片，同步更新 `docs/ROUTING.md` 移除該模式以符合路由表門禁。
+- **度量**：
+  - 安裝器介面高度自 770 像素優化至 630 像素，無任何背景駐留進程、無聯網遙測、無常駐托盤。
+  - `python scripts/verify_all.py` 版本門禁 `gate_version` 與路由門禁 `gate_routing` 均保持 PASS。
+- **門禁**：
+  - `python scripts/verify_routing.py`：PASS（322 條模式、413 個受控檔案全部吻合，0 個過期/孤兒條目）。
+  - `python scripts/verify_terminology.py`：PASS。
+  - `python scripts/sync_readme_downloads.py --check`：PASS。
+- **教訓**：
+  1. 安裝器必須貫徹純粹的本地部署原則，不應強綁背景進程與托盤服務，提供乾淨無擾的單機體驗。
+  2. 開源衍生專案應在主程式中以醒目、專屬之版權頁尊重原作者貢獻，並載明 MIT 開源授權以保障使用者與社群之自由權利。
