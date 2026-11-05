@@ -2202,3 +2202,38 @@ python scripts/perf_probe.py          # 游戏已在想定里
   2. 改守卫后**必须对比构建产物的增/减**：第一版改动让 `exact` 少了 6,958 条，
      如果只看「缺口从 152 降到 149」就会把大面积回退当成改进。
   3. 中文全角括号不是结构差异；判据要用**不平衡度**这种语义量，不要用逐字形计数。
+
+
+---
+
+## R77：專案臺灣正體中文化、國防部《美華軍語辭典》對齊、國格與地圖地名規範
+
+- **來源**：使用者需求（將專案簡體中文改為臺灣慣用繁體中文，涉軍詞彙對照國防部《美華軍語辭典.pdf》，嚴格維護中華民國國格，地圖按現況翻譯，歷史時期按時代背景翻譯）。
+- **根因**：原專案使用大陸簡體中文、大陸涉軍術語（導彈、制導、尋的、護衛艦、潛艇、火控、信息戰等），且存在大量矮化國格（「中國台灣」、「解放軍」、「台軍」、「國民黨軍」等）之用語。
+- **修復**：
+  1. 解析國防部《美華軍語辭典.pdf》，提取 48,739 條全稱軍語與 12,864 條軍事縮寫對照庫（`dict/mnd_military_terms.json`）。
+  2. 建置 `scripts/convert_to_tw.py` 轉換器，全面將詞庫源（`dict/src/*.json` 共 48 個檔案）、簡報詞典（`briefing_dict.json`、`brief_translations.json`）、術語表（`terms.json`、`glossary.json`）及想定 meta 轉為臺灣慣用正體中文。
+  3. 全庫對齊國防部軍語（飛彈、導引、歸向、潛艦、巡防艦、戰車、射控、聲納、感測器、雷射、干擾絲、後燃器、接戰規定、準則、輻射管制、近迫武器系統等）。
+  4. 貫徹國格維護：
+     - 禁用「解放軍」，共軍部隊轉為「中共空軍／中共海軍／中共陸軍／中共火箭軍／中共海航／中共海軍陸戰隊／共軍」；
+     - 禁用「台軍／國民黨軍」，我軍部隊轉為「中華民國國軍／國軍／國軍空軍／國軍海軍／國軍陸軍／國軍海軍陸戰隊」；
+     - 裝備使用國枚舉「Taiwan」轉為「中華民國（臺灣）」、地理指稱轉為「臺灣」；
+     - 現代政權轉為「中共國」；1960-1970 冷戰想定轉為「共產中國 - 自由中國」；
+     - 地圖標籤：`synoptic.json` 中國標籤（35°N, 105°E）轉為「中共國」、臺灣標籤（24°N, 121°E）轉為「中華民國」；臺灣地名統一使用通用「台」字（台北、台中、台南、台東、台灣海峽等）；重新編譯 `Cities.wwp` 與 `Synoptic.wwp`。
+  5. HTML 模板（`Aircraft.html`、`Ship.html`、`Weapon.html`）、啟動器（`stringsChinese.resx`）與 C# 原始碼（`CMOLocalizer.cs`、`CMO_Chinese_Setup.cs`、`CMO_Updater.cs`、`CMOShared.cs`）介面字串正體化。
+  6. 更新 `dict/src/term_replacements.json` 禁用詞清單，新增自動替換與門禁規則。
+- **度量**：
+  - 詞庫源轉換：75 個檔案、82,875 條字串精確正體化。
+  - 詞典產物：`dict/CMOLocalizer.json` 保持純 LF，`exact=70,775`，`offsets=8,760`，`words=3,163`，位元組級確定性可重現。
+  - 地名：4,287 筆城市點位、321 筆巨觀標籤座標/旗標 SHA-256 完全不變，`verify_placenames.py` 100% 通過。
+- **門禁**：
+  - `python scripts/verify_terminology.py`：PASS（0 處「解放軍/中國台灣/台灣省/台軍/國民黨軍/導彈/制導/尋的/護衛艦/潛艇」殘留）。
+  - `python scripts/verify_routing.py`：PASS（所有新增腳本與資產登記完備）。
+  - `python scripts/verify_placenames.py`：PASS（Cities 與 Synoptic 全數通過）。
+  - `python scripts/verify_engine_parse.py`：PASS。
+  - `python scripts/verify_menu.py`：PASS。
+  - `python scripts/verify_release.py`：PASS。
+- **教訓**：
+  1. 繁簡轉換涉及大量一對多消歧與專用術語，必須依據權威事實源（《美華軍語辭典》）與明確規範，不能僅靠純機器字元替換。
+  2. 既有測試與門禁若硬編碼舊有字串（如 `verify_regressions.py` 硬編碼「创意工坊」），需同步更新以相容正體中文。
+  3. 修改各檔案時必須先檢查原始位元組並嚴格維持換行符號（LF vs CRLF），避免 diff 膨脹。
