@@ -1,6 +1,7 @@
 # CMO 汉化工程 — 构建产物
 build/
 out/
+release/
 *.dll
 *.exe
 *.pdb
