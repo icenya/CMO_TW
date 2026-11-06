@@ -30,7 +30,7 @@ namespace CMOLocalizerInstaller
 
         public InstallerForm(string initialPath)
         {
-            this.Text = "Command: Modern Operations (CMO) 完整中文中文化一鍵安裝工具 v4.2.5（適配遊戲內部版本 " + ReleaseConstants.GameBuild + "）";
+            this.Text = "Command: Modern Operations (CMO) 完整中文中文化一鍵安裝工具 v4.2.6（適配遊戲內部版本 " + ReleaseConstants.GameBuild + "）";
             this.Size = new Size(700, 630);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -774,9 +774,28 @@ namespace CMOLocalizerInstaller
 
                 string cfgPath = Path.Combine(gamePath, "Command.exe.config");
                 string bakPath = Path.Combine(gamePath, "Command.exe.config.cmo_bak");
-                if (!File.Exists(bakPath) && File.Exists(cfgPath))
+                if (File.Exists(cfgPath) && !File.Exists(bakPath))
                 {
-                    File.Copy(cfgPath, bakPath, true);
+                    try
+                    {
+                        string txt = File.ReadAllText(cfgPath);
+                        if (txt.Contains("appDomainManagerType") || txt.Contains("appDomainManagerAssembly"))
+                        {
+                            XmlDocument bakDoc = new XmlDocument();
+                            bakDoc.Load(cfgPath);
+                            RemoveDomainManagerNodes(bakDoc);
+                            EnsureRequiredConfigElements(bakDoc);
+                            bakDoc.Save(bakPath);
+                        }
+                        else
+                        {
+                            File.Copy(cfgPath, bakPath, true);
+                        }
+                    }
+                    catch
+                    {
+                        File.Copy(cfgPath, bakPath, true);
+                    }
                 }
 
                 XmlDocument doc = new XmlDocument();
@@ -794,6 +813,8 @@ namespace CMOLocalizerInstaller
                     "CMOLocalizer.LocalizerDomainManager");
                 NormalizeDomainManagerSetting(doc, runtime, "appDomainManagerAssembly",
                     "CMOLocalizer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+
+                EnsureRequiredConfigElements(doc);
 
                 doc.Save(cfgPath);
 
@@ -1373,6 +1394,243 @@ namespace CMOLocalizerInstaller
         //  自动升级（更新助手 CMO_Updater.exe）集成
         // ──────────────────────────────────────────────────────────────
         // 发布常量的唯一来源是 CMOShared.ReleaseConstants（禁止在本文件再写字面量副本）。
+        private struct BindingRedirectSpec
+        {
+            public string Name;
+            public string PublicKeyToken;
+            public string OldVersion;
+            public string NewVersion;
+
+            public BindingRedirectSpec(string name, string token, string oldVer, string newVer)
+            {
+                Name = name;
+                PublicKeyToken = token;
+                OldVersion = oldVer;
+                NewVersion = newVer;
+            }
+        }
+
+        private static readonly BindingRedirectSpec[] RequiredRedirects = new BindingRedirectSpec[]
+        {
+            new BindingRedirectSpec("System.Runtime.CompilerServices.Unsafe", "b03f5f7f11d50a3a", "0.0.0.0-6.0.0.0", "6.0.0.0"),
+            new BindingRedirectSpec("System.Buffers", "cc7b13ffcd2ddd51", "0.0.0.0-4.0.4.0", "4.0.4.0"),
+            new BindingRedirectSpec("System.Memory", "cc7b13ffcd2ddd51", "0.0.0.0-4.0.1.2", "4.0.1.2")
+        };
+
+        private const string AsmBindingNs = "urn:schemas-microsoft-com:asm.v1";
+
+        internal static bool EnsureRequiredConfigElements(XmlDocument doc)
+        {
+            if (doc == null) return false;
+            bool modified = false;
+
+            XmlElement root = doc.DocumentElement;
+            if (root == null || !string.Equals(root.LocalName, "configuration", StringComparison.OrdinalIgnoreCase))
+            {
+                root = doc.CreateElement("configuration");
+                doc.AppendChild(root);
+                modified = true;
+            }
+
+            // 1. Ensure <startup useLegacyV2RuntimeActivationPolicy="true">
+            XmlElement startup = null;
+            XmlElement runtime = null;
+            foreach (XmlNode n in root.ChildNodes)
+            {
+                if (n.NodeType == XmlNodeType.Element)
+                {
+                    if (string.Equals(n.LocalName, "startup", StringComparison.OrdinalIgnoreCase))
+                        startup = (XmlElement)n;
+                    else if (string.Equals(n.LocalName, "runtime", StringComparison.OrdinalIgnoreCase))
+                        runtime = (XmlElement)n;
+                }
+            }
+
+            if (startup == null)
+            {
+                startup = doc.CreateElement("startup");
+                if (runtime != null) root.InsertBefore(startup, runtime);
+                else root.AppendChild(startup);
+                modified = true;
+            }
+
+            if (startup.GetAttribute("useLegacyV2RuntimeActivationPolicy") != "true")
+            {
+                startup.SetAttribute("useLegacyV2RuntimeActivationPolicy", "true");
+                modified = true;
+            }
+
+            XmlElement supportedRuntime = null;
+            foreach (XmlNode n in startup.ChildNodes)
+            {
+                if (n.NodeType == XmlNodeType.Element && string.Equals(n.LocalName, "supportedRuntime", StringComparison.OrdinalIgnoreCase))
+                {
+                    supportedRuntime = (XmlElement)n;
+                    break;
+                }
+            }
+            if (supportedRuntime == null)
+            {
+                supportedRuntime = doc.CreateElement("supportedRuntime");
+                startup.AppendChild(supportedRuntime);
+                modified = true;
+            }
+            if (!supportedRuntime.HasAttribute("version"))
+            {
+                supportedRuntime.SetAttribute("version", "v4.0");
+                modified = true;
+            }
+            if (!supportedRuntime.HasAttribute("sku"))
+            {
+                supportedRuntime.SetAttribute("sku", ".NETFramework,Version=v4.8");
+                modified = true;
+            }
+
+            // 2. Ensure <runtime>
+            if (runtime == null)
+            {
+                runtime = doc.CreateElement("runtime");
+                root.AppendChild(runtime);
+                modified = true;
+            }
+
+            // 3. Find primary <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+            XmlElement primaryAsmBinding = null;
+            foreach (XmlNode n in runtime.ChildNodes)
+            {
+                if (n.NodeType == XmlNodeType.Element && string.Equals(n.LocalName, "assemblyBinding", StringComparison.OrdinalIgnoreCase))
+                {
+                    primaryAsmBinding = (XmlElement)n;
+                    break;
+                }
+            }
+            if (primaryAsmBinding == null)
+            {
+                primaryAsmBinding = doc.CreateElement("assemblyBinding", AsmBindingNs);
+                runtime.AppendChild(primaryAsmBinding);
+                modified = true;
+            }
+
+            // 4. Ensure each required bindingRedirect exists
+            for (int r = 0; r < RequiredRedirects.Length; r++)
+            {
+                BindingRedirectSpec spec = RequiredRedirects[r];
+                XmlElement foundDep = null;
+
+                foreach (XmlNode bNode in runtime.ChildNodes)
+                {
+                    if (bNode.NodeType != XmlNodeType.Element || !string.Equals(bNode.LocalName, "assemblyBinding", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    foreach (XmlNode dNode in bNode.ChildNodes)
+                    {
+                        if (dNode.NodeType != XmlNodeType.Element || !string.Equals(dNode.LocalName, "dependentAssembly", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        foreach (XmlNode idNode in dNode.ChildNodes)
+                        {
+                            if (idNode.NodeType == XmlNodeType.Element && string.Equals(idNode.LocalName, "assemblyIdentity", StringComparison.OrdinalIgnoreCase))
+                            {
+                                XmlElement idElem = (XmlElement)idNode;
+                                if (string.Equals(idElem.GetAttribute("name"), spec.Name, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    foundDep = (XmlElement)dNode;
+                                    break;
+                                }
+                            }
+                        }
+                        if (foundDep != null) break;
+                    }
+                    if (foundDep != null) break;
+                }
+
+                if (foundDep == null)
+                {
+                    string ns = primaryAsmBinding.NamespaceURI;
+                    foundDep = string.IsNullOrEmpty(ns) ? doc.CreateElement("dependentAssembly") : doc.CreateElement("dependentAssembly", ns);
+
+                    XmlElement idElem = string.IsNullOrEmpty(ns) ? doc.CreateElement("assemblyIdentity") : doc.CreateElement("assemblyIdentity", ns);
+                    idElem.SetAttribute("name", spec.Name);
+                    idElem.SetAttribute("publicKeyToken", spec.PublicKeyToken);
+                    idElem.SetAttribute("culture", "neutral");
+                    foundDep.AppendChild(idElem);
+
+                    XmlElement redirectElem = string.IsNullOrEmpty(ns) ? doc.CreateElement("bindingRedirect") : doc.CreateElement("bindingRedirect", ns);
+                    redirectElem.SetAttribute("oldVersion", spec.OldVersion);
+                    redirectElem.SetAttribute("newVersion", spec.NewVersion);
+                    foundDep.AppendChild(redirectElem);
+
+                    primaryAsmBinding.AppendChild(foundDep);
+                    modified = true;
+                }
+                else
+                {
+                    XmlElement idElem = null;
+                    XmlElement redirectElem = null;
+                    foreach (XmlNode c in foundDep.ChildNodes)
+                    {
+                        if (c.NodeType == XmlNodeType.Element)
+                        {
+                            if (string.Equals(c.LocalName, "assemblyIdentity", StringComparison.OrdinalIgnoreCase))
+                                idElem = (XmlElement)c;
+                            else if (string.Equals(c.LocalName, "bindingRedirect", StringComparison.OrdinalIgnoreCase))
+                                redirectElem = (XmlElement)c;
+                        }
+                    }
+
+                    if (idElem != null)
+                    {
+                        if (idElem.GetAttribute("name") != spec.Name) { idElem.SetAttribute("name", spec.Name); modified = true; }
+                        if (idElem.GetAttribute("publicKeyToken") != spec.PublicKeyToken) { idElem.SetAttribute("publicKeyToken", spec.PublicKeyToken); modified = true; }
+                    }
+                    if (redirectElem != null)
+                    {
+                        if (redirectElem.GetAttribute("newVersion") != spec.NewVersion) { redirectElem.SetAttribute("newVersion", spec.NewVersion); modified = true; }
+                        if (redirectElem.GetAttribute("oldVersion") != spec.OldVersion) { redirectElem.SetAttribute("oldVersion", spec.OldVersion); modified = true; }
+                    }
+                    else
+                    {
+                        string ns = foundDep.NamespaceURI;
+                        redirectElem = string.IsNullOrEmpty(ns) ? doc.CreateElement("bindingRedirect") : doc.CreateElement("bindingRedirect", ns);
+                        redirectElem.SetAttribute("oldVersion", spec.OldVersion);
+                        redirectElem.SetAttribute("newVersion", spec.NewVersion);
+                        foundDep.AppendChild(redirectElem);
+                        modified = true;
+                    }
+                }
+            }
+
+            return modified;
+        }
+
+        internal static bool RemoveDomainManagerNodes(XmlDocument doc)
+        {
+            if (doc == null || doc.DocumentElement == null) return false;
+            bool modified = false;
+            foreach (XmlNode rNode in doc.DocumentElement.ChildNodes)
+            {
+                if (rNode.NodeType != XmlNodeType.Element || !string.Equals(rNode.LocalName, "runtime", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                List<XmlNode> toRemove = new List<XmlNode>();
+                foreach (XmlNode child in rNode.ChildNodes)
+                {
+                    if (child.NodeType == XmlNodeType.Element &&
+                        (string.Equals(child.LocalName, "appDomainManagerType", StringComparison.OrdinalIgnoreCase) ||
+                         string.Equals(child.LocalName, "appDomainManagerAssembly", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        toRemove.Add(child);
+                    }
+                }
+                for (int i = 0; i < toRemove.Count; i++)
+                {
+                    rNode.RemoveChild(toRemove[i]);
+                    modified = true;
+                }
+            }
+            return modified;
+        }
+
         private static void NormalizeDomainManagerSetting(XmlDocument doc, XmlNode runtime, string name, string value)
         {
             XmlNodeList existing = runtime.SelectNodes(name);
@@ -1586,20 +1844,33 @@ namespace CMOLocalizerInstaller
                 {
                     File.Copy(bakPath, cfgPath, true);
                     File.Delete(bakPath);
+                    try
+                    {
+                        string restoredTxt = File.ReadAllText(cfgPath);
+                        if (restoredTxt.Contains("CMOLocalizer.LocalizerDomainManager"))
+                        {
+                            XmlDocument restoredDoc = new XmlDocument();
+                            restoredDoc.Load(cfgPath);
+                            if (RemoveDomainManagerNodes(restoredDoc))
+                            {
+                                EnsureRequiredConfigElements(restoredDoc);
+                                restoredDoc.Save(cfgPath);
+                            }
+                        }
+                    }
+                    catch { }
                 }
                 else if (File.Exists(cfgPath))
                 {
-                    XmlDocument doc = new XmlDocument();
-                    doc.Load(cfgPath);
-                    XmlNode runtime = doc.SelectSingleNode("//configuration/runtime");
-                    if (runtime != null)
+                    try
                     {
-                        XmlNode typeNode = runtime.SelectSingleNode("appDomainManagerType");
-                        if (typeNode != null) runtime.RemoveChild(typeNode);
-                        XmlNode asmNode = runtime.SelectSingleNode("appDomainManagerAssembly");
-                        if (asmNode != null) runtime.RemoveChild(asmNode);
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(cfgPath);
+                        RemoveDomainManagerNodes(doc);
+                        EnsureRequiredConfigElements(doc);
                         doc.Save(cfgPath);
                     }
+                    catch { }
                 }
 
                 string dllDest = Path.Combine(gamePath, "CMOLocalizer.dll");
@@ -1656,7 +1927,6 @@ namespace CMOLocalizerInstaller
                 string cmd = null;
                 string gpArg = null;
                 int waitPid = 0;
-                bool restartUpdater = false;
                 bool purgeSettings = false;
 
                 for (int i = 0; i < args.Length; i++)
@@ -1669,7 +1939,7 @@ namespace CMOLocalizerInstaller
                     else if (a == "--list-versions" || a == "/list-versions") cmd = "list";
                     else if (a == "--purge-settings" || a == "/purge-settings") purgeSettings = true;
                     else if (a == "--silent" || a == "/silent") { }
-                    else if (a == "--restart-updater") restartUpdater = true;
+                    else if (a == "--restart-updater") { /* legacy no-op */ }
                     else if (a == "--wait-pid" && i + 1 < args.Length)
                     {
                         int.TryParse(args[++i], out waitPid);
