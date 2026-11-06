@@ -96,6 +96,67 @@ namespace CMOLocalizer
             catch { }
         }
 
+        private static bool assemblyResolverInstalled = false;
+        private static void InstallAssemblyResolver()
+        {
+            if (assemblyResolverInstalled) return;
+            assemblyResolverInstalled = true;
+            try
+            {
+                AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs args)
+                {
+                    return ResolveLocalAssembly(args != null ? args.Name : null);
+                };
+                Log("AssemblyResolver installed (auto-redirecting mismatched base directory DLLs).");
+            }
+            catch (Exception ex)
+            {
+                Log("InstallAssemblyResolver Exception: " + ex.Message);
+            }
+        }
+
+        private static Assembly ResolveLocalAssembly(string requestedFullName)
+        {
+            if (string.IsNullOrEmpty(requestedFullName)) return null;
+            try
+            {
+                AssemblyName requestedName = new AssemblyName(requestedFullName);
+                string simpleName = requestedName.Name;
+                if (string.IsNullOrEmpty(simpleName)) return null;
+
+                // 忽略附属/卫星资源包（*.resources）
+                if (simpleName.EndsWith(".resources", StringComparison.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+
+                // 1. 若当前 AppDomain 已加载同名程序集，直接返回
+                Assembly[] loaded = AppDomain.CurrentDomain.GetAssemblies();
+                for (int i = 0; i < loaded.Length; i++)
+                {
+                    Assembly asm = loaded[i];
+                    if (asm != null && string.Equals(asm.GetName().Name, simpleName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return asm;
+                    }
+                }
+
+                // 2. 从游戏根目录查找匹配的 DLL
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string candidate = Path.Combine(baseDir, simpleName + ".dll");
+                if (File.Exists(candidate))
+                {
+                    Log("AssemblyResolve: redirected '" + requestedFullName + "' -> " + candidate);
+                    return Assembly.LoadFrom(candidate);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("ResolveLocalAssembly Exception for '" + requestedFullName + "': " + ex.Message);
+            }
+            return null;
+        }
+
         /// <summary>
         /// 安装三道未处理异常入口的取证器。原则：
         /// · 一律记录完整堆栈（崩溃后仍可分析）；
@@ -254,6 +315,7 @@ namespace CMOLocalizer
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
                 logPath = Path.Combine(baseDir, "CMOLocalizer.log");
                 Log("=== CMOLocalizer v4.0 Engine Starting ===");
+                InstallAssemblyResolver();
                 InstallCrashGuard();
 
                 SetupChineseDateTimeCulture();
