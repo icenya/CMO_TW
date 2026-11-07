@@ -264,7 +264,7 @@ class ReleaseContractTests(unittest.TestCase):
         self.build = self.root / "build"
         self.build.mkdir(parents=True)
         (self.root / "VERSION").write_text(self.version + "\n", encoding="utf-8", newline="\n")
-        (self.root / "GAME_BUILD").write_text("1900.23\n", encoding="utf-8", newline="\n")
+        (self.root / "GAME_BUILD").write_text("1900.24\n", encoding="utf-8", newline="\n")
         (self.root / "dict").mkdir()
         (self.root / "dict/CMOLocalizer.json").write_bytes(self.payloads["CMOLocalizer.json"])
         (self.build / "CMOLocalizer.dll").write_bytes(self.payloads["CMOLocalizer.dll"])
