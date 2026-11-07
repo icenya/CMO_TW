@@ -2268,3 +2268,29 @@ python scripts/perf_probe.py          # 游戏已在想定里
 - **教訓**：
   1. 安裝器必須貫徹純粹的本地部署原則，不應強綁背景進程與托盤服務，提供乾淨無擾的單機體驗。
   2. 開源衍生專案應在主程式中以醒目、專屬之版權頁尊重原作者貢獻，並載明 MIT 開源授權以保障使用者與社群之自由權利。
+
+---
+
+## R79：遊戲主程式 Build 1900.24 適配、Command.exe.config bindingRedirect 自癒與 AssemblyResolve 雙重防護
+
+- **來源**：使用者回報啟動崩潰日誌（`ExceptionLog_2026_11_06.txt`，遊戲版本 `Build 1900.24` 拋出 `System.Memory, Version=4.0.1.1` `0x80131040` 異常）並提供新版遊戲目錄檔案。
+- **根因**：
+  1. `Command.exe.config` 與 `Command.exe.config.cmo_bak` 曾被外部外掛腳本（如 `CMOMapTilerPlugin` 的 `install.ps1`）覆蓋為 12 行極簡配置，遺失官方 `<assemblyBinding>` 重導向節點。
+  2. 遊戲目錄中 3 個強命名組件（`System.Memory` 4.0.1.2、`System.Buffers` 4.0.4.0、`System.Runtime.CompilerServices.Unsafe` 6.0.0.0）因引用版本（4.0.1.1 等）不一致，缺少重導向時 CLR 在 `MainForm..ctor()` 載入 `ZString (2.6.0.0)` 時拋出 `0x80131040`。
+  3. `src/installer/CMO_Chinese_Setup.cs` 與 `scripts/deploy.sh` 之前僅注入 `appDomainManagerType` / `appDomainManagerAssembly`，未防禦性補齊必備的 `<assemblyBinding>`；且備份/卸載時若原配置已損壞會導致還原後仍崩潰。
+  4. 漢化引擎 `src/engine/CMOLocalizer.cs` 未註冊 `AppDomain.CurrentDomain.AssemblyResolve` 兜底事件。
+- **修復**：
+  1. 逆向解密 `Command.exe`（`Build 1900.24`）之 2MB 加密字串池，確認字串池類名（`AoIBWWlDJbaf7LijnA.oMu6jVbdhHEH79DDhU`）與全部 8,760 條字典偏移量 100% 吻合（零位移）。
+  2. 將 `GAME_BUILD`、`CMOShared.ReleaseConstants.GameBuild`、`README.md` 與 `ReleaseContractTests.py` 同步推進至 `1900.24`。
+  3. `src/installer/CMO_Chinese_Setup.cs` 新增 `EnsureRequiredConfigElements` 與 `RemoveDomainManagerNodes`，在安裝時自動修復/補齊 `<startup>` 及 3 組 `<bindingRedirect>`，備份時過濾第三方外掛節點；卸載時亦確保移除外掛節點。
+  4. `scripts/deploy.sh` 同步增加 `<startup>` 與 3 組 `<bindingRedirect>` 自動補齊。
+  5. `src/engine/CMOLocalizer.cs` 在 `InitializeNewDomain` 最開頭註冊 `InstallAssemblyResolver()`，當 CLR 請求遊戲目錄下存在的強命名組件時自動載入，提供運行時雙重保險。
+  6. `scripts/verify_regressions.py` 新增 `R79-static-config-heal` 與 `R79-static-assembly-resolve` 門禁斷言。
+- **度量**：
+  - 字串池偏移量：8,760 / 8,760（100.00% 完全匹配）。
+  - 依賴審計：93 個組件掃描完畢，精確識別 3 組版本不匹配強命名組件並全部建立重導向。
+  - 門禁：`verify_routing.py` PASS，`verify_engine_parse.py` PASS，`R79-static-config-heal` PASS，`R79-static-assembly-resolve` PASS。
+- **教訓**：
+  1. CLR `AppDomainManager` 注入機制高度依賴 `Command.exe.config` 的完整性，安裝器不能僅做節點追加，必須確保宿主執行緒所需的官方 `<assemblyBinding>` 永遠完備。
+  2. 在早期初始化階段掛載 `AssemblyResolve` 可以讓本插件對外部工具的破壞具備自我修復與兜底容錯能力。
+
