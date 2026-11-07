@@ -366,6 +366,7 @@
 | 目录 | 说明（不入库、不参与登记） |
 |---|---|
 | `build/` | 全部编译产物 + `regression_report.json` + 打包产物。**整目录 gitignored** |
+| `release/` | 发版交付物目录（安装包/绿色包/SHA256）。**整目录 gitignored** |
 | `evidence/` | 实机验证截图/证据。gitignored |
 | `dict/worklist.json`、`dict/db_desc_work.json`、`dict/db_desc_chunks/`、`dict/db_desc_out/` | 中间态工作文件，gitignored |
 
