@@ -86,7 +86,24 @@ root, game, engine, dictionary = map(pathlib.Path, sys.argv[1:])
 config = game / "Command.exe.config"
 doc = minidom.parseString(config.read_bytes())
 configuration = doc.documentElement
+startup = next((n for n in configuration.childNodes if n.nodeType == n.ELEMENT_NODE and n.tagName == "startup"), None)
 runtime = next((n for n in configuration.childNodes if n.nodeType == n.ELEMENT_NODE and n.tagName == "runtime"), None)
+if startup is None:
+    startup = doc.createElement("startup")
+    if runtime is not None:
+        configuration.insertBefore(startup, runtime)
+    else:
+        configuration.appendChild(startup)
+startup.setAttribute("useLegacyV2RuntimeActivationPolicy", "true")
+supp = next((n for n in startup.childNodes if n.nodeType == n.ELEMENT_NODE and n.tagName == "supportedRuntime"), None)
+if supp is None:
+    supp = doc.createElement("supportedRuntime")
+    startup.appendChild(supp)
+if not supp.hasAttribute("version"):
+    supp.setAttribute("version", "v4.0")
+if not supp.hasAttribute("sku"):
+    supp.setAttribute("sku", ".NETFramework,Version=v4.8")
+
 if runtime is None:
     runtime = doc.createElement("runtime")
     configuration.appendChild(runtime)
@@ -101,6 +118,54 @@ for name, value in (("appDomainManagerType", "CMOLocalizer.LocalizerDomainManage
         node = doc.createElement(name)
         runtime.appendChild(node)
     node.setAttribute("value", value)
+
+asm_binding = next((n for n in runtime.childNodes if n.nodeType == n.ELEMENT_NODE and n.localName == "assemblyBinding"), None)
+if asm_binding is None:
+    asm_binding = doc.createElement("assemblyBinding")
+    asm_binding.setAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1")
+    runtime.appendChild(asm_binding)
+
+all_bindings = [n for n in runtime.childNodes if n.nodeType == n.ELEMENT_NODE and n.localName == "assemblyBinding"]
+redirects = [
+    ("System.Runtime.CompilerServices.Unsafe", "b03f5f7f11d50a3a", "0.0.0.0-6.0.0.0", "6.0.0.0"),
+    ("System.Buffers", "cc7b13ffcd2ddd51", "0.0.0.0-4.0.4.0", "4.0.4.0"),
+    ("System.Memory", "cc7b13ffcd2ddd51", "0.0.0.0-4.0.1.2", "4.0.1.2"),
+]
+for r_name, r_token, r_old, r_new in redirects:
+    found_dep = None
+    for b in all_bindings:
+        for d in b.childNodes:
+            if d.nodeType == d.ELEMENT_NODE and d.localName == "dependentAssembly":
+                for id_node in d.childNodes:
+                    if id_node.nodeType == id_node.ELEMENT_NODE and id_node.localName == "assemblyIdentity":
+                        if id_node.getAttribute("name").lower() == r_name.lower():
+                            found_dep = d
+                            break
+                if found_dep: break
+        if found_dep: break
+    if found_dep is None:
+        dep = doc.createElement("dependentAssembly")
+        ident = doc.createElement("assemblyIdentity")
+        ident.setAttribute("name", r_name)
+        ident.setAttribute("publicKeyToken", r_token)
+        ident.setAttribute("culture", "neutral")
+        dep.appendChild(ident)
+        redir = doc.createElement("bindingRedirect")
+        redir.setAttribute("oldVersion", r_old)
+        redir.setAttribute("newVersion", r_new)
+        dep.appendChild(redir)
+        asm_binding.appendChild(dep)
+    else:
+        ident = next((n for n in found_dep.childNodes if n.nodeType == n.ELEMENT_NODE and n.localName == "assemblyIdentity"), None)
+        if ident:
+            ident.setAttribute("name", r_name)
+            ident.setAttribute("publicKeyToken", r_token)
+        redir = next((n for n in found_dep.childNodes if n.nodeType == n.ELEMENT_NODE and n.localName == "bindingRedirect"), None)
+        if redir is None:
+            redir = doc.createElement("bindingRedirect")
+            found_dep.appendChild(redir)
+        redir.setAttribute("oldVersion", r_old)
+        redir.setAttribute("newVersion", r_new)
 new = config.with_name(config.name + ".new")
 new.write_bytes(doc.toxml(encoding="utf-8"))
 os.replace(new, config)
