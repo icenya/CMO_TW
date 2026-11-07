@@ -12,10 +12,10 @@
 | 通道 | 适合谁 | 版本 | 下载 |
 |---|---|---|---|
 | **稳定版** | 想安稳玩、不想折腾 | **`4.2.1`**（维护者人工确认） | [安装器](https://github.com/mj8724/CMO_CN/releases/download/v4.2.1/CMO_Chinese_Setup_v4.2.1.exe) · [绿色包](https://github.com/mj8724/CMO_CN/releases/download/v4.2.1/CMO_Chinese_Pack_4.2.1.zip) |
-| **测试版** | 想第一时间拿到最新修复 | **`4.2.5`**（本页登记版本） | [安装器](https://github.com/mj8724/CMO_CN/releases/download/v4.2.5/CMO_Chinese_Setup_v4.2.5.exe) · [绿色包](https://github.com/mj8724/CMO_CN/releases/download/v4.2.5/CMO_Chinese_Pack_4.2.5.zip) |
+| **测试版** | 想第一时间拿到最新修复 | **`4.2.6`**（本页登记版本） | [安装器](https://github.com/mj8724/CMO_CN/releases/download/v4.2.6/CMO_Chinese_Setup_v4.2.6.exe) · [绿色包](https://github.com/mj8724/CMO_CN/releases/download/v4.2.6/CMO_Chinese_Pack_4.2.6.zip) |
 
 > **稳定版**链接固定指向 `v4.2.1`，只有维护者确认新版本稳定后才会提升。
-> **测试版**链接固定指向本页标注的 `v4.2.5`，可能包含尚未充分验证的修复。
+> **测试版**链接固定指向本页标注的 `v4.2.6`，可能包含尚未充分验证的修复。
 > 两个下载都绑定明确版本；最近一次发布与全部历史版本见 [Releases](https://github.com/mj8724/CMO_CN/releases)。
 >
 > 不确定选哪个？**选稳定版**。想帮忙验证修复，再用测试版。
@@ -25,7 +25,7 @@
 把 ZIP 解压到独立临时目录（不要先覆盖游戏目录），退出游戏后在该目录运行包内同版本安装器：
 
 ```powershell
-& ".\CMO_Chinese_Setup_v4.2.5.exe" --install "<游戏根目录>" --silent
+& ".\CMO_Chinese_Setup_v4.2.6.exe" --install "<游戏根目录>" --silent
 ```
 
 稳定版绿色包使用它对应的 `CMO_Chinese_Setup_v4.2.1.exe` 执行相同参数；历史 ZIP 若未附安装器，须从同一 tag 另行下载该版本安装器到临时目录，不要混用版本。
@@ -37,7 +37,7 @@
 
 ## 版本與適配
 
-- **適配的遊戲內部版本：`1900.23`** —— 即遊戲標題裏的 `Command: Modern Operations v1.10 - Build 1900.23`
+- **適配的遊戲內部版本：`1900.24`** —— 即遊戲標題裏的 `Command: Modern Operations v1.10 - Build 1900.24`
   （倉庫根目錄 `GAME_BUILD` 是它的單一來源，`verify_all` 會校驗各處一致）。
 - 本修補程式自身的版本號見倉庫根目錄 `VERSION`：安裝包檔名、安裝器標題、更新助手提示都會顯示它。
 - **遊戲每次更新（構建號變化）都可能讓本修補程式失效**（遊戲會重新命名內部混淆成員、改動介面文本）。
