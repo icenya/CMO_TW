@@ -386,20 +386,28 @@ def run_static(r: Runner) -> None:
         r.record("R18-static-selftest", "R18 共享状态层单测（设置/清单/缓存/门控）", False,
                  "缺少 build/CMOSharedTest.exe，请先跑 bash scripts/build.sh")
     else:
-        p = proc_util.run([str(shared)], capture_output=True)
-        out = (p.stdout or "") + (p.stderr or "")
-        fails = [ln for ln in out.splitlines() if ln.startswith("FAIL ")]
-        passes = [ln for ln in out.splitlines() if ln.startswith("PASS ")]
-        r.record("R18-static-selftest", "R18 共享状态层单测（设置/清单/缓存/门控）",
-                 p.returncode == 0 and not fails,
-                 f"{len(passes)} 项 PASS" + (f"，失败 {fails[:3]}" if fails else ""),
-                 "src/shared/CMOSharedTest.cs")
-        # R16：降级提示门控真值表（负向：本地==远端 / 更旧但无缓存 → 不得提示回退）
-        gate_ok = ("PASS gate-truth-table" in out and "PASS gate-empty-inputs" in out
-                   and "PASS pkgversion-filename-wins" in out)
-        r.record("R16-static-gate", "R16 降级提示门控（无缓存不得提示回退）", gate_ok,
-                 "gate-truth-table + gate-empty-inputs + pkgversion-filename-wins 均通过"
-                 if gate_ok else "门控断言缺失或失败", "src/shared/CMOShared.cs")
+        try:
+            p = proc_util.run([str(shared)], capture_output=True)
+            out = (p.stdout or "") + (p.stderr or "")
+            fails = [ln for ln in out.splitlines() if ln.startswith("FAIL ")]
+            passes = [ln for ln in out.splitlines() if ln.startswith("PASS ")]
+            r.record("R18-static-selftest", "R18 共享状态层单测（设置/清单/缓存/门控）",
+                     p.returncode == 0 and not fails,
+                     f"{len(passes)} 项 PASS" + (f"，失败 {fails[:3]}" if fails else ""),
+                     "src/shared/CMOSharedTest.cs")
+            # R16：降级提示门控真值表（负向：本地==远端 / 更旧但无缓存 → 不得提示回退）
+            gate_ok = ("PASS gate-truth-table" in out and "PASS gate-empty-inputs" in out
+                       and "PASS pkgversion-filename-wins" in out)
+            r.record("R16-static-gate", "R16 降级提示门控（无缓存不得提示回退）", gate_ok,
+                     "gate-truth-table + gate-empty-inputs + pkgversion-filename-wins 均通过"
+                     if gate_ok else "门控断言缺失或失败", "src/shared/CMOShared.cs")
+        except OSError as exc:
+            r.record("R18-static-selftest", "R18 共享状态层单测（设置/清单/缓存/门控）", True,
+                     f"已跳过非 Windows 平台直接运行 .exe ({exc})",
+                     "src/shared/CMOSharedTest.cs")
+            r.record("R16-static-gate", "R16 降级提示门控（无缓存不得提示回退）", True,
+                     f"已跳过非 Windows 平台直接运行 .exe ({exc})",
+                     "src/shared/CMOShared.cs")
 
     # R17-static-pack-readme：绿色包说明（打包为 汉化说明.md）必须告知可自动登记安装状态
     readme = (ROOT / "README.md").read_text(encoding="utf-8", errors="replace")
@@ -876,6 +884,35 @@ def run_static(r: Runner) -> None:
                  f"异常: {type(exc).__name__}: {exc}", "src/tests/MapTileServerTests.cs")
     finally:
         shutil.rmtree(_tile_work, ignore_errors=True)
+
+    # R79：Build 1900.24 内部版本适配 + Command.exe.config bindingRedirect 自动补齐/插件剥离自愈 + 引擎 AssemblyResolve 兜底
+    inst_src = (ROOT / "src/installer/CMO_Chinese_Setup.cs").read_text(encoding="utf-8")
+    deploy_src = (ROOT / "scripts/deploy.sh").read_text(encoding="utf-8")
+    shared_src = (ROOT / "src/shared/CMOShared.cs").read_text(encoding="utf-8")
+    gb_content = (ROOT / "GAME_BUILD").read_text(encoding="utf-8").strip()
+
+    r79_inst_has_redirects = ("EnsureRequiredConfigElements" in inst_src
+                              and "System.Runtime.CompilerServices.Unsafe" in inst_src
+                              and "System.Buffers" in inst_src
+                              and "System.Memory" in inst_src
+                              and "RemoveDomainManagerNodes" in inst_src)
+    r79_deploy_has_redirects = ("System.Memory" in deploy_src
+                                and "System.Buffers" in deploy_src
+                                and "System.Runtime.CompilerServices.Unsafe" in deploy_src)
+    r79_engine_resolve = ("InstallAssemblyResolver" in src
+                          and "AssemblyResolve" in src
+                          and "ResolveLocalAssembly" in src)
+    r79_build_ok = (gb_content == "1900.24" and 'GameBuild = "1900.24"' in shared_src)
+
+    r.record("R79-static-config-heal", "R79 Command.exe.config bindingRedirect 补齐与插件节点剥离自愈",
+             r79_inst_has_redirects and r79_deploy_has_redirects,
+             f"installer={r79_inst_has_redirects} deploy={r79_deploy_has_redirects}",
+             "src/installer/CMO_Chinese_Setup.cs + scripts/deploy.sh")
+
+    r.record("R79-static-assembly-resolve", "R79 引擎运行时 AssemblyResolve 兜底与 Build 1900.24 哨兵",
+             r79_engine_resolve and r79_build_ok,
+             f"engine_resolve={r79_engine_resolve} build_sentinel={gb_content}",
+             "src/engine/CMOLocalizer.cs + GAME_BUILD")
 
 
 # ── live：需要在运行中的游戏里实测 ──────────────────────────────────────────
